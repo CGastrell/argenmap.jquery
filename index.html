@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers argenmap</title>
+        <link rel="stylesheet" href="OpenLayers-2.12/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="OpenLayers-2.12/lib/OpenLayers.js"></script>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+				<script type="text/javascript" src="argenmap.openlayers.jquery.js"></script>
+    </head>
+    <body onload="">
+        <h1 id="title">Test</h1>
+        <div id="tags">
+            test
+        </div>
+        <p id="shortdesc">
+            testing.
+        </p>
+        <div id="map" class="smallmap"></div>
+        <div id="docs">
+            <p>
+                testing base.
+            </p>
+        </div>
+				<div id="map2" class=""></div>
+        <script>
+				$(function(){ // o $(document).ready(function(){
+					$('#map').openlayers();
+				});
+				</script>
+    </body>
+</html>
