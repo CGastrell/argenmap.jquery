@@ -2150,9 +2150,10 @@
 	$.fn.openlayers = function(opts)
 	{
 		var defaults = {
-			allOverlays: false,
-			projection: "EPSG:4326",
-			center: new OpenLayers.LonLat(-57, -35)
+			div:'',
+			allOverlays: true
+			// projection: "EPSG:4326",
+			// center: new OpenLayers.LonLat(-57, -35)
 		};
 		var options = $.extend(defaults,opts || {});
 		return this.each(function(){
@@ -2163,15 +2164,25 @@
 			"http://mapa.ign.gob.ar/geoserver/wms",
 			{
 				layers: "capabasesigign",
-				transparent: false
+				transparent: true,
+				// image: "image/png",
+				format: "image/png",
+				version: "1.1.1",
+				service: "wms",
+				srs:"EPSG:4326"
+			},{
+				// isBaseLayer: false,
+				singleTile: false,
+				noMagic: true
 			});
-			// var osm = new OpenLayers.Layer.OSM();
-			// m.addLayers([osm,wms]);
-			m.addLayers([wms]);
+			var osm = new OpenLayers.Layer.OSM();
+			// osm.addOptions({isBaseLayer:true});
+			m.addLayers([osm,wms]);
+			// m.addLayers([wms]);
 			m.addControl(new OpenLayers.Control.LayerSwitcher());
 			m.zoomToMaxExtent();
 			
-			$(this).data('openlayers',m);
+			// $(this).data('openlayers',m);
 			// console.log(options);
 		});
 	}

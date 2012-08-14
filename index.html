@@ -8,8 +8,10 @@
         <link rel="stylesheet" href="OpenLayers-2.12/theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="style.css" type="text/css">
         <script src="OpenLayers-2.12/lib/OpenLayers.js"></script>
+				
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 				<script type="text/javascript" src="argenmap.openlayers.jquery.js"></script>
+				<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     </head>
     <body onload="">
         <h1 id="title">Test</h1>
@@ -19,16 +21,55 @@
         <p id="shortdesc">
             testing.
         </p>
-        <div id="map" class="smallmap"></div>
-        <div id="docs">
-            <p>
-                testing base.
-            </p>
-        </div>
-				<div id="map2" class=""></div>
+        <div id="map" style="width:800px;height:600px;"></div>
         <script>
-				$(function(){ // o $(document).ready(function(){
-					$('#map').openlayers();
+				var m;
+				var wms;
+				$(function(){
+					var options = {
+						div: "map",
+						allOverlays: false,
+						projection: "EPSG:3857",
+						center: [-7008296.4456321,-4914512.0364561],
+						zoom:4
+					};
+
+					// layers sm
+					var googleLayer = new OpenLayers.Layer.Google("Google", 
+					{
+						type: "satellite",
+						numZoomLevels: 22
+					});
+					var osmLayer = new OpenLayers.Layer.OSM();
+					// piso las projs a una conocida
+					aliasproj = new OpenLayers.Projection ("EPSG:3857");
+					googleLayer.projection = osmLayer.projection = aliasproj;
+					wms = new OpenLayers.Layer.WMS("IGN",
+					"http://mapa.ign.gob.ar/geoserver/wms",
+					{
+						layers: "capabasesigign",
+						transparent: true,
+						format: "image/png",
+						version: "1.1.1",
+						service: "wms",
+						srs:"EPSG:3857"
+					},{
+						isBaseLayer: false,
+						singleTile: false,
+						noMagic: true
+					});
+
+					// set transformation functions from/to alias projection
+					//OpenLayers.Projection.addTransform("EPSG:4326", "EPSG:3857", OpenLayers.Layer.SphericalMercator.projectForward);
+					//OpenLayers.Projection.addTransform("EPSG:4326", "EPSG:3857", function(p){console.log(p);console.log('wtf');});
+					//OpenLayers.Projection.addTransform("EPSG:3857", "EPSG:4326", OpenLayers.Layer.SphericalMercator.projectInverse);
+
+					// meto las layer en el array de config
+					options.layers = [googleLayer,wms];
+					
+					m = new OpenLayers.Map(options);
+					m.addControl(new OpenLayers.Control.LayerSwitcher());
+					m.addLayer(wms);
 				});
 				</script>
     </body>
