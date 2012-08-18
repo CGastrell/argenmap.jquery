@@ -21,12 +21,13 @@
         <p id="shortdesc">
             testing.
         </p>
-        <div id="map" style="width:800px;height:600px;"></div>
+        <div id="map" style="width:800px;height:400px;float:left;"></div>
+        <div id="map2" style="width:800px;height:400px;float:left;"></div>
         <script>
 				var m;
 				var wms;
 				$(function(){
-					var options = {
+					/*var options = {
 						div: "map",
 						allOverlays: false,
 						projection: "EPSG:3857",
@@ -69,7 +70,7 @@
 					
 					m = new OpenLayers.Map(options);
 					m.addControl(new OpenLayers.Control.LayerSwitcher());
-					m.addLayer(wms);
+					m.addLayer(wms);*/
 				});
 				</script>
     </body>
