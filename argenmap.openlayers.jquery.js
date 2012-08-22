@@ -1,3 +1,6 @@
+(function(){	var interval;
+
+})();
 /*
  *  OpenLayers Plugin for JQuery 
  *  Version   : 0.1
@@ -530,7 +533,7 @@
 	var _default = {},
 		_properties = ['events','onces','options','apply', 'callback', 'data', 'tag'],
 		_noInit = ['init', 'geolatlng', 'getlatlng', 'getroute', 'getelevation', 'getdistance', 'addstyledmap', 'setdefault', 'destroy'],
-		_directs = ['get'],
+		_directs = ['get','centro'],
 		geocoder = directionsService = elevationService = maxZoomService = distanceMatrixService = null;
 		
 	function setDefault(values){
@@ -758,8 +761,7 @@
 	 * esto hace que coordenadas a mas/menos de 180 metros (epsg:3857) del ecuador/meridiano gw
 	 * no sean convertidas por "parecer" geograficas
 	 */
-	function epsg3857 (mixed)
-	{
+	function epsg3857 (mixed){
 		var ll = toLatLng(mixed);
 		if(!ll || !numeric(ll.lon) || !numeric(ll.lat)) return ll;
 		//lo lamento por la gente que quiera usar una coordenada 3857 a menos de 180 metros del 0,0
@@ -778,7 +780,7 @@
 		var empty = emptyReturnMixed ? mixed : null;
 		var r = empty;
 		if (!mixed || (typeof(mixed) === 'string')){
-			console.log('returning empty');
+			// console.log('returning empty');
 			// return empty;
 			r = empty;
 		}
@@ -787,7 +789,7 @@
 			// return toLatLng(mixed.latLng);
 		// }
 		if(mixed.lonlat) {
-			console.log('returning recursive');
+			// console.log('returning recursive');
 			// return toLatLng(mixed.lonlat);
 			r = toLatLng(mixed.lonlat);
 		}
@@ -796,35 +798,35 @@
 		//estes en una configuracion cruzada con gmaps
 		if (typeof(mixed.lat) === 'function') {
 			// return mixed;
-			console.log('returning google-ol conversion');
+			// console.log('returning google-ol conversion');
 			// return new OpenLayers.LonLat(mixed.lng(),mixed.lat());
 			r = new OpenLayers.LonLat(mixed.lng(),mixed.lat());
 		} 
 		// {lat:X, lon:Y} object, el argument es un OL.LonLat!!! vuelve clonado
 		else if ( numeric(mixed.lat) && numeric(mixed.lon) ) {
 			// return new google.maps.LatLng(mixed.lat, mixed.lng);
-			console.log('returning from OL.LonLat');
+			// console.log('returning from OL.LonLat');
 			// return mixed.clone();
 			r = mixed.clone();
 		}
 		// [X, Y] object: este caso es cuando es un array, de ser asi asumo que es [lat,lon] (lat PRIMERO!)
 		else if ( !noFlat && mixed.length){ // and "no flat" object allowed
 			if ( !numeric(mixed[0]) || !numeric(mixed[1]) ) {
-				console.log('returning from array, empty-mixed');
+				// console.log('returning from array, empty-mixed');
 				// return empty;
 				r = empty;
 			}
 			// return new google.maps.LatLng(mixed[0], mixed[1]);
-			console.log('returning from array, LonLat');
+			// console.log('returning from array');
 			// return new OpenLayers.LonLat(mixed[1], mixed[0]);
 			r = new OpenLayers.LonLat(mixed[1], mixed[0]);
 		}
-		console.log('returning empty last resource');
+		// console.log('returning empty last resource');
 		// return empty;
 		//este ultimo if es para asegurarse de que no sea una 3857
 		//pero obliga a un doble transform:
 		// epsg3857(ll) => llama a toLatLng(ll) : las 2 hacen transform
-		// if( r && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
+		if( r && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
 		return r;
 	}
 
@@ -998,22 +1000,22 @@
 				getGeocoder().geocode(
 					params, 
 					function(results, status) {
-					if (status === google.maps.GeocoderStatus.OK){
-						fnc.apply(that, [todo, all ? results : results[0].geometry.location]);
-					} else if ( (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) && (attempt < _default.queryLimit.attempt) ){
-						setTimeout(function(){
-								that._resolveLatLng(todo, method, all, attempt+1);
-							},
-							_default.queryLimit.delay + Math.floor(Math.random() * _default.queryLimit.random)
-						);
-					} else {
-						if (_default.verbose){
-							alert('Geocode error : ' + status);
+						if (status === google.maps.GeocoderStatus.OK){
+							fnc.apply(that, [todo, all ? results : results[0].geometry.location]);
+						} else if ( (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) && (attempt < _default.queryLimit.attempt) ){
+							setTimeout(function(){
+									that._resolveLatLng(todo, method, all, attempt+1);
+								},
+								_default.queryLimit.delay + Math.floor(Math.random() * _default.queryLimit.random)
+							);
+						} else {
+							if (_default.verbose){
+								alert('Geocode error : ' + status);
+							}
+							fnc.apply(that, [todo, false]);;
 						}
-						fnc.apply(that, [todo, false]);;
 					}
-				}
-			);
+				);
 			} else {
 				fnc.apply(that, [todo, toLatLng(todo, false, true)]);
 			}
@@ -1050,6 +1052,7 @@
 		 * call a function of framework or google map object of the instance
 		 **/
 		this._call = function(/* fncName [, ...] */){
+			console.log('_call');
 			var i, fname = arguments[0], args = [];
 			if ( !arguments.length || !map || (typeof(map[fname]) !== 'function') ){
 				return;
@@ -1133,12 +1136,8 @@
 		 * execute callback functions 
 		 **/
 		this._callback = function(result, todo){
-			// console.log('callback result:');
-			// console.log(result);
-			// console.log('callback todo:');
-			// console.log(todo);
 			if (typeof(todo.callback) === 'function') {
-				console.log('callback type: function')
+				// console.log('callback type: function')
 				todo.callback.apply($this, [result]);
 			} else if (typeof(todo.callback) === 'object') {
 				console.log('callback type: object')
@@ -1204,14 +1203,38 @@
 			this._end();
 		}
 		/**
-		 * getCenter reemplazado: prueba
+		 * externa (isDirect)
+		 * devuelve el centro del mapa en coordenadas geograficas
+		 * OpenLayers.LonLat
 		 **/
-		this.centro = function()
-		{
-			console.log(arguments);
+		this.centro = function(todo){
+			// console.log(this);
 			var ll = map.getCenter().clone();
 			ll.transform("EPSG:3857","EPSG:4326");
 			return ll;
+		}
+		/**
+		 * interna
+		 * devuelve el centro del mapa en coordenadas geograficas
+		 * OpenLayers.LonLat
+		 **/
+		this.leercentro = function(todo){
+			// console.log(this);
+			var ll = map.getCenter().clone();
+			ll.transform("EPSG:3857","EPSG:4326");
+			todo.lonlat = ll;
+			this._resolveLatLng(todo,"_centro");
+		}
+		this._centro = function(todo,ll){
+			// esta es la estructura basica de un getter?
+			this._callback(ll, todo);
+			this._end();
+			
+			// this._manageGetters(todo);
+		}
+		this._manageGetters = function(result){
+			console.log('getter manager');
+			console.log(result);
 		}
 		/**
 		 * Initialize google.maps.Map object
@@ -1268,6 +1291,7 @@
 			opts.layers = [layerParaMarkers,ign,g,ignBase];
 			
 			map = new _default.classes.Map(this.mapDiv, opts);
+			
 			map.addControl(new OpenLayers.Control.LayerSwitcher());
 			m = map;//convenience reference
 			
@@ -1330,6 +1354,10 @@
 					overflow: 'hidden'
 				});
 				this.mapDiv = c.get(0);
+				$this.on('resized',function(e){
+					c.css('height',($this.innerHeight() - f.outerHeight() - h.outerHeight()) + 'px');
+					map.updateSize();
+				});
 				$this.append(h).append(c).append(f);
 		}
 		/**
@@ -2307,6 +2335,28 @@
 	};
 
 	//-----------------------------------------------------------------------//
+	// jQuery event
+	//-----------------------------------------------------------------------//
+	//resized event: se escucha desde un DOMElement y se dispara
+	//cada vez que ese elemento cambia de tamanio (ancho o alto)
+	$.event.special.resized = {
+		setup: function(){
+				var self = this, $this = $(this);
+				var $w = $this.width();
+				var $h = $this.height();
+				interval = setInterval(function(){
+						if($w != $this.width() || $h != $this.height()) {
+							$w = $this.width();
+							$h = $this.height();
+							jQuery.event.handle.call(self, {type:'resized'});
+						}
+				},100);
+		},
+		teardown: function(){
+				clearInterval(interval);
+		}
+	};
+	//-----------------------------------------------------------------------//
 	// jQuery plugin
 	//-----------------------------------------------------------------------//
 	$.fn.openlayers = function(opts)
@@ -2381,6 +2431,7 @@
 				ol._plan(list);
 			}
 		});
+		
 		// return for direct call (only) 
 		if (results.length){
 			if (results.length === 1){ // 1 css selector
@@ -2401,5 +2452,6 @@
 			// $(this).html("");
 			
 		// });
-	}
+	};
+	
 })(jQuery, window);
