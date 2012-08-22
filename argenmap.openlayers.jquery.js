@@ -1292,7 +1292,13 @@
 			
 			map = new _default.classes.Map(this.mapDiv, opts);
 			
-			map.addControl(new OpenLayers.Control.LayerSwitcher());
+			map.addControls([
+				new OpenLayers.Control.LayerSwitcher(),
+				new OpenLayers.Control.Navigation(
+            {dragPanOptions: {enableKinetic: true}}
+        ),
+				new OpenLayers.Control.PinchZoom()
+			]);
 			m = map;//convenience reference
 			
 			// add previous added styles
