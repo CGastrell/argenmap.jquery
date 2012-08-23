@@ -777,6 +777,7 @@
 	 * convert mixed [ lat, lng ] objet to OpenLayers.LonLat
 	 **/
 	function toLatLng (mixed, emptyReturnMixed, noFlat){
+		console.log(mixed);
 		var empty = emptyReturnMixed ? mixed : null;
 		var r = empty;
 		if (!mixed || (typeof(mixed) === 'string')){
@@ -792,6 +793,11 @@
 			// console.log('returning recursive');
 			// return toLatLng(mixed.lonlat);
 			r = toLatLng(mixed.lonlat);
+		}
+		if(mixed.latLng) {//si es un {todo} con action y latLng
+			// console.log('returning recursive');
+			// return toLatLng(mixed.lonlat);
+			r = toLatLng(mixed.latLng);
 		}
 		
 		// google.maps.LatLng object, esto no deberia pasar mas, salvo que
@@ -988,6 +994,7 @@
 					params,
 					that = this,
 					fnc = typeof(method) === 'function' ? method : that[method];
+					// console.log(fnc.toString());
 			if ( address ){
 				if (!attempt){ // convert undefined to int
 					attempt = 0;
@@ -1070,6 +1077,7 @@
 			console.log('subcall')
 			var opts = {};
 			if (!todo.map) return;
+			console.log('subcall::map ok');
 			if (!latLng) {
 				latLng = ival(todo.map, 'latlng');
 			}
@@ -1231,10 +1239,6 @@
 			this._end();
 			
 			// this._manageGetters(todo);
-		}
-		this._manageGetters = function(result){
-			console.log('getter manager');
-			console.log(result);
 		}
 		/**
 		 * Initialize google.maps.Map object
@@ -1519,13 +1523,16 @@
 		 * if [infowindow] add an infowindow attached to the marker   
 		 **/
 		this.addmarker = function(todo){
+			console.log('addMarker resolve');
 			this._resolveLatLng(todo, '_addMarker');
 		}
 		
 		this._addMarker = function(todo, latLng, internal){
+			console.log('addMarker');
 			var result, oi, to,
 					o = getObject('marker', todo, 'to');
 			if (!internal){
+				console.log('addMarker NOT internal');
 				if (!latLng) {
 					this._manageEnd(false, o);
 					return;
@@ -1534,7 +1541,9 @@
 			} else if (!latLng){
 				return;
 			}
+			console.log('addMarker:: checks OK');
 			if (o.to){
+				console.log('addMarker:: o.to IS present');
 				to = store.refToObj(o.to);
 				result = to && (typeof(to.add) === 'function');
 				if (result){
@@ -1547,9 +1556,14 @@
 					this._manageEnd(result, o);
 				}
 			} else {
-				o.options.position = latLng;
-				o.options.map = map;
-				result = new _default.classes.Marker(o.options);
+				console.log('addMarker:: o.to IS NOT present');
+				// o.options.position = latLng; //only valid for gmaps
+				// o.options.map = map; //only valid for gmaps
+				o.icon = o.icon ? o.icon : _default.icon.clone();
+				latLng.transform("EPSG:4326","EPSG:3857");
+				console.log('addMarker::o ');
+				console.log(o);
+				result = new _default.classes.Marker(latLng,o.icon);
 				if (hasKey(todo, 'infowindow')){
 					oi = getObject('infowindow', todo['infowindow'], 'open');
 					// if "open" is not defined, add it in first position
@@ -1558,13 +1572,16 @@
 						oi.apply.unshift({action:'open', args:[map, result]});
 					}
 					oi.action = 'addinfowindow';
-					this._planNext(oi); 
+					this._planNext(oi);
 				}
 				if (!internal){
 					store.add('marker', result, o);
+					console.log(result);
+					map.getLayersByName("Marcadores")[0].addMarker(result);
 					this._manageEnd(result, o);
 				}
 			}
+			
 			return result;
 		}
 		
@@ -2378,7 +2395,8 @@
 		// var options = $.extend(defaults, opts || {});
 		if ($.isEmptyObject(_default)) {
 			_default = {
-				verbose: false,
+				icon: new OpenLayers.Icon("PinDown1.png",new OpenLayers.Size(32,39),new OpenLayers.Pixel(-7,-35)),
+				verbose: true,
 				queryLimit: {
 					attempt: 5,
 					delay: 250,
