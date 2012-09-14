@@ -71,7 +71,7 @@
 	 * Devuelve un objeto OpenLayers.LonLat
 	 * @param coords mixed Un par de coordenadas objeto/array
 	 * @param proyeccion string Codigo EPSG que defina el sistema de
-	 * coordenadas el que se quiere el resultado
+	 * coordenadas en el que se quiere el resultado
 	 * @see leerPlanas
 	 * @see leerLonLat
 	 */
@@ -133,6 +133,7 @@
 				r = new OpenLayers.LonLat(mezcla[1], mezcla[0]);
 			}
 		}
+		//adivinacion de epsg, fallaria solo si es una plana a menos de 180m del 0,0
 		if( r && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
 		return r;
 	}
@@ -164,8 +165,8 @@
 		//opciones por defecto
 		this.predefinidos = {
 			proyeccion: "EPSG:3857",
-			capas:[],
 			centro:[-35,-57],
+			capas:[],
 			zoom:4,
 			agregarCapaIGN: true,
 			agregarBaseIGN: true
@@ -176,7 +177,7 @@
 		if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
 		if(this.opciones.agregarBaseIGN) this.opciones.capas.push("baseIGN");
 	}
-	
+	//logica de metodos separada, por obsesividad
 	ArgenMap.prototype = {
 		inicializar: function()
 		{
@@ -210,6 +211,11 @@
 		},
 		destruir: function()
 		{
+			/* cosas que tendria que hacer el destruir:
+			-limpiar el dom element
+			-nulificar la clase para que el gc(?) se encargue
+			-nulificar el data('argenmap') del dom element
+			*/
 		},
 		actualizar: function()
 		{
@@ -258,6 +264,7 @@
 						esCapaBase: false,
 						transparente: true
 					});
+				break;
 				case "Bing":
 				case "Google":
 				case "KML":
@@ -347,12 +354,20 @@
 		return this.each(function(){
 			var $this = $(this);
 			var argenmap = $this.data('argenmap');
-			if(!argenmap) //sin inicializar
+			if(!argenmap) //dom element sin inicializar
 			{
 				argenmap = new ArgenMap($this,opciones);
 				$this.data('argenmap',argenmap);
 				argenmap.inicializar();
 			}
+		});
+	}
+	//prueba modelo de subplugins
+	$.fn.agregarCapa = function(opciones)
+	{
+		//chainability
+		console.log(this);
+		return this.each(function(){
 		});
 	}
 })(jQuery, window);
