@@ -17,8 +17,16 @@
         <div id="map" style="margin:10px auto;width:600px;height:400px;"></div>
         <script>
 				$(function(){
-					//creamos el mapa
-					$('#map').argenmap();
+					//creamos el mapa sin la capa ign para agregar luego como ejemplo
+					$('#map').argenmap({agregarCapaIGN:false});
+					$('#map').agregarCapaWMS({
+						nombre:"IGN",
+						url:"http://www.ign.gob.ar/wms",
+						capas:"capabasesigign",
+						formato:"image/png",
+						esCapaBase:false,
+						transparente:true
+					});
 				});
 				</script>
     </body>

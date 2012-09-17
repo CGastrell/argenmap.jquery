@@ -58,6 +58,9 @@
 				clearInterval(interval);
 		}
 	};
+	/**
+	 * Mapa de propiedades traducidas
+	 */
 	var mapaDePropiedades = {
 		proyeccion: 'projection',
 		centro: 'center',
@@ -65,7 +68,26 @@
 		formato: 'format',
 		transparente: 'transparent',
 		esCapaBase: 'isBaseLayer',
-		capaBase: 'baseLayer'
+		capaBase: 'baseLayer',
+		opacidad: 'opacity'
+	}
+	/**
+	 * Traduce un objeto a traves del mapa de propiedades
+	 * para ser utilizado por las clases de OpenLayers
+	 */
+	function traducirObjeto(objeto)
+	{
+		var resultado = {};
+		for(var k in objeto)
+		{
+			if(typeof(mapaDePropiedades[k]) != "undefined")
+			{
+				resultado[mapaDePropiedades[k]] = objeto[k];
+			}else{
+				resultado[k] = objeto[k];
+			}
+		}
+		return resultado;
 	}
 	/**
 	 * Devuelve un objeto OpenLayers.LonLat
@@ -137,20 +159,6 @@
 		if( r && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
 		return r;
 	}
-	function traducirObjeto(objeto)
-	{
-		var resultado = {};
-		for(var k in objeto)
-		{
-			if(typeof(mapaDePropiedades[k]) != "undefined")
-			{
-				resultado[mapaDePropiedades[k]] = objeto[k];
-			}else{
-				resultado[k] = objeto[k];
-			}
-		}
-		return resultado;
-	}
 	/* CLASE ARGENMAP */
 	function ArgenMap($this,opciones)
 	{
@@ -183,6 +191,7 @@
 		{
 			if(this.mapa) return;
 			this._prepararDiv();
+			//al inicializar no necesito agregar las capas, las paso como array en las opciones
 			this._crearCapasPredefinidas(this.opciones.capas);
 			var o = {
 				centro: leerCoordenadas(this.opciones.centro,this.opciones.proyeccion),
@@ -248,7 +257,7 @@
 			switch(capaString)
 			{
 				case "baseIGN":
-					this.crearCapaWMS({
+					this._crearCapaWMS({
 						nombre: "Base IGN",
 						url: "http://www.ign.gob.ar/wms",
 						capas: "capabasesigign",
@@ -256,7 +265,7 @@
 					});
 				break;
 				case "IGN":
-					this.crearCapaWMS({
+					this._crearCapaWMS({
 						nombre: "IGN",
 						url: "http://www.ign.gob.ar/wms",
 						capas: "capabasesigign",
@@ -271,7 +280,7 @@
 				break;
 			}
 		},
-		crearCapaWMS: function(opciones)
+		_crearCapaWMS: function(opciones)
 		{
 			var predeterminadasWms = {
 				esCapaBase: true,
@@ -286,7 +295,13 @@
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
-			this.capas.push(l);
+			this.capas.push(l);//mmm no esta bien esto, se pelea entre la init y el subplugin
+			return l;
+		},
+		_agregarCapa: function(capa)
+		{
+			this.mapa.addLayer(capa);
+			//aca hay que pushar al this.capas, pero esta mal el crearCapa y no esta bien reutilizable
 		},
 		/**
 		 * prepara el div para el mapa, crea 3 divs adentro
@@ -363,11 +378,22 @@
 		});
 	}
 	//prueba modelo de subplugins
-	$.fn.agregarCapa = function(opciones)
+	$.fn.agregarCapaWMS = function(opciones)
 	{
+		var predeterminadosWms = {
+			nombre: '',
+			opacidad:1,
+			esCapaBase: false,
+			singleTile: false,//no lo traduzco porque no deberia estar expuesto... x ahora
+			noMagic: true//ideam singleTile
+		};
 		//chainability
-		console.log(this);
 		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			var capa = a._crearCapaWMS(opciones);
+			a._agregarCapa(capa);
 		});
 	}
 })(jQuery, window);
