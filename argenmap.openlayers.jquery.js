@@ -69,7 +69,8 @@
 		transparente: 'transparent',
 		esCapaBase: 'isBaseLayer',
 		capaBase: 'baseLayer',
-		opacidad: 'opacity'
+		opacidad: 'opacity',
+		servicio: 'service'
 	}
 	/**
 	 * Traduce un objeto a traves del mapa de propiedades
@@ -192,6 +193,8 @@
 			if(this.mapa) return;
 			this._prepararDiv();
 			//al inicializar no necesito agregar las capas, las paso como array en las opciones
+			//este es el unico momento en el que this.mapa.layers = this.capas,
+			//luego seran siempre copiadas al reves (this.capas = this.mapa.layers)
 			this._crearCapasPredefinidas(this.opciones.capas);
 			var o = {
 				centro: leerCoordenadas(this.opciones.centro,this.opciones.proyeccion),
@@ -208,7 +211,13 @@
 				new OpenLayers.Control.PinchZoom()
 			]);
 
-			// console.log(traducirObjeto(this.opciones));
+			// eventos
+			this.mapa.events.on({
+				addlayer:function(e){this.capas = this.mapa.layers;},
+				removelayer:function(e){this.capas = this.mapa.layers;},
+				changelayer:function(e){this.capas = this.mapa.layers;},
+				scope:this
+			});
 		},
 		traerCapaPorNombre: function(nombre)
 		{
@@ -254,10 +263,11 @@
 		 */
 		_crearCapaPredefinida: function(capaString)
 		{
+			var c = null;
 			switch(capaString)
 			{
 				case "baseIGN":
-					this._crearCapaWMS({
+					c = this._crearCapaWMS({
 						nombre: "Base IGN",
 						url: "http://www.ign.gob.ar/wms",
 						capas: "capabasesigign",
@@ -265,7 +275,7 @@
 					});
 				break;
 				case "IGN":
-					this._crearCapaWMS({
+					c = this._crearCapaWMS({
 						nombre: "IGN",
 						url: "http://www.ign.gob.ar/wms",
 						capas: "capabasesigign",
@@ -279,6 +289,7 @@
 				case "KML":
 				break;
 			}
+			return c;
 		},
 		_crearCapaWMS: function(opciones)
 		{
@@ -288,20 +299,22 @@
 				transparente: false,
 				formato: "image/jpg",
 				version: "1.1.1",
-				service: "wms",
+				servicio: "wms",
 				srs: this.opciones.proyeccion,
 				noMagic: true,
 				proyeccion: this.opciones.proyeccion
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
-			this.capas.push(l);//mmm no esta bien esto, se pelea entre la init y el subplugin
+			//this.capas.push(l);//mmm no esta bien esto, se pelea entre la init y el subplugin
+			//kludge!
+			if(!this.mapa) this.capas.push(l);
 			return l;
 		},
 		_agregarCapa: function(capa)
 		{
 			this.mapa.addLayer(capa);
-			//aca hay que pushar al this.capas, pero esta mal el crearCapa y no esta bien reutilizable
+			//aca hay que pushar al this.capas, pero esta mal el crearCapa y no esta reutilizable
 		},
 		/**
 		 * prepara el div para el mapa, crea 3 divs adentro
@@ -378,22 +391,34 @@
 		});
 	}
 	//prueba modelo de subplugins
+	/*
+	mi idea es que al final haya un agregarCapa(opts), en las opts tiene que ir un "tipo"
+	que luego sea el switch para mandar a funciones de conveniencia: agregarCapaWMS, agregarCapaKML
+	Cuando el parametro de agregarCapa sea solo un string, intentar agregarCapaPredefinida(string)
+	Aun asi, los convenience tienen que existir: $(o).agregarCapaWMS, etc etc
+	Con esto, y con tiempo, podemos armar un diccionario de capas predefinidas,
+	hoy existen solo base IGN, IGN, Bing y Google, pero bien podriamos ir incrementando
+	este diccionario con cosas como "Idera Chaco" o "Satelital 500k" donde cada una ya
+	tiene todas las opciones predefinidas.
+	*/
 	$.fn.agregarCapaWMS = function(opciones)
 	{
 		var predeterminadosWms = {
 			nombre: '',
+			tipo: "wms",
 			opacidad:1,
 			esCapaBase: false,
 			singleTile: false,//no lo traduzco porque no deberia estar expuesto... x ahora
-			noMagic: true//ideam singleTile
+			noMagic: true//idem singleTile
 		};
 		//chainability
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			var capa = a._crearCapaWMS(opciones);
-			a._agregarCapa(capa);
+			var capa = null;
+			capa = a._crearCapaWMS(opciones);
+			if(capa) a._agregarCapa(capa);
 		});
 	}
 })(jQuery, window);
