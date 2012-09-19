@@ -166,6 +166,7 @@
 		this.$el = $this;//referencia al objeto jQuery desde el que se inicializó el plugin
 		this.divMapa = null//elemento DOM donde estará el mapa. NO JQUERY
 		this.mapa = null//referencia al objeto mapa de openlayers
+		if(undefined == opciones) opciones = {};
 		/**
 		 * Array de capas que estan en el mapa. Equivale a OpenLayers.Map.layers
 		 * Se utiliza al momento de instanciar el mapa y para buscar por nombre
@@ -180,6 +181,7 @@
 			agregarCapaIGN: true,
 			agregarBaseIGN: true
 		};
+		this.depuracion = opciones.depuracion || false;
 		
 		//merge predefinidos con opciones de usuario
 		this.opciones = $.extend({}, this.predefinidos, opciones);
@@ -200,6 +202,14 @@
 				centro: leerCoordenadas(this.opciones.centro,this.opciones.proyeccion),
 				capas: this.capas
 			};
+			
+			//tuve que hacer esto porque OL no arranca sin capa base, y tampoco puedo
+			//forzar a tener una capa base. Que diria Lugosi si no se puede tener un mapa sin base?
+			if(!this._corroborarCapaBase(o.capas))
+				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
+				
+			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:false}));
+				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
@@ -218,14 +228,10 @@
 				changelayer:function(e){this.capas = this.mapa.layers;},
 				scope:this
 			});
-		},
-		traerCapaPorNombre: function(nombre)
-		{
-			for(var i = 0; i < this.capas.length; i++)
-			{
-				if(this.capas[i].nombre = nombre) return this.capas[i];
-			}
-			return false;
+			
+			//little kludge para cambar titulos del layerSwitcher
+			this.$el.find('div.baseLbl').text("Capas base");
+			this.$el.find('div.dataLbl').text("Superpuestas");
 		},
 		destruir: function()
 		{
@@ -243,55 +249,28 @@
 			c.css('height',(this.$el.innerHeight() - f.outerHeight() - h.outerHeight()) + 'px');
 			if(this.mapa) this.mapa.updateSize();
 		},
-		/*
-		 * Crea capas predefinidas y las adosa al array this.capas
-		 * Esta funcion NO agrega las capa al mapa, solo las crea y las deja en el array
-		 * @param array Las capa predefinidas a crear (IGN, baseIGN, Google, Bing, KML)
-		 */
-		_crearCapasPredefinidas: function(capasArray)
+		agregarCapa: function(opciones)
 		{
-			if(typeof(capasArray) != "object" || !capasArray.length) return;
-			$.each(capasArray, $.proxy( function(i,e){
-					this._crearCapaPredefinida(e);
-				}, this)
-			);
-		},
-		/*
-		 * Crea una capa predefinida y la adosa al array this.capas
-		 * Esta funcion NO agrega la capa al mapa, solo la crea y la deja en el array
-		 * @param string La capa predefinida a crear (IGN, baseIGN, Google, Bing, KML)
-		 */
-		_crearCapaPredefinida: function(capaString)
-		{
-			var c = null;
-			switch(capaString)
+			if(!this.mapa) return;//catch por las dudas
+			
+			/*si es string intentamos una capa predefinida, ojo corte prematuro*/
+			if(typeof(opciones) == "string")
 			{
-				case "baseIGN":
-					c = this._crearCapaWMS({
-						nombre: "Base IGN",
-						url: "http://www.ign.gob.ar/wms",
-						capas: "capabasesigign",
-						formato: "image/png",
-					});
-				break;
-				case "IGN":
-					c = this._crearCapaWMS({
-						nombre: "IGN",
-						url: "http://www.ign.gob.ar/wms",
-						capas: "capabasesigign",
-						formato: "image/png",
-						esCapaBase: false,
-						transparente: true
-					});
-				break;
-				case "Bing":
-				case "Google":
-				case "KML":
+				var c = this._crearCapaPredefinida(opciones.toLowerCase());
+				this.mapa.addLayer(c);
+				return;
+			}
+			/*direccionamos a la funcion segun el tipo*/
+			if(typeof(opciones) != "object" || !opciones.tipo) return;
+			var t = opciones.tipo.toLowerCase();
+			switch(t)
+			{
+				case "wms":
+					agregarCapaWMS(opciones);
 				break;
 			}
-			return c;
 		},
-		_crearCapaWMS: function(opciones)
+		agregarCapaWMS: function(opciones)
 		{
 			var predeterminadasWms = {
 				esCapaBase: true,
@@ -306,15 +285,107 @@
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
-			//this.capas.push(l);//mmm no esta bien esto, se pelea entre la init y el subplugin
-			//kludge!
-			if(!this.mapa) this.capas.push(l);
-			return l;
+			if(this.mapa) this.mapa.addLayer(l);
 		},
-		_agregarCapa: function(capa)
+		agregarMarcador: function(opciones)
 		{
-			this.mapa.addLayer(capa);
-			//aca hay que pushar al this.capas, pero esta mal el crearCapa y no esta reutilizable
+			console.log(opciones);
+		},
+		/* INTERNAS / PRIVADAS */
+		_traerCapaPorNombre: function(nombre)
+		{
+			for(var i = 0; i < this.capas.length; i++)
+			{
+				if(this.capas[i].nombre = nombre) return this.capas[i];
+			}
+			return false;
+		},
+		/**
+		 * Busca en el array de capas proporcionado y devuelve si alguna capa.isBaseLayer == true
+		 * @param Array
+		 */
+		_corroborarCapaBase: function(capasArray)
+		{
+			if(!$.isArray(capasArray)) return false;
+			var resultado = false;
+			for(var i = 0; i < capasArray.length; i++)
+			{
+				if(undefined != capasArray[i].isBaseLayer && capasArray[i].isBaseLayer == true)
+				{
+					resultado = true;
+					break;
+				}
+			}
+			return resultado;
+		},
+		/*
+		 * Crea capas predefinidas y las adosa al array this.capas
+		 * Esta funcion NO agrega las capa al mapa, solo las crea y las deja en el array
+		 * @param array Las capa predefinidas a crear (IGN, baseIGN, Google, Bing, KML)
+		 */
+		_crearCapasPredefinidas: function(capasArray)
+		{
+			if(!$.isArray(capasArray)) return;
+			$.each(capasArray, $.proxy( function(i,e){
+					this._crearCapaPredefinida(e);
+				}, this)
+			);
+		},
+		/*
+		 * Crea una capa predefinida y la adosa al array this.capas
+		 * Esta funcion NO agrega la capa al mapa, solo la crea y la deja en el array
+		 * @param string La capa predefinida a crear (IGN, baseIGN, Google, Bing, KML)
+		 */
+		_crearCapaPredefinida: function(capaString)
+		{
+			if(typeof(capaString) != "string") return null;
+			var c = null;
+			var o = null;
+			var p = null;
+			switch(capaString.toLowerCase())
+			{
+				case "baseign":
+					p = traducirObjeto({
+						capas: "capabasesigign",
+						formato: "image/png",
+						esCapaBase: true,
+						singleTile: false,
+						transparente: false,
+						version: "1.1.1",
+						servicio: "wms",
+						srs: this.opciones.proyeccion
+					});
+					o = traducirObjeto({
+						noMagic: true,
+						proyeccion: this.opciones.proyeccion
+					});
+					c = new OpenLayers.Layer.WMS("Base IGN","http://www.ign.gob.ar/wms",p,o);
+				break;
+				case "ign":
+					p = traducirObjeto({
+						capas: "capabasesigign",
+						formato: "image/png",
+						transparente: true,
+						version: "1.1.1",
+						servicio: "wms",
+						srs: this.opciones.proyeccion
+					});
+
+					o = traducirObjeto({
+						noMagic: true,
+						singleTile: false,
+						esCapaBase: false,
+						proyeccion: this.opciones.proyeccion
+					});
+					c = new OpenLayers.Layer.WMS("IGN","http://www.ign.gob.ar/wms",p,o);
+				break;
+				case "bing":
+				case "google":
+				break;
+			}
+			/*si no hay mapa simplemente la agregamos a las capas de argenmap*/
+			if(!this.mapa) this.capas.push(c);
+			return c;
 		},
 		/**
 		 * prepara el div para el mapa, crea 3 divs adentro
@@ -401,24 +472,39 @@
 	este diccionario con cosas como "Idera Chaco" o "Satelital 500k" donde cada una ya
 	tiene todas las opciones predefinidas.
 	*/
-	$.fn.agregarCapaWMS = function(opciones)
+	$.fn.agregarCapa = function(opciones)
 	{
-		var predeterminadosWms = {
-			nombre: '',
-			tipo: "wms",
-			opacidad:1,
-			esCapaBase: false,
-			singleTile: false,//no lo traduzco porque no deberia estar expuesto... x ahora
-			noMagic: true//idem singleTile
-		};
 		//chainability
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			var capa = null;
-			capa = a._crearCapaWMS(opciones);
-			if(capa) a._agregarCapa(capa);
+			// var capa = null;
+			// capa = a._crearCapaWMS(opciones);
+			// if(capa) a._agregarCapa(capa);
+			a.agregarCapa(opciones);
+		});
+	}
+	$.fn.agregarCapaWMS = function(opciones)
+	{
+		//chainability
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			// var capa = null;
+			// capa = a._crearCapaWMS(opciones);
+			// if(capa) a._agregarCapa(capa);
+			a.agregarCapaWMS(opciones);
+		});
+	}
+	$.fn.agregarMarcador = function(opciones)
+	{
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			a.agregarMarcador(opciones);
 		});
 	}
 })(jQuery, window);
