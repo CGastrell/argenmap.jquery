@@ -249,15 +249,16 @@
 			c.css('height',(this.$el.innerHeight() - f.outerHeight() - h.outerHeight()) + 'px');
 			if(this.mapa) this.mapa.updateSize();
 		},
-		agregarCapa: function(opciones)
+		agregarCapa: function(opciones,extras)
 		{
 			if(!this.mapa) return;//catch por las dudas
 			
 			/*si es string intentamos una capa predefinida, ojo corte prematuro*/
 			if(typeof(opciones) == "string")
 			{
-				var c = this._crearCapaPredefinida(opciones.toLowerCase());
-				this.mapa.addLayer(c);
+				var c = this._crearCapaPredefinida(opciones.toLowerCase(),extras);
+				if(c) this.mapa.addLayer(c);
+				if(c && c.isBaseLayer) this.mapa.setBaseLayer(c);
 				return;
 			}
 			/*direccionamos a la funcion segun el tipo*/
@@ -336,7 +337,7 @@
 		 * Esta funcion NO agrega la capa al mapa, solo la crea y la deja en el array
 		 * @param string La capa predefinida a crear (IGN, baseIGN, Google, Bing, KML)
 		 */
-		_crearCapaPredefinida: function(capaString)
+		_crearCapaPredefinida: function(capaString,extras)
 		{
 			if(typeof(capaString) != "string") return null;
 			var c = null;
@@ -380,11 +381,35 @@
 					c = new OpenLayers.Layer.WMS("IGN","http://www.ign.gob.ar/wms",p,o);
 				break;
 				case "bing":
+					if(extras && extras.key)
+					c = new OpenLayers.Layer.Bing({
+							name: "Aérea (Bing)",
+							key: extras.key,//"Ang2jMeTgBWgNdYC_GbPxP37Gs1pYJXN-byoKn8zGW39FsxwZ3o7N2kvcdDbrnb_",
+							type: "Aerial"
+					});
+				break;
 				case "google":
+					if(typeof(google) != 'object' || typeof(google.maps) != 'object')
+					{
+						//async load de api de google segun guias
+						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
+						window["agregarCapaGoogle"] = $.proxy(function()
+						{
+							delete window["agregarCapaGoogle"];
+							this.agregarCapa("Google");
+						},this);
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=agregarCapaGoogle";
+						document.body.appendChild(script);
+					}else{
+						c = new OpenLayers.Layer.Google("Satélite (Google)",{type:"satellite",numZoomLevels:22});
+					}
 				break;
 			}
+			if(c) c.projection = new OpenLayers.Projection(this.opciones.proyeccion);
 			/*si no hay mapa simplemente la agregamos a las capas de argenmap*/
-			if(!this.mapa) this.capas.push(c);
+			if(c && !this.mapa) this.capas.push(c);
 			return c;
 		},
 		/**
@@ -472,7 +497,7 @@
 	este diccionario con cosas como "Idera Chaco" o "Satelital 500k" donde cada una ya
 	tiene todas las opciones predefinidas.
 	*/
-	$.fn.agregarCapa = function(opciones)
+	$.fn.agregarCapa = function(opciones, extras)
 	{
 		//chainability
 		return this.each(function(){
@@ -482,7 +507,7 @@
 			// var capa = null;
 			// capa = a._crearCapaWMS(opciones);
 			// if(capa) a._agregarCapa(capa);
-			a.agregarCapa(opciones);
+			a.agregarCapa(opciones, extras);
 		});
 	}
 	$.fn.agregarCapaWMS = function(opciones)
