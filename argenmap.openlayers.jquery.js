@@ -209,7 +209,7 @@
 			if(!this._corroborarCapaBase(o.capas))
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
 				
-			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:this.mostrarCapaDeMarcadores}));
+			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:this.opciones.mostrarCapaDeMarcadores}));
 				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			
@@ -290,7 +290,6 @@
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
-			l.projection = new OpenLayers.Projection(this.opciones.proyeccion);
 			if(this.mapa) this.mapa.addLayer(l);
 		},
 		agregarCapaKML: function(opciones)
@@ -317,7 +316,7 @@
 			
 			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
 			var l = new OpenLayers.Layer.Vector(o.nombre,o);
-			l.projection = new OpenLayers.Projection(this.opciones.proyeccion);
+			// l.projection = new OpenLayers.Projection(this.opciones.proyeccion);
 			//en teoria esto tiene que andar, falta probar online
 			//y si todo anda, hay que autoparsear los kml para q tengan popups
 			if(this.mapa) this.mapa.addLayer(l);
