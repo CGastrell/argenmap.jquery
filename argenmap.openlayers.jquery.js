@@ -316,8 +316,12 @@
 			
 			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
 			var l = new OpenLayers.Layer.Vector(o.nombre,o);
-			// l.projection = new OpenLayers.Projection(this.opciones.proyeccion);
-			//en teoria esto tiene que andar, falta probar online
+			//esto esta medio fulo... 
+			//por defecto la gente usa geograficas, asumiendo eso, transformo cada
+			//geometry de epsg
+			$.each(l.features,function(index,item){
+				item.geometry.transform("EPSG:4326","EPSG:3857");
+			});
 			//y si todo anda, hay que autoparsear los kml para q tengan popups
 			if(this.mapa) this.mapa.addLayer(l);
 		},
