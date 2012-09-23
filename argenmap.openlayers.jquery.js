@@ -290,6 +290,7 @@
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
+			l.projection = new OpenLayers.Projection(this.opciones.proyeccion);
 			if(this.mapa) this.mapa.addLayer(l);
 		},
 		agregarCapaKML: function(opciones)
@@ -316,6 +317,7 @@
 			
 			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
 			var l = new OpenLayers.Layer.Vector(o.nombre,o);
+			l.projection = new OpenLayers.Projection(this.opciones.proyeccion);
 			//en teoria esto tiene que andar, falta probar online
 			//y si todo anda, hay que autoparsear los kml para q tengan popups
 			if(this.mapa) this.mapa.addLayer(l);
