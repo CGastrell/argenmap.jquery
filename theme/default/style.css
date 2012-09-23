@@ -323,7 +323,9 @@ div.olControlSaveFeaturesItemInactive {
     padding-left: 10px;
     padding-bottom: 5px;
     padding-right: 10px;
-    background-color: darkblue;
+    /*background-color: darkblue;
+		for the facha, senior*/
+		background:rgba(0, 60, 136, 0.5);
 }
 
 .olControlLayerSwitcher .layersDiv .baseLbl,
@@ -345,6 +347,7 @@ div.olControlSaveFeaturesItemInactive {
     top: 5px;
     right: 0;
     cursor: pointer;
+		opacity: 0.5;
 }
 
 .olBingAttribution {

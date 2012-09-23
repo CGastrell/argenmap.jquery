@@ -179,7 +179,8 @@
 			capas:[],
 			zoom:4,
 			agregarCapaIGN: true,
-			agregarBaseIGN: true
+			agregarBaseIGN: true,
+			mostrarCapaDeMarcadores: false
 		};
 		this.depuracion = opciones.depuracion || false;
 		
@@ -208,7 +209,7 @@
 			if(!this._corroborarCapaBase(o.capas))
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
 				
-			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:false}));
+			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:this.mostrarCapaDeMarcadores}));
 				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			
@@ -269,6 +270,9 @@
 				case "wms":
 					agregarCapaWMS(opciones);
 				break;
+				case "kml":
+					agregarCapaKML(opciones);
+				break;
 			}
 		},
 		agregarCapaWMS: function(opciones)
@@ -286,6 +290,34 @@
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
+			if(this.mapa) this.mapa.addLayer(l);
+		},
+		agregarCapaKML: function(opciones)
+		{
+			if(typeof(opciones) != "object" || typeof(opciones.url) != "string") return;
+			
+			var predeterminadasKml = {
+				esCapaBase: false,
+				nombre: "Capa KML",
+				proyeccion: this.opciones.proyeccion,
+				url: ""
+			};
+			var extras = {
+				strategies: [new OpenLayers.Strategy.Fixed()],
+				protocol: new OpenLayers.Protocol.HTTP({
+						url: opciones.url,
+						format: new OpenLayers.Format.KML({
+								extractStyles: true,
+								extractAttributes: true
+						})
+				})
+				
+			};
+			
+			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
+			var l = new OpenLayers.Layer.Vector(o.nombre,o);
+			//en teoria esto tiene que andar, falta probar online
+			//y si todo anda, hay que autoparsear los kml para q tengan popups
 			if(this.mapa) this.mapa.addLayer(l);
 		},
 		agregarMarcador: function(opciones)
@@ -389,21 +421,22 @@
 					});
 				break;
 				case "google":
-					if(typeof(google) != 'object' || typeof(google.maps) != 'object')
+					if(typeof(google) != 'object' || typeof(google.maps) != 'object')//este OR no esta bien
 					{
 						//async load de api de google segun guias
 						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
-						window["agregarCapaGoogle"] = $.proxy(function()
+						window["argenmapGoogleAPICallback"] = $.proxy(function()
 						{
-							delete window["agregarCapaGoogle"];
+							delete window["argenmapGoogleAPICallback"];
 							this.agregarCapa("Google");
 						},this);
 						var script = document.createElement("script");
 						script.type = "text/javascript";
-						script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=agregarCapaGoogle";
+						script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=argenmapGoogleAPICallback";
 						document.body.appendChild(script);
 					}else{
-						c = new OpenLayers.Layer.Google("Satélite (Google)",{type:"satellite",numZoomLevels:22});
+						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
+						c = new OpenLayers.Layer.Google("Satélite (Google)",{type:"satellite",numZoomLevels:20});
 					}
 				break;
 			}
@@ -521,6 +554,19 @@
 			// capa = a._crearCapaWMS(opciones);
 			// if(capa) a._agregarCapa(capa);
 			a.agregarCapaWMS(opciones);
+		});
+	}
+	$.fn.agregarCapaKML = function(opciones)
+	{
+		//chainability
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			// var capa = null;
+			// capa = a._crearCapaWMS(opciones);
+			// if(capa) a._agregarCapa(capa);
+			a.agregarCapaKML(opciones);
 		});
 	}
 	$.fn.agregarMarcador = function(opciones)
