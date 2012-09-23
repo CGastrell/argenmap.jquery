@@ -1,6 +1,3 @@
-(function(){	var interval;
-
-})();
 /*
  *  OpenLayers Plugin for JQuery 
  *  Version   : 0.1
@@ -39,733 +36,88 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 (function ($, window, undefined) {
-/***************************************************************************/
-/*                                STACK                                    */
-/***************************************************************************/
-	function Stack (){
-		var st = [];
-		this.empty = function (){
-			for(var i = 0; i < st.length; i++){
-				if (st[i]){
-					return false
-				}
-			}
-			return true;
-		}
-		this.add = function(v){
-			st.push(v);
-		}
-		this.addNext = function ( v){
-			var t=[], i, k = 0;
-			for(i = 0; i < st.length; i++){
-				if (!st[i]){
-					continue;
-				}
-				if (k == 1) {
-					t.push(v);
-				}
-				t.push(st[i]);
-				k++;
-			}
-			if (k < 2) {
-				t.push(v);
-			}
-			st = t;
-		}
-		this.get = function (){
-			for(var i = 0; i < st.length; i++){
-				if (st[i]) {
-					return st[i];
-				}
-			}
-			return false;
-		}
-		this.ack = function (){
-			for(var i = 0; i < st.length; i++){                     
-				if (st[i]) {
-					delete st[i];
-					break;
-				}
-			}
-			if (this.empty()){
-				st = [];
-			}
-		}
-	}
-
-	/***************************************************************************/
-	/*                                STORE                                    */
-	/***************************************************************************/
-	function Store(){
-		var store = {};
-		
-		/**
-		 * add a mixed to the store
-		 **/
-		this.add = function(name, obj, todo){
-			name = name.toLowerCase();
-			if (!store[name]){
-				store[name] = [];
-			}
-			store[name].push({obj:obj, tag:ival(todo, 'tag')});
-			return name + '-' + (store[name].length-1);
-		}
-		
-		/**
-		 * return a stored mixed
-		 **/
-		this.get = function(name, last, tag){
-			var i, idx, add;
-			name = name.toLowerCase();
-			if (!store[name] || !store[name].length){
-				return null;
-			}
-			idx = last ? store[name].length : -1;
-			add = last ? -1 : 1;
-			for(i=0; i<store[name].length; i++){
-				idx += add;
-				if (store[name][idx]){
-					if (tag !== undefined) {
-						if ( (store[name][idx].tag === undefined) || ($.inArray(store[name][idx].tag, tag) < 0) ){
-							continue;
-						}
-					}
-					return store[name][idx].obj;
-				}
-			}
-			return null;
-		}
-		
-		/**
-		 * return all stored mixed
-		 **/
-		this.all = function(name, tag){
-			var i, result = [];
-			name = name.toLowerCase();
-			if (!store[name] || !store[name].length){
-				return result;
-			}
-			for(i=0; i<store[name].length; i++){
-				if (!store[name][i]){
-					continue;
-				}
-				if ( (tag !== undefined) && ( (store[name][i].tag === undefined) || ($.inArray(store[name][i].tag, tag) < 0) ) ){
-					continue;
-				}
-				result.push(store[name][i].obj);
-			}
-			return result;
-		}
-		
-		/**
-		 * return all storation groups
-		 **/
-		this.names = function(){
-			var name, result = [];
-			for(name in store){
-				result.push(name);
-			}
-			return result;
-		}
-		
-		/**
-		 * return an object from its reference
-		 **/
-		this.refToObj = function(ref){
-			ref = ref.split('-'); // name - idx
-			if ((ref.length == 2) && store[ref[0]] && store[ref[0]][ref[1]]){
-				return store[ref[0]][ref[1]].obj;
-			}
-			return null;
-		}
-		
-		/**
-		 * remove one object from the store
-		 **/
-		this.rm = function(name, tag, pop){
-			var idx, i, tmp;
-			name = name.toLowerCase();
-			if (!store[name]) {
-				return false;
-			}
-			if (tag !== undefined){
-				if (pop){
-					for(idx = store[name].length - 1; idx >= 0; idx--){
-						if ( (store[name][idx] !== undefined) && (store[name][idx].tag !== undefined) && ($.inArray(store[name][idx].tag, tag) >= 0) ){
-							break;
-						}
-					}
-				} else {
-					for(idx = 0; idx < store[name].length; idx++){
-						if ( (store[name][idx] !== undefined) && (store[name][idx].tag !== undefined) && ($.inArray(store[name][idx].tag, tag) >= 0) ){
-							break;
-						}
-					}
-				}
-			} else {
-				idx = pop ? store[name].length - 1 : 0;
-			}
-			if ( !(idx in store[name]) ) {
-				return false;
-			}
-			// Google maps element
-			if (typeof(store[name][idx].obj.setMap) === 'function') {
-				store[name][idx].obj.setMap(null);
-			}
-			// jQuery
-			if (typeof(store[name][idx].obj.remove) === 'function') {
-				store[name][idx].obj.remove();
-			}
-			// internal (cluster)
-			if (typeof(store[name][idx].obj.free) === 'function') {
-				store[name][idx].obj.free();
-			}
-			delete store[name][idx].obj;
-			if (tag !== undefined){
-				tmp = [];
-				for(i=0; i<store[name].length; i++){
-					if (i !== idx){
-						tmp.push(store[name][i]);
-					}
-				}
-				store[name] = tmp;
-			} else {
-				if (pop) {
-					store[name].pop();
-				} else {
-					store[name].shift();
-				}
-			}
-			return true;
-		}
-		
-		/**
-		 * remove objects from the store
-		 **/
-		this.clear = function(list, last, first, tag){
-			var k, i, name;
-			if (!list || !list.length){
-				list = [];
-				for(k in store){
-					list.push(k);
-				}
-			} else {
-				list = array(list);
-			}
-			for(i=0; i<list.length; i++){
-				if (list[i]){
-					name = list[i].toLowerCase();
-					if (!store[name]){
-						continue;
-					}
-					if (last){
-						this.rm(name, tag, true);
-					} else if (first){
-						this.rm(name, tag, false);
-					} else {
-						// all
-						while (this.rm(name, tag, false));
-					}
-				}
-			}
-		}
-	}
-
-	/***************************************************************************/
-	/*                              CLUSTERER                                  */
-	/***************************************************************************/
-
-	function Clusterer(){
-		var markers = [], events=[], stored=[], latest=[], redrawing = false, redraw;
-		
-		this.events = function(){
-			for(var i=0; i<arguments.length; i++){
-				events.push(arguments[i]);
-			}
-		}
-		
-		this.startRedraw = function(){
-			if (!redrawing){
-				redrawing = true;
-				return true;
-			}
-			return false;
-		}
-		
-		this.endRedraw = function(){
-			redrawing = false;
-		}
-		
-		this.redraw = function(){
-			var i, args = [], that = this; 
-			for(i=0; i<arguments.length; i++){
-				args.push(arguments[i]);
-			}
-			if (this.startRedraw){
-				redraw.apply(that, args);
-				this.endRedraw();
-			} else {
-				setTimeout(function(){
-						that.redraw.apply(that, args);
-					},
-					50
-				);
-			}
-		};
-		
-		this.setRedraw = function(fnc){
-			redraw  = fnc;
-		}
-		
-		this.store = function(data, obj, shadow){
-			stored.push({data:data, obj:obj, shadow:shadow});
-		}
-		
-		this.free = function(){
-			for(var i = 0; i < events.length; i++){
-				google.maps.event.removeListener(events[i]);
-			}
-			events=[];
-			this.freeAll();
-		}
-		
-		this.freeIndex = function(i){
-			if (typeof(stored[i].obj.setMap) === 'function') {
-				stored[i].obj.setMap(null);
-			}
-			if (typeof(stored[i].obj.remove) === 'function') {
-				stored[i].obj.remove();
-			}
-			if (stored[i].shadow){ // only overlays has shadow
-				if (typeof(stored[i].shadow.remove) === 'function') {
-					stored[i].obj.remove();
-				}
-				if (typeof(stored[i].shadow.setMap) === 'function') {
-					stored[i].shadow.setMap(null);
-				}
-				delete stored[i].shadow;
-			}
-			delete stored[i].obj;
-			delete stored[i].data;
-			delete stored[i];
-		}
-		
-		this.freeAll = function(){
-			var i;
-			for(i = 0; i < stored.length; i++){
-				if (stored[i]) {
-					this.freeIndex(i);
-				}
-			}
-			stored = [];
-		}
-		
-		this.freeDiff = function(clusters){
-			var i, j, same = {}, idx = [];
-			for(i=0; i<clusters.length; i++){
-				idx.push( clusters[i].idx.join('-') );
-			}
-			for(i = 0; i < stored.length; i++){
-				if (!stored[i]) {
-					continue;
-				}
-				j = $.inArray(stored[i].data.idx.join('-'), idx);
-				if (j >= 0){
-					same[j] = true;
-				} else {
-					this.freeIndex(i);
-				}
-			}
-			return same;
-		}
-		
-		this.add = function(latLng, marker){
-			markers.push({latLng:latLng, marker:marker});
-		}
-		
-		this.get = function(i){
-			return markers[i];
-		}
-		
-		this.clusters = function(map, radius, maxZoom, force){
-			var proj = map.getProjection(),
-					nwP = proj.fromLatLngToPoint(
-						new google.maps.LatLng(
-								map.getBounds().getNorthEast().lat(),
-								map.getBounds().getSouthWest().lng()
-						)
-					),
-					i, j, j2, p, x, y, k, k2, 
-					z = map.getZoom(),
-					pos = {}, 
-					saved = {},
-					unik = {},
-					clusters = [],
-					cluster,
-					chk,
-					lat, lng, keys, cnt,
-					bounds = map.getBounds(),
-					noClusters = maxZoom && (maxZoom <= map.getZoom()),
-					chkContain = map.getZoom() > 2;
-			
-			cnt = 0;
-			keys = {};
-			for(i = 0; i < markers.length; i++){
-				if (chkContain && !bounds.contains(markers[i].latLng)){
-					continue;
-				}
-				p = proj.fromLatLngToPoint(markers[i].latLng);
-				pos[i] = [
-					Math.floor((p.x - nwP.x) * Math.pow(2, z)),
-					Math.floor((p.y - nwP.y) * Math.pow(2, z))
-				];
-				keys[i] = true;
-				cnt++;
-			}
-			// check if visible markers have changed 
-			if (!force && !noClusters){
-				for(k = 0; k < latest.length; k++){
-					if( k in keys ){
-						cnt--;
-					} else {
-						break;
-					}
-				}
-				if (!cnt){
-					return false; // no change
-				}
-			}
-			
-			// save current keys to check later if an update has been done 
-			latest = keys;
-			
-			keys = [];
-			for(i in pos){
-				x = pos[i][0];
-				y = pos[i][1];
-				if ( !(x in saved) ){
-					saved[x] = {};
-				}
-				if (!( y in saved[x]) ) {
-					saved[x][y] = i;
-					unik[i] = {};
-					keys.push(i);
-				}
-				unik[ saved[x][y] ][i] = true;
-			}
-			radius = Math.pow(radius, 2);
-			delete(saved);
-			
-			k = 0;
-			while(1){
-				while((k <keys.length) && !(keys[k] in unik)){
-					k++;
-				}
-				if (k == keys.length){
-					break;
-				}
-				i = keys[k];
-				lat = pos[i][0];
-				lng = pos[i][1];
-				saved = null;
-				
-				
-				if (noClusters){
-					saved = {lat:lat, lng:lng, idx:[i]};
-				} else {
-					do{
-						cluster = {lat:0, lng:0, idx:[]};
-						for(k2 = k; k2<keys.length; k2++){
-							if (!(keys[k2] in unik)){
-								continue;
-							}
-							j = keys[k2];
-							if ( Math.pow(lat - pos[j][0], 2) + Math.pow(lng-pos[j][1], 2) <= radius ){
-								for(j2 in unik[j]){
-									cluster.lat += markers[j2].latLng.lat();
-									cluster.lng += markers[j2].latLng.lng();
-									cluster.idx.push(j2);
-								}
-							}
-						}
-						cluster.lat /= cluster.idx.length;
-						cluster.lng /= cluster.idx.length;
-						if (!saved){
-							chk = cluster.idx.length > 1;
-							saved = cluster;
-						} else {
-							chk = cluster.idx.length > saved.idx.length;
-							if (chk){
-								saved = cluster;
-							}
-						}
-						if (chk){
-							p = proj.fromLatLngToPoint( new google.maps.LatLng(saved.lat, saved.lng) );
-							lat = Math.floor((p.x - nwP.x) * Math.pow(2, z));
-							lng = Math.floor((p.y - nwP.y) * Math.pow(2, z));
-						}
-					} while(chk);
-				}
-				 
-				for(k2 = 0; k2 < saved.idx.length; k2++){
-					if (saved.idx[k2] in unik){
-						delete(unik[saved.idx[k2]]);
-					}
-				}
-				clusters.push(saved);
-			}
-			return clusters;
-		}
-		
-		this.getBounds = function(){
-			var i, bounds = new google.maps.LatLngBounds();
-			for(i=0; i<markers.length; i++){
-				bounds.extend(markers[i].latLng);
-			}
-			return bounds;
-		}
-	}
-
-	/***************************************************************************/
-	/*                           GMAP3 GLOBALS                                 */
-	/***************************************************************************/
-
-	var _default = {},
-		_properties = ['events','onces','options','apply', 'callback', 'data', 'tag'],
-		_noInit = ['init', 'geolatlng', 'getlatlng', 'getroute', 'getelevation', 'getdistance', 'addstyledmap', 'setdefault', 'destroy'],
-		_directs = ['get','centro'],
-		geocoder = directionsService = elevationService = maxZoomService = distanceMatrixService = null;
-		
-	function setDefault(values){
-		for(var k in values){
-			if (typeof(_default[k]) === 'object'){
-				_default[k] = $.extend({}, _default[k], values[k]);
-			} else {
-				_default[k] = values[k];
-			}
-		}
-	}
-
-	function autoInit(iname){
-		if (!iname){
-			return true;
-		}
-		for(var i = 0; i < _noInit.length; i++){
-			if (_noInit[i] === iname) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-		
-	/**
-	 * return true if action has to be executed directly
-	 **/
-	function isDirect (todo){
-		var action = ival(todo, 'action');
-		for(var i = 0; i < _directs.length; i++){
-			if (_directs[i] === action) {
-				return true;
-			}
-		}
-		return false;
-	}
-				
 	//-----------------------------------------------------------------------//
-	// Objects tools
+	// jQuery event
 	//-----------------------------------------------------------------------//
-
+	//resized event: se escucha desde un DOMElement y se dispara
+	//cada vez que ese elemento cambia de tamanio (ancho o alto)
+	$.event.special.resized = {
+		setup: function(){
+				var self = this, $this = $(this);
+				var $w = $this.width();
+				var $h = $this.height();
+				interval = setInterval(function(){
+						if($w != $this.width() || $h != $this.height()) {
+							$w = $this.width();
+							$h = $this.height();
+							jQuery.event.handle.call(self, {type:'resized'});
+						}
+				},50);
+		},
+		teardown: function(){
+				clearInterval(interval);
+		}
+	};
 	/**
-	 * return the real key by an insensitive seach
-	 **/
-	function ikey (object, key){
-		if (key.toLowerCase){
-			key = key.toLowerCase();
-			for(var k in object){
-				if (k.toLowerCase && (k.toLowerCase() == key)) {
-					return k;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * return the value of real key by an insensitive seach
-	 **/
-	function ival (object, key, def){
-		var k = ikey(object, key);
-		return k ? object[k] : def;
-	}
-
-	/**
-	 * return true if at least one key is set in object
-	 * nb: keys in lowercase
-	 **/
-	function hasKey (object, keys){
-		var n, k;
-		if (!object || !keys) {
-			return false;
-		}
-		keys = array(keys);
-		for(n in object){
-			if (n.toLowerCase){
-				n = n.toLowerCase();
-				for(k in keys){
-					if (n == keys[k]) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * return a standard object
-	 * nb: include in lowercase
-	 **/
-	function extractObject (todo, include, result/* = {} */){
-		if (hasKey(todo, _properties) || hasKey(todo, include)){ // #1 classical object definition
-			var i, k;
-			// get defined properties values from todo
-			for(i=0; i<_properties.length; i++){
-				k = ikey(todo, _properties[i]);
-				result[ _properties[i] ] = k ? todo[k] : {};
-			}
-			if (include && include.length){
-				for(i=0; i<include.length; i++){
-					if(k = ikey(todo, include[i])){
-						result[ include[i] ] = todo[k];
-					}
-				}
-			}
-			return result;
-		} else { // #2 simplified object (all excepted "action" are options properties)
-			result.options= {};
-			for(k in todo){
-				if (k !== 'action'){
-					result.options[k] = todo[k];
-				}
-			}
-			return result;
-		}
-	}
-
-	/**
-	 * identify object from object list or parameters list : [ objectName:{data} ] or [ otherObject:{}, ] or [ object properties ]
-	 * nb: include, exclude in lowercase
-	 **/
-	function getObject(name, todo, include, exclude){
-		var iname = ikey(todo, name),
-				i, result = {}, keys=['map'];
-		// include callback from high level
-		result['callback'] = ival(todo, 'callback');
-		include = array(include);
-		exclude = array(exclude);
-		if (iname) {
-			return extractObject(todo[iname], include, result);
-		}
-		if (exclude && exclude.length){
-			for(i=0; i<exclude.length; i++) {
-				keys.push(exclude[i]);
-			}
-		}
-		if (!hasKey(todo, keys)){
-			result = extractObject(todo, include, result);
-		}
-		// initialize missing properties
-		for(i=0; i<_properties.length; i++){
-			if (_properties[i] in result){
-				continue;
-			}
-			result[ _properties[i] ] = {};
-		}
-		return result;
-	}
-
-	//-----------------------------------------------------------------------//
-	// Service tools
-	//-----------------------------------------------------------------------//
-	/* 
-	function getGeocoder(){
-		if (!geocoder) {
-			geocoder = new google.maps.Geocoder();
-		}
-		return geocoder;
-	}
-
-	function getDirectionsService(){
-		if (!directionsService) {
-			directionsService = new google.maps.DirectionsService();
-		}
-		return directionsService;
-	}
-
-	function getElevationService(){
-		if (!elevationService) {
-			elevationService = new google.maps.ElevationService();
-		}
-		return elevationService;
-	}
-
-	function getMaxZoomService(){
-		if (!maxZoomService) {
-			maxZoomService = new google.maps.MaxZoomService();
-		}
-		return maxZoomService;
-	}
-
-	function getDistanceMatrixService(){
-		if (!distanceMatrixService) {
-			distanceMatrixService = new google.maps.DistanceMatrixService();
-		}
-		return distanceMatrixService;
-	}
-	*/  
-	//-----------------------------------------------------------------------//
-	// Unit tools
-	//-----------------------------------------------------------------------//
-
-	/**
-	 * return true if mixed is usable as number
-	 **/
-	function numeric(mixed){
-		return (typeof(mixed) === 'number' || typeof(mixed) === 'string') && mixed !== '' && !isNaN(mixed);
-	}
-
-		/**
-	 * convert data to array
-	 **/
-	function array(mixed){
-		var k, a = [];
-		if (mixed !== undefined){
-			if (typeof(mixed) === 'object'){
-				if (typeof(mixed.length) === 'number') {
-					a = mixed;
-				} else {
-					for(k in mixed) {
-						a.push(mixed[k]);
-					}
-				}
-			} else{ 
-				a.push(mixed);
-			}
-		}
-		return a;
-	}
-	/**
-	 * convierte de latlon a xy (epsg:3857) si parece necesario, sino, devuelve el mismo valor
-	 * para decidir, si el numero es mayor a 180 o menor a -180 se considera que si,
-	 * esto hace que coordenadas a mas/menos de 180 metros (epsg:3857) del ecuador/meridiano gw
-	 * no sean convertidas por "parecer" geograficas
+	 * Mapa de propiedades traducidas
 	 */
-	function epsg3857 (mixed){
-		var ll = toLatLng(mixed);
-		if(!ll || !numeric(ll.lon) || !numeric(ll.lat)) return ll;
+	var mapaDePropiedades = {
+		proyeccion: 'projection',
+		centro: 'center',
+		capas: 'layers',
+		formato: 'format',
+		transparente: 'transparent',
+		esCapaBase: 'isBaseLayer',
+		capaBase: 'baseLayer',
+		opacidad: 'opacity',
+		servicio: 'service'
+	}
+	/**
+	 * Traduce un objeto a traves del mapa de propiedades
+	 * para ser utilizado por las clases de OpenLayers
+	 */
+	function traducirObjeto(objeto)
+	{
+		var resultado = {};
+		for(var k in objeto)
+		{
+			if(typeof(mapaDePropiedades[k]) != "undefined")
+			{
+				resultado[mapaDePropiedades[k]] = objeto[k];
+			}else{
+				resultado[k] = objeto[k];
+			}
+		}
+		return resultado;
+	}
+	/**
+	 * Devuelve un objeto OpenLayers.LonLat
+	 * @param coords mixed Un par de coordenadas objeto/array
+	 * @param proyeccion string Codigo EPSG que defina el sistema de
+	 * coordenadas en el que se quiere el resultado
+	 * @see leerPlanas
+	 * @see leerLonLat
+	 */
+	function leerCoordenadas(coords,proyeccion)
+	{
+		if(!coords) return;
+		if(!proyeccion) proyeccion = "EPSG:3857";
+		switch(proyeccion)
+		{
+			case "EPSG:3857":
+				return leerPlanas(coords);
+			break;
+			case "EPSG:4326":
+				return leerLonLat(coords);
+			break;
+		}
+	}
+	function leerPlanas(mezcla)
+	{
+		var ll = leerLonLat(mezcla);
+		if(!ll || !$.isNumeric(ll.lon) || !$.isNumeric(ll.lat)) return ll;
 		//lo lamento por la gente que quiera usar una coordenada 3857 a menos de 180 metros del 0,0
-		if( (ll.lat > 180 || ll.lat < -180) || (ll.lon > 180 || ll.lon < -180) ) return ll;//ya es 3857
+		if( (ll.lat > 180 || ll.lat < -180) || (ll.lon > 180 || ll.lon < -180) ) return ll;//se asume 3857
 		if( typeof(ll.transform) === "function" )
 		{
 			return ll.transform("EPSG:4326", "EPSG:3857");
@@ -773,559 +125,340 @@
 			return ll;
 		}
 	}
-	/**
-	 * convert mixed [ lat, lng ] objet to OpenLayers.LonLat
-	 **/
-	function toLatLng (mixed, emptyReturnMixed, noFlat){
-		console.log(mixed);
-		var empty = emptyReturnMixed ? mixed : null;
+	function leerLonLat(mezcla)
+	{
+		var empty = null;
 		var r = empty;
-		if (!mixed || (typeof(mixed) === 'string')){
-			// console.log('returning empty');
-			// return empty;
+		if (!mezcla || (typeof(mezcla) === 'string')){
 			r = empty;
 		}
-		// defined latLng, asi lo traen los objetos de OL, una prop lonlat q x lo gral es un LonLat
-		// if (mixed.latLng) {
-			// return toLatLng(mixed.latLng);
-		// }
-		if(mixed.lonlat) {
-			// console.log('returning recursive');
-			// return toLatLng(mixed.lonlat);
-			r = toLatLng(mixed.lonlat);
-		}
-		if(mixed.latLng) {//si es un {todo} con action y latLng
-			// console.log('returning recursive');
-			// return toLatLng(mixed.lonlat);
-			r = toLatLng(mixed.latLng);
+		//si tiene un objeto lonlat o latLng recursea con ese property
+		if(mezcla.lonlat) {
+			r = toLatLng(mezcla.lonlat);
+		}else if(mezcla.latLng) {//si es un {todo} con action y latLng
+			r = toLatLng(mezcla.latLng);
 		}
 		
 		// google.maps.LatLng object, esto no deberia pasar mas, salvo que
 		//estes en una configuracion cruzada con gmaps
-		if (typeof(mixed.lat) === 'function') {
-			// return mixed;
-			// console.log('returning google-ol conversion');
-			// return new OpenLayers.LonLat(mixed.lng(),mixed.lat());
-			r = new OpenLayers.LonLat(mixed.lng(),mixed.lat());
+		if (typeof(mezcla.lat) === 'function') {
+			r = new OpenLayers.LonLat(mezcla.lng(),mezcla.lat());
 		} 
-		// {lat:X, lon:Y} object, el argument es un OL.LonLat!!! vuelve clonado
-		else if ( numeric(mixed.lat) && numeric(mixed.lon) ) {
-			// return new google.maps.LatLng(mixed.lat, mixed.lng);
-			// console.log('returning from OL.LonLat');
-			// return mixed.clone();
-			r = mixed.clone();
+		// {lat:X, lon:Y} object, el argument es un OL.LonLat o similar!!! vuelve clonado
+		else if ( $.isNumeric(mezcla.lat) && $.isNumeric(mezcla.lon) ) {
+			r = new OpenLayers.LonLat(mezcla.lon,mezcla.lat);
 		}
 		// [X, Y] object: este caso es cuando es un array, de ser asi asumo que es [lat,lon] (lat PRIMERO!)
-		else if ( !noFlat && mixed.length){ // and "no flat" object allowed
-			if ( !numeric(mixed[0]) || !numeric(mixed[1]) ) {
-				// console.log('returning from array, empty-mixed');
-				// return empty;
+		else if ($.isArray(mezcla)){ 
+			if ( !$.isNumeric(mezcla[0]) || !$.isNumeric(mezcla[1]) ) {
 				r = empty;
+			}else{
+				r = new OpenLayers.LonLat(mezcla[1], mezcla[0]);
 			}
-			// return new google.maps.LatLng(mixed[0], mixed[1]);
-			// console.log('returning from array');
-			// return new OpenLayers.LonLat(mixed[1], mixed[0]);
-			r = new OpenLayers.LonLat(mixed[1], mixed[0]);
 		}
-		// console.log('returning empty last resource');
-		// return empty;
-		//este ultimo if es para asegurarse de que no sea una 3857
-		//pero obliga a un doble transform:
-		// epsg3857(ll) => llama a toLatLng(ll) : las 2 hacen transform
+		//adivinacion de epsg, fallaria solo si es una plana a menos de 180m del 0,0
 		if( r && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
 		return r;
 	}
-
-	/**
-	 * convert mixed [ sw, ne ] object by google.maps.LatLngBounds
-	 **/
-	function toLatLngBounds(mixed, flatAllowed, emptyReturnMixed){
-		var ne, sw, empty;
-		if (!mixed) {
-			return null;
-		}
-		empty = emptyReturnMixed ? mixed : null;
-		if (typeof(mixed.getCenter) === 'function') {
-			return mixed;
-		}
-		if (mixed.length){
-			if (mixed.length == 2){
-				ne = toLatLng(mixed[0]);
-				sw = toLatLng(mixed[1]);
-			} else if (mixed.length == 4){
-				ne = toLatLng([mixed[0], mixed[1]]);
-				sw = toLatLng([mixed[2], mixed[3]]);
-			}
-		} else {
-			if ( ('ne' in mixed) && ('sw' in mixed) ){
-				ne = toLatLng(mixed.ne);
-				sw = toLatLng(mixed.sw);
-			} else if ( ('n' in mixed) && ('e' in mixed) && ('s' in mixed) && ('w' in mixed) ){
-				ne = toLatLng([mixed.n, mixed.e]);
-				sw = toLatLng([mixed.s, mixed.w]);
-			}
-		}
-		if (ne && sw){
-			return new google.maps.LatLngBounds(sw, ne);
-		}
-		return empty;
+	/* CLASE ARGENMAP */
+	function ArgenMap($this,opciones)
+	{
+		this.$el = $this;//referencia al objeto jQuery desde el que se inicializó el plugin
+		this.divMapa = null//elemento DOM donde estará el mapa. NO JQUERY
+		this.mapa = null//referencia al objeto mapa de openlayers
+		if(undefined == opciones) opciones = {};
+		/**
+		 * Array de capas que estan en el mapa. Equivale a OpenLayers.Map.layers
+		 * Se utiliza al momento de instanciar el mapa y para buscar por nombre
+		 */
+		this.capas = [];
+		//opciones por defecto
+		this.predefinidos = {
+			proyeccion: "EPSG:3857",
+			centro:[-35,-57],
+			capas:[],
+			zoom:4,
+			agregarCapaIGN: true,
+			agregarBaseIGN: true,
+			mostrarCapaDeMarcadores: false
+		};
+		this.depuracion = opciones.depuracion || false;
+		
+		//merge predefinidos con opciones de usuario
+		this.opciones = $.extend({}, this.predefinidos, opciones);
+		if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
+		if(this.opciones.agregarBaseIGN) this.opciones.capas.push("baseIGN");
 	}
-
-	/***************************************************************************/
-	/*                                GMAP3                                    */
-	/***************************************************************************/
-
-	function ArgenmapOpenLayers($this){
-
-		var stack = new Stack(),
-				store = new Store(),
-				map = null,
-				styles = {},
-				running = false;
-		
-		//-----------------------------------------------------------------------//
-		// Stack tools
-		//-----------------------------------------------------------------------//
-		
-		/**
-		 * store actions to execute in a stack manager
-		 **/
-		this._plan = function(list){
-			for(var k = 0; k < list.length; k++) {
-				stack.add(list[k]);
-			}
-			this._run();
-		}
-		 
-		/**
-		 * store one action to execute in a stack manager after the current
-		 **/
-		this._planNext = function(todo){
-			stack.addNext(todo);
-		}
-		
-		/**
-		 * execute action directly
-		 **/
-		this._direct = function(todo){
-			var action = ival(todo, 'action');
-			return this[action]($.extend({}, action in _default ? _default[action] : {}, todo.args ? todo.args : todo));
-		}
-		
-		/**
-		 * called when action in finished, to acknoledge the current in stack and start next one
-		 **/
-		this._end = function(){
-			running = false;
-			stack.ack();
-			this._run();
-		},
-		/**
-		 * if not running, start next action in stack
-		 **/
-		this._run = function(){
-			if (running) {
-				return;
-			}
-			var todo = stack.get();
-			if (!todo) {
-				return;
-			}
-			running = true;
-			this._proceed(todo);
-		}
-		
-		//-----------------------------------------------------------------------//
-		// Call tools
-		//-----------------------------------------------------------------------//
-		
-		/**
-		 * run the appropriated function
-		 **/
-		this._proceed = function(todo){
-			todo = todo || {};
-			console.log('proceed:');
-			console.log(todo);
-			var action = ival(todo, 'action') || 'init',
-					iaction = action.toLowerCase(),
-					ok = true,
-					target = ival(todo, 'target'), 
-					args = ival(todo, 'args'),
-					out;
-			// check if init should be run automatically
-			if ( !map && autoInit(iaction) ){
-				this.init($.extend({}, _default.init, todo.args && todo.args.map ? todo.args.map : todo.map ? todo.map : {}), true);
-			}
-			
-			// gmap3 function
-			if (!target && !args && (iaction in this) && (typeof(this[iaction]) === 'function')){
-				console.log('gmap3 function '+iaction+'. params:');
-				console.log($.extend({}, iaction in _default ? _default[iaction] : {}, todo.args ? todo.args : todo)); // call fnc and extends defaults data
-				this[iaction]($.extend({}, iaction in _default ? _default[iaction] : {}, todo.args ? todo.args : todo)); // call fnc and extends defaults data
-			} else {
-				console.log('not gmap3 function');
-				// "target" object function
-				if (target && (typeof(target) === 'object')){
-					console.log('type is object');
-					if (ok = (typeof(target[action]) === 'function')){
-						console.log('type has action ' + action);
-						out = target[action].apply(target, todo.args ? todo.args : []);
-					}
-				// google.maps.Map direct function :  no result so not rewrited, directly wrapped using array "args" as parameters (ie. setOptions, addMapType, ...)
-				} else if (map){
-					console.log('type is not object, map exists');
-					if (ok = (typeof(map[action]) === 'function')){
-						out = map[action].apply(map, todo.args ? todo.args : [] );
-					}
-				}
-				if (!ok && _default.verbose) {
-					alert("unknown action : " + action);
-				}
-				this._callback(out, todo);
-				this._end();
-			}
-		}
-		
-		/**
-		 * returns the geographical coordinates from an address and call internal or given method
-		 **/
-		 this._resolveLatLng = function(todo, method, all, attempt){
-			var address = ival(todo, 'address'),
-					params,
-					that = this,
-					fnc = typeof(method) === 'function' ? method : that[method];
-					// console.log(fnc.toString());
-			if ( address ){
-				if (!attempt){ // convert undefined to int
-					attempt = 0;
-				}
-				if (typeof(address) === 'object'){
-					params = address;
-				} else {
-					params = {'address': address};
-				}
-				getGeocoder().geocode(
-					params, 
-					function(results, status) {
-						if (status === google.maps.GeocoderStatus.OK){
-							fnc.apply(that, [todo, all ? results : results[0].geometry.location]);
-						} else if ( (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) && (attempt < _default.queryLimit.attempt) ){
-							setTimeout(function(){
-									that._resolveLatLng(todo, method, all, attempt+1);
-								},
-								_default.queryLimit.delay + Math.floor(Math.random() * _default.queryLimit.random)
-							);
-						} else {
-							if (_default.verbose){
-								alert('Geocode error : ' + status);
-							}
-							fnc.apply(that, [todo, false]);;
-						}
-					}
-				);
-			} else {
-				fnc.apply(that, [todo, toLatLng(todo, false, true)]);
-			}
-		}
-		
-		/**
-		 * returns the geographical coordinates from an array of object using "address" and call internal method
-		 **/
-		this._resolveAllLatLng = function(todo, property, method){
-			var that = this,
-					i = -1,
-					solveNext = function(){
-						do{
-							i++;
-						}while( (i < todo[property].length) && !('address' in todo[property][i]) );
-						if (i < todo[property].length){
-							(function(todo){
-								that._resolveLatLng(
-									todo,
-									function(todo, latLng){
-										todo.latLng = latLng;
-										solveNext.apply(that, []); // solve next or execute exit method
-									}
-								);
-							})(todo[property][i]);
-						} else {
-							that[method](todo);
-						}
-					};
-			solveNext();
-		}
-		
-		/**
-		 * call a function of framework or google map object of the instance
-		 **/
-		this._call = function(/* fncName [, ...] */){
-			console.log('_call');
-			var i, fname = arguments[0], args = [];
-			if ( !arguments.length || !map || (typeof(map[fname]) !== 'function') ){
-				return;
-			}
-			for(i=1; i<arguments.length; i++){
-				args.push(arguments[i]);
-			}
-			return map[fname].apply(map, args);
-		}
-		
-		/**
-		 * init if not and manage map subcall (zoom, center)
-		 **/
-		this._subcall = function(todo, latLng){
-			console.log('subcall')
-			var opts = {};
-			if (!todo.map) return;
-			console.log('subcall::map ok');
-			if (!latLng) {
-				latLng = ival(todo.map, 'latlng');
-			}
-			if (!map){
-				if (latLng) {
-					opts = {center:latLng};
-				}
-				this.init($.extend({}, todo.map, opts), true);
-			} else { 
-				if (todo.map.center && latLng){
-					this._call("setCenter", latLng);
-				}
-				if (todo.map.zoom !== undefined){
-					this._call("setZoom", todo.map.zoom);
-				}
-				if (todo.map.mapTypeId !== undefined){
-					this._call("setMapTypeId", todo.map.mapTypeId);
-				}
-			}
-		}
-		
-		/**
-		 * attach an event to a sender 
-		 **/
-		this._attachEvent = function(sender, name, fnc, data, once){
-			// google.maps.event['addListener'+(once?'Once':'')](sender, name, function(event) {
-				// fnc.apply($this, [sender, event, data]);
-			// });
-			//openlayers trabaja distinto aca, se supone que el objeto OL tiene un events
-			//donde se haria la llamada, ej: sender.events.register(TYPE,contextObject,HANDLER);
-			console.log('attachEvent ' + sender);
-		}
-		
-		/**
-		 * attach events from a container to a sender 
-		 * todo[
-		 *  events => { eventName => function, }
-		 *  onces  => { eventName => function, }  
-		 *  data   => mixed data         
-		 * ]
-		 **/
-		this._attachEvents = function(sender, todo){
-			var name;
-			if (!todo) {
-				return
-			}
-			if (todo.events){
-				for(name in todo.events){
-					if (typeof(todo.events[name]) === 'function'){
-						this._attachEvent(sender, name, todo.events[name], todo.data, false);
-					}
-				}
-			}
-			if (todo.onces){
-				for(name in todo.onces){
-					if (typeof(todo.onces[name]) === 'function'){
-						this._attachEvent(sender, name, todo.onces[name], todo.data, true);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * execute callback functions 
-		 **/
-		this._callback = function(result, todo){
-			if (typeof(todo.callback) === 'function') {
-				// console.log('callback type: function')
-				todo.callback.apply($this, [result]);
-			} else if (typeof(todo.callback) === 'object') {
-				console.log('callback type: object')
-				for(var i=0; i<todo.callback.length; i++){
-					if (typeof(todo.callback[i]) === 'function') {
-						todo.callback[k].apply($this, [result]);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * execute ending functions 
-		 **/
-		this._manageEnd = function(result, todo, internal){
-			var i, apply;
-			if (result && (typeof(result) === 'object')){
-				// attach events
-				this._attachEvents(result, todo);
-				// execute "apply"
-				if (todo.apply && todo.apply.length){
-					for(i=0; i<todo.apply.length; i++){
-						apply = todo.apply[i];
-						// need an existing "action" function in the result object
-						if(!apply.action || (typeof(result[apply.action]) !== 'function') ) { 
-							continue;
-						}
-						if (apply.args) {
-							result[apply.action].apply(result, apply.args);
-						} else {
-							result[apply.action]();
-						}
-					}
-				}
-			}
-			if (!internal) {
-				this._callback(result, todo);
-				this._end();
-			}
-		}
-		
-		//-----------------------------------------------------------------------//
-		// gmap3 functions
-		//-----------------------------------------------------------------------//
-		
-		/**
-		 * destroy an existing instance
-		 **/
-		this.destroy = function(todo){
-			//esta funcion no anda bien, destruye el mapa y lo saca
-			//pero si se quiere instanciar de nuevo en el mismo div no lo hace
-			var k;
-			store.clear();
-			$this.empty();
-			for(k in styles){
-				delete styles[ k ];
-			}
-			styles = {};
-			if (map){
-				delete map;
-			}
-			this._callback(null, todo);
-			this._end();
-		}
-		/**
-		 * externa (isDirect)
-		 * devuelve el centro del mapa en coordenadas geograficas
-		 * OpenLayers.LonLat
-		 **/
-		this.centro = function(todo){
-			// console.log(this);
-			var ll = map.getCenter().clone();
-			ll.transform("EPSG:3857","EPSG:4326");
-			return ll;
-		}
-		/**
-		 * interna
-		 * devuelve el centro del mapa en coordenadas geograficas
-		 * OpenLayers.LonLat
-		 **/
-		this.leercentro = function(todo){
-			// console.log(this);
-			var ll = map.getCenter().clone();
-			ll.transform("EPSG:3857","EPSG:4326");
-			todo.lonlat = ll;
-			this._resolveLatLng(todo,"_centro");
-		}
-		this._centro = function(todo,ll){
-			// esta es la estructura basica de un getter?
-			this._callback(ll, todo);
-			this._end();
-			
-			// this._manageGetters(todo);
-		}
-		/**
-		 * Initialize google.maps.Map object
-		 **/
-		this.init = function(todo, internal){
-			var o, k, opts;
-			if (map) { // already initialized
-				return this._end();
-			}
+	//logica de metodos separada, por obsesividad
+	ArgenMap.prototype = {
+		inicializar: function()
+		{
+			if(this.mapa) return;
 			this._prepararDiv();
+			//al inicializar no necesito agregar las capas, las paso como array en las opciones
+			//este es el unico momento en el que this.mapa.layers = this.capas,
+			//luego seran siempre copiadas al reves (this.capas = this.mapa.layers)
+			this._crearCapasPredefinidas(this.opciones.capas);
+			var o = {
+				centro: leerCoordenadas(this.opciones.centro,this.opciones.proyeccion),
+				capas: this.capas
+			};
 			
-			o = getObject('map', todo);
-			if ( (typeof(o.options.center) === 'boolean') && o.options.center) {
-				return false; // wait for an address resolution ...?
-			}
-			opts = $.extend({}, _default.init, o.options);
-			if (!opts.center) {
-				opts.center = [_default.init.center.lat, _default.init.center.lng];
-			}
-			opts.center = epsg3857(opts.center);
+			//tuve que hacer esto porque OL no arranca sin capa base, y tampoco puedo
+			//forzar a tener una capa base. Que diria Lugosi si no se puede tener un mapa sin base?
+			if(!this._corroborarCapaBase(o.capas))
+				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
+				
+			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:this.mostrarCapaDeMarcadores}));
+				
+			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			
-			var g = new OpenLayers.Layer.Google("Satélite",{type:"satellite",numZoomLevels:22});
-			g.projection = new OpenLayers.Projection(opts.projection);
-			
-			var ignBase  = new OpenLayers.Layer.WMS("Base IGN",
-				"http://www.ign.gob.ar/wms/",
-				{
-					layers: "capabasesigign",
-					transparent: false,
-					format: "image/png",
-					version: "1.1.1",
-					service: "wms",
-					srs:opts.projection
-				},{
-					isBaseLayer: true,
-					singleTile: false,
-					noMagic: true
-			});
-			var ign  = new OpenLayers.Layer.WMS("Capa IGN",
-				"http://www.ign.gob.ar/wms/",
-				{
-					layers: "capabasesigign",
-					transparent: true,
-					format: "image/png",
-					version: "1.1.1",
-					service: "wms",
-					srs:opts.projection
-				},{
-					isBaseLayer: false,
-					singleTile: false,
-					noMagic: true
-			});
-			var layerParaMarkers = new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:false});
-			opts.layers = [layerParaMarkers,ign,g,ignBase];
-			
-			map = new _default.classes.Map(this.mapDiv, opts);
-			
-			map.addControls([
+			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
+			this.mapa.addControls([
 				new OpenLayers.Control.LayerSwitcher(),
 				new OpenLayers.Control.Navigation(
             {dragPanOptions: {enableKinetic: true}}
         ),
 				new OpenLayers.Control.PinchZoom()
 			]);
-			m = map;//convenience reference
+
+			// eventos
+			this.mapa.events.on({
+				addlayer:function(e){this.capas = this.mapa.layers;},
+				removelayer:function(e){this.capas = this.mapa.layers;},
+				changelayer:function(e){this.capas = this.mapa.layers;},
+				scope:this
+			});
 			
-			// add previous added styles
-			// for(k in styles) {
-				// map.mapTypes.set(k, styles[k]);
-			// }
-			
-			this._manageEnd(map, o, internal);
-			return true;
-		}
-		/**
-		 * dom element donde se instancia veramente el mapa
-		 */
-		this.mapDiv = null;
-		/**
-		 * prepara el div para el mapa
-		 */
-		this._prepararDiv = function()
+			//little kludge para cambar titulos del layerSwitcher
+			this.$el.find('div.baseLbl').text("Capas base");
+			this.$el.find('div.dataLbl').text("Superpuestas");
+		},
+		destruir: function()
 		{
-			if($this.data('ol')) this.destroy();//instancia anterior si la hubiese
-			$this.html("");//vaciar el contenedor
-			$this.css('padding',0);//reset el padding, por si las flies
-			var alto = $this.innerHeight();
+			/* cosas que tendria que hacer el destruir:
+			-limpiar el dom element
+			-nulificar la clase para que el gc(?) se encargue
+			-nulificar el data('argenmap') del dom element
+			*/
+		},
+		actualizar: function()
+		{
+			var h = this.$el.children('div.argenmapMapHeader');
+			var f = this.$el.children('div.argenmapMapFooter');
+			var c = this.$el.children('div.argenmapMapCanvas');
+			c.css('height',(this.$el.innerHeight() - f.outerHeight() - h.outerHeight()) + 'px');
+			if(this.mapa) this.mapa.updateSize();
+		},
+		agregarCapa: function(opciones,extras)
+		{
+			if(!this.mapa) return;//catch por las dudas
+			
+			/*si es string intentamos una capa predefinida, ojo corte prematuro*/
+			if(typeof(opciones) == "string")
+			{
+				var c = this._crearCapaPredefinida(opciones.toLowerCase(),extras);
+				if(c) this.mapa.addLayer(c);
+				if(c && c.isBaseLayer) this.mapa.setBaseLayer(c);
+				return;
+			}
+			/*direccionamos a la funcion segun el tipo*/
+			if(typeof(opciones) != "object" || !opciones.tipo) return;
+			var t = opciones.tipo.toLowerCase();
+			switch(t)
+			{
+				case "wms":
+					agregarCapaWMS(opciones);
+				break;
+				case "kml":
+					agregarCapaKML(opciones);
+				break;
+			}
+		},
+		agregarCapaWMS: function(opciones)
+		{
+			var predeterminadasWms = {
+				esCapaBase: true,
+				singleTile: false,
+				transparente: false,
+				formato: "image/jpg",
+				version: "1.1.1",
+				servicio: "wms",
+				srs: this.opciones.proyeccion,
+				noMagic: true,
+				proyeccion: this.opciones.proyeccion
+			};
+			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
+			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
+			if(this.mapa) this.mapa.addLayer(l);
+		},
+		agregarCapaKML: function(opciones)
+		{
+			if(typeof(opciones) != "object" || typeof(opciones.url) != "string") return;
+			
+			var predeterminadasKml = {
+				esCapaBase: false,
+				nombre: "Capa KML",
+				proyeccion: this.opciones.proyeccion,
+				url: ""
+			};
+			var extras = {
+				strategies: [new OpenLayers.Strategy.Fixed()],
+				protocol: new OpenLayers.Protocol.HTTP({
+						url: opciones.url,
+						format: new OpenLayers.Format.KML({
+								extractStyles: true,
+								extractAttributes: true
+						})
+				})
+				
+			};
+			
+			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
+			var l = new OpenLayers.Layer.Vector(o.nombre,o);
+			//en teoria esto tiene que andar, falta probar online
+			//y si todo anda, hay que autoparsear los kml para q tengan popups
+			if(this.mapa) this.mapa.addLayer(l);
+		},
+		agregarMarcador: function(opciones)
+		{
+			console.log(opciones);
+		},
+		/* INTERNAS / PRIVADAS */
+		_traerCapaPorNombre: function(nombre)
+		{
+			for(var i = 0; i < this.capas.length; i++)
+			{
+				if(this.capas[i].nombre = nombre) return this.capas[i];
+			}
+			return false;
+		},
+		/**
+		 * Busca en el array de capas proporcionado y devuelve si alguna capa.isBaseLayer == true
+		 * @param Array
+		 */
+		_corroborarCapaBase: function(capasArray)
+		{
+			if(!$.isArray(capasArray)) return false;
+			var resultado = false;
+			for(var i = 0; i < capasArray.length; i++)
+			{
+				if(undefined != capasArray[i].isBaseLayer && capasArray[i].isBaseLayer == true)
+				{
+					resultado = true;
+					break;
+				}
+			}
+			return resultado;
+		},
+		/*
+		 * Crea capas predefinidas y las adosa al array this.capas
+		 * Esta funcion NO agrega las capa al mapa, solo las crea y las deja en el array
+		 * @param array Las capa predefinidas a crear (IGN, baseIGN, Google, Bing, KML)
+		 */
+		_crearCapasPredefinidas: function(capasArray)
+		{
+			if(!$.isArray(capasArray)) return;
+			$.each(capasArray, $.proxy( function(i,e){
+					this._crearCapaPredefinida(e);
+				}, this)
+			);
+		},
+		/*
+		 * Crea una capa predefinida y la adosa al array this.capas
+		 * Esta funcion NO agrega la capa al mapa, solo la crea y la deja en el array
+		 * @param string La capa predefinida a crear (IGN, baseIGN, Google, Bing, KML)
+		 */
+		_crearCapaPredefinida: function(capaString,extras)
+		{
+			if(typeof(capaString) != "string") return null;
+			var c = null;
+			var o = null;
+			var p = null;
+			switch(capaString.toLowerCase())
+			{
+				case "baseign":
+					p = traducirObjeto({
+						capas: "capabasesigign",
+						formato: "image/png",
+						esCapaBase: true,
+						singleTile: false,
+						transparente: false,
+						version: "1.1.1",
+						servicio: "wms",
+						srs: this.opciones.proyeccion
+					});
+					o = traducirObjeto({
+						noMagic: true,
+						proyeccion: this.opciones.proyeccion
+					});
+					c = new OpenLayers.Layer.WMS("Base IGN","http://www.ign.gob.ar/wms",p,o);
+				break;
+				case "ign":
+					p = traducirObjeto({
+						capas: "capabasesigign",
+						formato: "image/png",
+						transparente: true,
+						version: "1.1.1",
+						servicio: "wms",
+						srs: this.opciones.proyeccion
+					});
+
+					o = traducirObjeto({
+						noMagic: true,
+						singleTile: false,
+						esCapaBase: false,
+						proyeccion: this.opciones.proyeccion
+					});
+					c = new OpenLayers.Layer.WMS("IGN","http://www.ign.gob.ar/wms",p,o);
+				break;
+				case "bing":
+					if(extras && extras.key)
+					c = new OpenLayers.Layer.Bing({
+							name: "Aérea (Bing)",
+							key: extras.key,//"Ang2jMeTgBWgNdYC_GbPxP37Gs1pYJXN-byoKn8zGW39FsxwZ3o7N2kvcdDbrnb_",
+							type: "Aerial"
+					});
+				break;
+				case "google":
+					if(typeof(google) != 'object' || typeof(google.maps) != 'object')//este OR no esta bien
+					{
+						//async load de api de google segun guias
+						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
+						window["argenmapGoogleAPICallback"] = $.proxy(function()
+						{
+							delete window["argenmapGoogleAPICallback"];
+							this.agregarCapa("Google");
+						},this);
+						var script = document.createElement("script");
+						script.type = "text/javascript";
+						script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=argenmapGoogleAPICallback";
+						document.body.appendChild(script);
+					}else{
+						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
+						c = new OpenLayers.Layer.Google("Satélite (Google)",{type:"satellite",numZoomLevels:20});
+					}
+				break;
+			}
+			if(c) c.projection = new OpenLayers.Projection(this.opciones.proyeccion);
+			/*si no hay mapa simplemente la agregamos a las capas de argenmap*/
+			if(c && !this.mapa) this.capas.push(c);
+			return c;
+		},
+		/**
+		 * prepara el div para el mapa, crea 3 divs adentro
+		 * .argenmapMapHeader: div con el header del IGN
+		 * .argenmapMapCanvas: div donde se instancia el mapa
+		 * .argenmapMapFooter: div con el footer de IGN
+		 * configura la variable de clase this.divMapa al elemento
+		 * DOM div.argenmapMapCanvas hijo del selector donde se instancia argenmap
+		 */
+		_prepararDiv: function()
+		{
+			// if(this.$el.data('argenmap')) this.destruir();//instancia anterior si la hubiese, no deberia ir aca
+			this.$el.html("");//vaciar el contenedor
+			this.$el.css('padding',0);//reset el padding, por si las flies
+			var alto = this.$el.innerHeight();
 			var a = $('<a target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs" />')
 				.append('<img src="http://www.ign.gob.ar/argenmap/argenmap.jquery/img/ign-logo-255x45.png" />');
 			var h = $('<div class="argenmapMapHeader" />')
@@ -1363,1119 +496,86 @@
 					'background-color': 'rgb(229, 227, 223)',
 					overflow: 'hidden'
 				});
-				this.mapDiv = c.get(0);
-				$this.on('resized',function(e){
-					c.css('height',($this.innerHeight() - f.outerHeight() - h.outerHeight()) + 'px');
-					map.updateSize();
-				});
-				$this.append(h).append(c).append(f);
-		}
-		/**
-		 * returns the geographical coordinates from an address
-		 **/
-		this.getlatlng = function(todo){
-			this._resolveLatLng(todo, '_getLatLng', true);
-		},
-		
-		this._getLatLng = function(todo, results){
-			this._manageEnd(results, todo);
-		},
-		
-		
-		/**
-		 * returns address from latlng        
-		 **/
-		this.getaddress = function(todo, attempt){
-			var latLng = toLatLng(todo, false, true),
-					address = ival(todo, 'address'),
-					params = latLng ?  {latLng:latLng} : ( address ? (typeof(address) === 'string' ? {address:address} : address) : null),
-					callback = ival(todo, 'callback'),
-					that = this;
-			if (!attempt){ // convert undefined to int
-				attempt = 0;
-			}
-			if (params && typeof(callback) === 'function') {
-				getGeocoder().geocode(
-					params, 
-					function(results, status) {
-						if ( (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) && (attempt < _default.queryLimit.attempt) ){
-							setTimeout(function(){
-									that.getaddress(todo, attempt+1);
-								},
-								_default.queryLimit.delay + Math.floor(Math.random() * _default.queryLimit.random)
-							);
-						} else {
-							var out = status === google.maps.GeocoderStatus.OK ? results : false;
-							callback.apply($this, [out, status]);
-							if (!out && _default.verbose){
-								alert('Geocode error : ' + status);
-							}
-							that._end();
-						}
-					} 
+				this.divMapa = c.get(0);
+				this.$el.bind('resized',$.proxy(function()//delega la funcion a this
+					{
+						this.actualizar();
+					},this)
 				);
-			} else {
-				this._end();
-			}
+				this.$el.append(h).append(c).append(f);
 		}
-		
-		/**
-		 * return a route
-		 **/
-		this.getroute = function(todo){
-			var callback = ival(todo, 'callback'),
-					that = this;
-			if ( (typeof(callback) === 'function') && todo.options ) {
-				todo.options.origin = toLatLng(todo.options.origin, true);
-				todo.options.destination = toLatLng(todo.options.destination, true);
-				getDirectionsService().route(
-					todo.options,
-					function(results, status) {
-						var out = status == google.maps.DirectionsStatus.OK ? results : false;
-						callback.apply($this, [out, status]);
-						that._end();
-					}
-				);
-			} else {
-				this._end();
-			}
-		}
-		
-		/**
-		 * return the elevation of a location
-		 **/
-		this.getelevation = function(todo){
-			var fnc, path, samples, i,
-					locations = [],
-					callback = ival(todo, 'callback'),
-					latLng = ival(todo, 'latlng'),
-					that = this;
-					
-			if (typeof(callback) === 'function'){
-				fnc = function(results, status){
-					var out = status === google.maps.ElevationStatus.OK ? results : false;
-					callback.apply($this, [out, status]);
-					that._end();
-				};
-				if (latLng){
-					locations.push(toLatLng(latLng));
-				} else {
-					locations = ival(todo, 'locations') || [];
-					if (locations){
-						locations = array(locations);
-						for(i=0; i<locations.length; i++){
-							locations[i] = toLatLng(locations[i]);
-						}
-					}
-				}
-				if (locations.length){
-					getElevationService().getElevationForLocations({locations:locations}, fnc);
-				} else {
-					path = ival(todo, 'path');
-					samples = ival(todo, 'samples');
-					if (path && samples){
-						for(i=0; i<path.length; i++){
-							locations.push(toLatLng(path[i]));
-						}
-						if (locations.length){
-							getElevationService().getElevationAlongPath({path:locations, samples:samples}, fnc);
-						}
-					}
-				}
-			} else {
-				this._end();
-			}
-		}
-		
-		/**
-		 * return the distance between an origin and a destination
-		 *      
-		 **/
-		this.getdistance = function(todo){
-			var i, 
-					callback = ival(todo, 'callback'),
-					that = this;
-			if ( (typeof(callback) === 'function') && todo.options && todo.options.origins && todo.options.destinations ) {
-				// origins and destinations are array containing one or more address strings and/or google.maps.LatLng objects
-				todo.options.origins = array(todo.options.origins);
-				for(i=0; i<todo.options.origins.length; i++){
-					todo.options.origins[i] = toLatLng(todo.options.origins[i], true);
-				}
-				todo.options.destinations = array(todo.options.destinations);
-				for(i=0; i<todo.options.destinations.length; i++){
-					todo.options.destinations[i] = toLatLng(todo.options.destinations[i], true);
-				}
-				getDistanceMatrixService().getDistanceMatrix(
-					todo.options,
-					function(results, status) {
-						var out = status == google.maps.DistanceMatrixStatus.OK ? results : false;
-						callback.apply($this, [out, status]);
-						that._end();
-					}
-				);
-			} else {
-				this._end();
-			}
-		}
-		
-		/**
-		 * Add a marker to a map after address resolution
-		 * if [infowindow] add an infowindow attached to the marker   
-		 **/
-		this.addmarker = function(todo){
-			console.log('addMarker resolve');
-			this._resolveLatLng(todo, '_addMarker');
-		}
-		
-		this._addMarker = function(todo, latLng, internal){
-			console.log('addMarker');
-			var result, oi, to,
-					o = getObject('marker', todo, 'to');
-			if (!internal){
-				console.log('addMarker NOT internal');
-				if (!latLng) {
-					this._manageEnd(false, o);
-					return;
-				}
-				this._subcall(todo, latLng);
-			} else if (!latLng){
-				return;
-			}
-			console.log('addMarker:: checks OK');
-			if (o.to){
-				console.log('addMarker:: o.to IS present');
-				to = store.refToObj(o.to);
-				result = to && (typeof(to.add) === 'function');
-				if (result){
-					to.add(latLng, todo);
-					if (typeof(to.redraw) === 'function'){
-						to.redraw();
-					}
-				}
-				if (!internal){
-					this._manageEnd(result, o);
-				}
-			} else {
-				console.log('addMarker:: o.to IS NOT present');
-				// o.options.position = latLng; //only valid for gmaps
-				// o.options.map = map; //only valid for gmaps
-				o.icon = o.icon ? o.icon : _default.icon.clone();
-				latLng.transform("EPSG:4326","EPSG:3857");
-				console.log('addMarker::o ');
-				console.log(o);
-				result = new _default.classes.Marker(latLng,o.icon);
-				if (hasKey(todo, 'infowindow')){
-					oi = getObject('infowindow', todo['infowindow'], 'open');
-					// if "open" is not defined, add it in first position
-					if ( (oi.open === undefined) || oi.open ){
-						oi.apply = array(oi.apply);
-						oi.apply.unshift({action:'open', args:[map, result]});
-					}
-					oi.action = 'addinfowindow';
-					this._planNext(oi);
-				}
-				if (!internal){
-					store.add('marker', result, o);
-					console.log(result);
-					map.getLayersByName("Marcadores")[0].addMarker(result);
-					this._manageEnd(result, o);
-				}
-			}
-			
-			return result;
-		}
-		
-		/**
-		 * add markers (without address resolution)
-		 **/
-		this.addmarkers = function(todo){
-			if (ival(todo, 'clusters')){
-				this._resolveAllLatLng(todo, 'markers', '_addclusteredmarkers');
-			} else {
-				this._resolveAllLatLng(todo, 'markers', '_addmarkers');
-			}
-		}
-		
-		this._addmarkers = function(todo){
-			var result, o, i, latLng, marker, options = {}, tmp, to, 
-					markers = ival(todo, 'markers');
-			this._subcall(todo);
-			if (typeof(markers) !== 'object') {
-				return this._end();
-			}
-			o = getObject('marker', todo, ['to', 'markers']);
-			
-			if (o.to){
-				to = store.refToObj(o.to);
-				result = to && (typeof(to.add) === 'function');
-				if (result){
-					for(i=0; i<markers.length; i++){
-						if (latLng = toLatLng(markers[i])) {
-							to.add(latLng, markers[i]);
-						}
-					}
-					if (typeof(to.redraw) === 'function'){
-						to.redraw();
-					}
-				}
-				this._manageEnd(result, o);
-			} else {
-				$.extend(true, options, o.options);
-				options.map = map;
-				result = [];
-				for(i=0; i<markers.length; i++){
-					if (latLng = toLatLng(markers[i])){
-						if (markers[i].options){
-							tmp = {};
-							$.extend(true, tmp, options, markers[i].options);
-							o.options = tmp;
-						} else {
-							o.options = options;
-						}
-						o.options.position = latLng;
-						marker = new _default.classes.Marker(o.options);
-						result.push(marker);
-						o.data = markers[i].data;
-						o.tag = markers[i].tag;
-						store.add('marker', marker, o);
-						this._manageEnd(marker, o, true);
-					}
-				}
-				o.options = options; // restore previous for futur use
-				this._callback(result, todo);
-				this._end();
-			}
-		}
-		
-		this._addclusteredmarkers = function(todo){
-			var clusterer, i, latLng, storeId,
-					that = this,
-					radius = ival(todo, 'radius'),
-					maxZoom = ival(todo, 'maxZoom'),
-					markers = ival(todo, 'markers'),
-					styles = ival(todo, 'clusters');
-			
-			if (!map.getBounds()){ // map not initialised => bounds not available
-				// wait for map
-				google.maps.event.addListenerOnce(
-					map, 
-					'bounds_changed', 
-					function() {
-						that._addclusteredmarkers(todo);
-					}
-				);
-				return;
-			}
-			
-			if (typeof(radius) === 'number'){
-				clusterer = new Clusterer();
-				for(i=0 ; i<markers.length; i++){
-					latLng = toLatLng(markers[i]);
-					clusterer.add(latLng, markers[i]);
-				}
-				storeId = this._initClusters(todo, clusterer, radius, maxZoom, styles);
-			}
-			
-			this._callback(storeId, todo);
-			this._end();
-		}
-		
-		
-		this._initClusters = function(todo, clusterer, radius, maxZoom, styles){
-			var that = this;
-			
-			clusterer.setRedraw(function(force){
-				var same, clusters = clusterer.clusters(map, radius, maxZoom, force);
-				if (clusters){
-					same = clusterer.freeDiff(clusters);
-					that._displayClusters(todo, clusterer, clusters, same, styles);
-				}
-			});
-			
-			clusterer.events(
-				google.maps.event.addListener(
-					map, 
-					'zoom_changed',
-					function() {
-						clusterer.redraw(true);
-					}
-				),
-				google.maps.event.addListener(
-					map, 
-					'bounds_changed',
-					function() {
-						clusterer.redraw();
-					}
-				)
-			);
-			
-			clusterer.redraw();
-			return store.add('cluster', clusterer, todo);
-		}
-		
-		this._displayClusters = function(todo, clusterer, clusters, same, styles){
-			var k, i, ii, m, done, obj, shadow, cluster, options, tmp, w, h,
-					atodo, offset,
-					ctodo = hasKey(todo, 'cluster') ? getObject('', ival(todo, 'cluster')) : {},
-					mtodo = hasKey(todo, 'marker') ? getObject('', ival(todo, 'marker')) : {};
-			for(i=0; i<clusters.length; i++){
-				if (i in same){
-					continue;
-				}
-				cluster = clusters[i];
-				done = false;
-				if (cluster.idx.length > 1){
-					// look for the cluster design to use
-					m = 0;
-					for(k in styles){
-						if ( (k > m) && (k <= cluster.idx.length) ){
-							m = k;
-						}
-					}
-					if (styles[m]){ // cluster defined for the current markers count
-						w = ival(styles[m], 'width');
-						h = ival(styles[m], 'height');
-						offset = ival(styles[m], 'offset') || [-w/2, -h/2];
-						
-						// create a custom _addOverlay command
-						atodo = {};
-						$.extend(
-							true, 
-							atodo, 
-							ctodo, 
-							{ options:{
-									pane: 'overlayLayer',
-									content:styles[m].content.replace('CLUSTER_COUNT', cluster.idx.length),
-									offset:{
-										x: offset[0],
-										y: offset[1]
-									}
-								}
-							}
-						);
-						obj = this._addOverlay(atodo, toLatLng(cluster), true);
-						atodo.options.pane = 'floatShadow';
-						atodo.options.content = $('<div></div>');
-						atodo.options.content.width(w);
-						atodo.options.content.height(h);
-						shadow = this._addOverlay(atodo, toLatLng(cluster), true);
-						
-						// store data to the clusterer
-						ctodo.data = {
-							latLng: toLatLng(cluster),
-							markers:[]
-						};
-						for(ii=0; ii<cluster.idx.length; ii++){
-							ctodo.data.markers.push(
-								clusterer.get(cluster.idx[ii]).marker
-							);
-						}
-						this._attachEvents(shadow, ctodo);
-						clusterer.store(cluster, obj, shadow);
-						done = true;
-					}
-				}
-				if (!done){ // cluster not defined (< min count) or = 1 so display all markers of the current cluster
-					// save the defaults options for the markers
-					options = {};
-					$.extend(true, options, mtodo.options);
-					for(ii = 0; ii <cluster.idx.length; ii++){
-						m = clusterer.get(cluster.idx[ii]);
-						mtodo.latLng = m.latLng;
-						mtodo.data = m.marker.data;
-						mtodo.tag = m.marker.tag;
-						if (m.marker.options){
-							tmp = {};
-							$.extend(true, tmp, options, m.marker.options);
-							mtodo.options = tmp;
-						} else {
-							mtodo.options = options;
-						}
-						obj = this._addMarker(mtodo, mtodo.latLng, true);
-						this._attachEvents(obj, mtodo);
-						clusterer.store(cluster, obj);
-					}
-					mtodo.options = options; // restore previous for futur use
-				}
-			}
-		}
-		
-		/**
-		 * add an infowindow after address resolution
-		 **/
-		this.addinfowindow = function(todo){ 
-			this._resolveLatLng(todo, '_addInfoWindow');
-		}
-		
-		this._addInfoWindow = function(todo, latLng){
-			var o, infowindow, args = [];
-			this._subcall(todo, latLng);
-			o = getObject('infowindow', todo, ['open', 'anchor']);
-			if (latLng) {
-				o.options.position = latLng;
-			}
-			infowindow = new _default.classes.InfoWindow(o.options);
-			if ( (o.open === undefined) || o.open ){
-				o.apply = array(o.apply);
-				args.push(map);
-				if (o.anchor){
-					args.push(o.anchor);
-				}
-				o.apply.unshift({action:'open', args:args});
-			}
-			store.add('infowindow', infowindow, o);
-			this._manageEnd(infowindow, o);
-		}
-		
-		
-		/**
-		 * add a polygone / polylin on a map
-		 **/
-		this.addpolyline = function(todo){
-			this._addPoly(todo, 'Polyline', 'path');
-		}
-		
-		this.addpolygon = function(todo){
-			this._addPoly(todo, 'Polygon', 'paths');
-		}
-		
-		this._addPoly = function(todo, poly, path){
-			var i, 
-					obj, latLng, 
-					o = getObject(poly.toLowerCase(), todo, path);
-			if (o[path]){
-				o.options[path] = [];
-				for(i=0; i<o[path].length; i++){
-					if (latLng = toLatLng(o[path][i])){
-						o.options[path].push(latLng);
-					}
-				}
-			}
-			obj = new google.maps[poly](o.options);
-			obj.setMap(map);
-			store.add(poly.toLowerCase(), obj, o);
-			this._manageEnd(obj, o);
-		}
-		
-		/**
-		 * add a circle   
-		 **/
-		this.addcircle = function(todo){
-			this._resolveLatLng(todo, '_addCircle');
-		}
-		
-		this._addCircle = function(todo, latLng){
-			var c, o = getObject('circle', todo);
-			if (!latLng) {
-				latLng = toLatLng(o.options.center);
-			}
-			if (!latLng) {
-				return this._manageEnd(false, o);
-			}
-			this._subcall(todo, latLng);
-			o.options.center = latLng;
-			o.options.map = map;
-			c = new _default.classes.Circle(o.options);
-			store.add('circle', c, o);
-			this._manageEnd(c, o);
-		}
-		
-		/**
-		 * add a rectangle   
-		 **/
-		this.addrectangle = function(todo){
-			this._resolveLatLng(todo, '_addRectangle');
-		}
-		
-		this._addRectangle = function(todo, latLng ){
-			var r, o = getObject('rectangle', todo);
-			o.options.bounds = toLatLngBounds(o.options.bounds, true);
-			if (!o.options.bounds) {
-				return this._manageEnd(false, o);
-			}
-			this._subcall(todo, o.options.bounds.getCenter());
-			o.options.map = map;
-			r = new _default.classes.Rectangle(o.options);
-			store.add('rectangle', r, o);
-			this._manageEnd(r, o);
-		}    
-		
-		/**
-		 * add an overlay to a map after address resolution
-		 **/
-		this.addoverlay = function(todo){
-			this._resolveLatLng(todo, '_addOverlay');
-		}
-		
-		this._addOverlay = function(todo, latLng, internal){
-			var ov,  
-					o = getObject('overlay', todo),
-					opts =  $.extend({
-										pane: 'floatPane',
-										content: '',
-										offset:{
-											x:0,y:0
-										}
-									},
-									o.options),
-					$div = $('<div></div>'),
-					listeners = [];
-			 
-			 $div
-					.css('border', 'none')
-					.css('borderWidth', '0px')
-					.css('position', 'absolute');
-				$div.append(opts.content);
-			
-			function f() {
-			 _default.classes.OverlayView.call(this);
-				this.setMap(map);
-			}            
-			
-			f.prototype = new _default.classes.OverlayView();
-			
-			f.prototype.onAdd = function() {
-				var panes = this.getPanes();
-				if (opts.pane in panes) {
-					$(panes[opts.pane]).append($div);
-				}
-			}
-			f.prototype.draw = function() {
-				var overlayProjection = this.getProjection(),
-						ps = overlayProjection.fromLatLngToDivPixel(latLng),
-						that = this;
-						
-				$div
-					.css('left', (ps.x+opts.offset.x) + 'px')
-					.css('top' , (ps.y+opts.offset.y) + 'px');
-				
-				$.each( ("dblclick click mouseover mousemove mouseout mouseup mousedown").split(" "), function( i, name ) {
-					listeners.push(
-						google.maps.event.addDomListener($div[0], name, function(e) {
-							google.maps.event.trigger(that, name);
-						})
-					);
-				});
-				listeners.push(
-					google.maps.event.addDomListener($div[0], "contextmenu", function(e) {
-						google.maps.event.trigger(that, "rightclick");
-					})
-				);
-			}
-			f.prototype.onRemove = function() {
-				for (var i = 0; i < listeners.length; i++) {
-					google.maps.event.removeListener(listeners[i]);
-				}
-				$div.remove();
-			}
-			f.prototype.hide = function() {
-				$div.hide();
-			}
-			f.prototype.show = function() {
-				$div.show();
-			}
-			f.prototype.toggle = function() {
-				if ($div) {
-					if ($div.is(':visible')){
-						this.show();
-					} else {
-						this.hide();
-					}
-				}
-			}
-			f.prototype.toggleDOM = function() {
-				if (this.getMap()) {
-					this.setMap(null);
-				} else {
-					this.setMap(map);
-				}
-			}
-			f.prototype.getDOMElement = function() {
-				return $div[0];
-			}
-			ov = new f();
-			if (!internal){
-				store.add('overlay', ov, o);
-				this._manageEnd(ov, o);
-			}
-			return ov;
-		}
-		
-		/**
-		 * add a fix panel to a map
-		 **/
-		this.addfixpanel = function(todo){
-			var o = getObject('fixpanel', todo),
-					x=y=0, $c, $div;
-			if (o.options.content){
-				$c = $(o.options.content);
-				
-				if (o.options.left !== undefined){
-					x = o.options.left;
-				} else if (o.options.right !== undefined){
-					x = $this.width() - $c.width() - o.options.right;
-				} else if (o.options.center){
-					x = ($this.width() - $c.width()) / 2;
-				}
-				
-				if (o.options.top !== undefined){
-					y = o.options.top;
-				} else if (o.options.bottom !== undefined){
-					y = $this.height() - $c.height() - o.options.bottom;
-				} else if (o.options.middle){
-					y = ($this.height() - $c.height()) / 2
-				}
-			
-				$div = $('<div></div>')
-								.css('position', 'absolute')
-								.css('top', y+'px')
-								.css('left', x+'px')
-								.css('z-index', '1000')
-								.append($c);
-				
-				$this.first().prepend($div);
-				this._attachEvents(map, o);
-				store.add('fixpanel', $div, o);
-				this._callback($div, o);
-			}
-			this._end();
-		}
-		
-		/**
-		 * add a direction renderer to a map
-		 **/
-		this.adddirectionsrenderer = function(todo, internal){
-			var dr, o = getObject('directionrenderer', todo, 'panelId');
-			o.options.map = map;
-			dr = new google.maps.DirectionsRenderer(o.options);
-			if (o.panelId) {
-				dr.setPanel(document.getElementById(o.panelId));
-			}
-			store.add('directionrenderer', dr, o);
-			this._manageEnd(dr, o, internal);
-			return dr;
-		}
-		
-		/**
-		 * set a direction panel to a dom element from its ID
-		 **/
-		this.setdirectionspanel = function(todo){
-			var dr = store.get('directionrenderer'),
-					o = getObject('directionpanel', todo, 'id');
-			if (dr && o.id) {
-				dr.setPanel(document.getElementById(o.id));
-			}
-			this._manageEnd(dr, o);
-		}
-		
-		/**
-		 * set directions on a map (create Direction Renderer if needed)
-		 **/
-		this.setdirections = function(todo){
-			var dr = store.get('directionrenderer'),
-					o = getObject('directions', todo);
-			if (todo) {
-				o.options.directions = todo.directions ? todo.directions : (todo.options && todo.options.directions ? todo.options.directions : null);
-			}
-			if (o.options.directions) {
-				if (!dr) {
-					dr = this.adddirectionsrenderer(o, true);
-				} else {
-					dr.setDirections(o.options.directions);
-				}
-			}
-			this._manageEnd(dr, o);
-		}
-		
-		/**
-		 * set a streetview to a map
-		 **/
-		this.setstreetview = function(todo){
-			var panorama,
-					o = getObject('streetview', todo, 'id');
-			if (o.options.position){
-				o.options.position = toLatLng(o.options.position);
-			}
-			panorama = new _default.classes.StreetViewPanorama(document.getElementById(o.id),o.options);
-			if (panorama){
-				map.setStreetView(panorama);
-			}
-			this._manageEnd(panorama, o);
-		}
-		
-		/**
-		 * add a kml layer to a map
-		 **/
-		this.addkmllayer = function(todo){
-			var kml,
-					o = getObject('kmllayer', todo, 'url');
-			o.options.map = map;
-			if (typeof(o.url) === 'string'){
-				kml = new _default.classes.KmlLayer(o.url, o.options);
-			}
-			store.add('kmllayer', kml, o);
-			this._manageEnd(kml, o);
-		}
-		
-		/**
-		 * add a traffic layer to a map
-		 **/
-		this.addtrafficlayer = function(todo){
-			var o = getObject('trafficlayer', todo),
-					tl = store.get('trafficlayer');
-			if (!tl){
-				tl = new _default.classes.TrafficLayer();
-				tl.setMap(map);
-				store.add('trafficlayer', tl, o);
-			}
-			this._manageEnd(tl, o);
-		}
-		
-		/**
-		 * add a bicycling layer to a map
-		 **/
-		this.addbicyclinglayer = function(todo){
-			var o = getObject('bicyclinglayer', todo),
-					bl = store.get('bicyclinglayer');
-			if (!bl){
-				bl = new _default.classes.BicyclingLayer();
-				bl.setMap(map);
-				store.add('bicyclinglayer', bl, o);
-			}
-			this._manageEnd(bl, o);
-		}
-		
-		/**
-		 * add a ground overlay to a map
-		 **/
-		this.addgroundoverlay = function(todo){
-			var ov,
-					o = getObject('groundoverlay', todo, ['bounds', 'url']);
-			o.bounds = toLatLngBounds(o.bounds);
-			if (o.bounds && (typeof(o.url) === 'string')){
-				ov = new _default.classes.GroundOverlay(o.url, o.bounds);
-				ov.setMap(map);
-				store.add('groundoverlay', ov, o);
-			}
-			this._manageEnd(ov, o);
-		}
-		
-		/**
-		 * geolocalise the user and return a LatLng
-		 **/
-		this.geolatlng = function(todo){
-			var callback = ival(todo, 'callback');
-			if (typeof(callback) === 'function') {
-				if(navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(
-						function(position) {
-							var out = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-							callback.apply($this, [out]);
-						}, 
-						function() {
-							var out = false;
-							callback.apply($this, [out]);
-						}
-					);
-				} else if (google.gears) {
-					google.gears.factory.create('beta.geolocation').getCurrentPosition(
-						function(position) {
-							var out = new google.maps.LatLng(position.latitude,position.longitude);
-							callback.apply($this, [out]);
-						}, 
-						function() {
-							out = false;
-							callback.apply($this, [out]);
-						}
-					);
-				} else {
-					callback.apply($this, [false]);
-				}
-			}
-			this._end();
-		}
-		
-		/**
-		 * add a style to a map
-		 **/
-		this.addstyledmap = function(todo, internal){
-			var o = getObject('styledmap', todo, ['id', 'style']);
-			if  (o.style && o.id && !styles[o.id]) {
-				styles[o.id] = new _default.classes.StyledMapType(o.style, o.options);
-				if (map) {
-					map.mapTypes.set(o.id, styles[o.id]);
-				}
-			}
-			this._manageEnd(styles[o.id], o, internal);
-		}
-		
-		/**
-		 * set a style to a map (add it if needed)
-		 **/
-		this.setstyledmap = function(todo){
-			var o = getObject('styledmap', todo, ['id', 'style']);
-			if (o.id) {
-				this.addstyledmap(o, true);
-				if (styles[o.id]) {
-					map.setMapTypeId(o.id);
-					this._callback(styles[o.id], todo);
-				}
-			}
-			this._manageEnd(styles[o.id], o);
-		}
-		
-		/**
-		 * remove objects from a map
-		 **/
-		this.clear = function(todo){
-			var list = array(ival(todo, 'list') || ival(todo, 'name')),
-					last = ival(todo, 'last', false),
-					first = ival(todo, 'first', false),
-					tag = ival(todo, 'tag');
-			if (tag !== undefined){
-				tag = array(tag);
-			}
-			store.clear(list, last, first, tag);
-			this._end();
-		}
-		
-		/**
-		 * return objects previously created
-		 **/
-		this.get = function(todo){
-			var name = ival(todo, 'name') || 'map',
-					first= ival(todo, 'first'),
-					all  = ival(todo, 'all'),
-					tag = ival(todo, 'tag');
-			name = name.toLowerCase();
-			if (name === 'map'){
-				return map;
-			}
-			if (tag !== undefined){
-				tag = array(tag);
-			}
-			if (first){
-				return store.get(name, false, tag);
-			} else if (all){
-				return store.all(name, tag);
-			} else {
-				return store.get(name, true, tag);
-			}
-		}
-		
-		/**
-		 * return the max zoom of a location
-		 **/
-		this.getmaxzoom = function(todo){
-			this._resolveLatLng(todo, '_getMaxZoom');
-		}
-		
-		this._getMaxZoom = function(todo, latLng){
-			var callback = ival(todo, 'callback'),
-					that = this;
-			if (callback && typeof(callback) === 'function') {
-				getMaxZoomService().getMaxZoomAtLatLng(
-					latLng, 
-					function(result) {
-						var zoom = result.status === google.maps.MaxZoomStatus.OK ? result.zoom : false;
-						callback.apply($this, [zoom, result.status]);
-						that._end();
-					}
-				);
-			} else {
-				this._end();
-			}
-		}
-		
-		/**
-		 * modify default values
-		 **/
-		this.setdefault = function(todo){
-			setDefault(todo);
-			this._end();
-		}
-		
-		/**
-		 * autofit a map using its overlays (markers, rectangles ...)
-		 **/
-		this.autofit = function(todo, internal){
-			var names, list, obj, i, j,
-					empty = true, 
-					bounds = new google.maps.LatLngBounds(),
-					maxZoom = ival(todo, 'maxZoom', null);
-
-			names = store.names();
-			for(i=0; i<names.length; i++){
-				list = store.all(names[i]);
-				for(j=0; j<list.length; j++){
-					obj = list[j];
-					if (obj.getPosition){
-						bounds.extend(obj.getPosition());
-						empty = false;
-					} else if (obj.getBounds){
-						bounds.extend(obj.getBounds().getNorthEast());
-						bounds.extend(obj.getBounds().getSouthWest());
-						empty = false;
-					} else if (obj.getPaths){
-						obj.getPaths().forEach(function(path){
-							path.forEach(function(latLng){
-								bounds.extend(latLng);
-								empty = false;
-							});
-						});
-					} else if (obj.getPath){
-						obj.getPath().forEach(function(latLng){
-							bounds.extend(latLng);
-							empty = false;
-						});
-					} else if (obj.getCenter){
-						bounds.extend(obj.getCenter());
-						empty = false;
-					}
-				}
-			}
-
-			if (!empty && (!map.getBounds() || !map.getBounds().equals(bounds))){
-				if (maxZoom !== null){
-					// fitBouds Callback event => detect zoom level and check maxZoom
-					google.maps.event.addListenerOnce(
-						map, 
-						'bounds_changed', 
-						function() {
-							if (this.getZoom() > maxZoom){
-								this.setZoom(maxZoom);
-							}
-						}
-					);
-				}
-				map.fitBounds(bounds);
-			}
-			if (!internal){
-				this._manageEnd(empty ? false : bounds, todo, internal);
-			}
-		}
-		
-	};
-
-	//-----------------------------------------------------------------------//
-	// jQuery event
-	//-----------------------------------------------------------------------//
-	//resized event: se escucha desde un DOMElement y se dispara
-	//cada vez que ese elemento cambia de tamanio (ancho o alto)
-	$.event.special.resized = {
-		setup: function(){
-				var self = this, $this = $(this);
-				var $w = $this.width();
-				var $h = $this.height();
-				interval = setInterval(function(){
-						if($w != $this.width() || $h != $this.height()) {
-							$w = $this.width();
-							$h = $this.height();
-							jQuery.event.handle.call(self, {type:'resized'});
-						}
-				},100);
-		},
-		teardown: function(){
-				clearInterval(interval);
-		}
-	};
-	//-----------------------------------------------------------------------//
-	// jQuery plugin
-	//-----------------------------------------------------------------------//
-	$.fn.openlayers = function(opts)
+	}
+	$.fn.argenmap = function(opciones)
 	{
-		var i, args, list = [], empty = true, results = [];
-		// var defaults = {
-			// div:'',
-			// allOverlays: false,
-			// projection: "EPSG:3857",
-			// center: [-7008296.4456321,-4914512.0364561],
-			// zoom:4
-		// };
-		// var options = $.extend(defaults, opts || {});
-		if ($.isEmptyObject(_default)) {
-			_default = {
-				icon: new OpenLayers.Icon("PinDown1.png",new OpenLayers.Size(32,39),new OpenLayers.Pixel(-7,-35)),
-				verbose: true,
-				queryLimit: {
-					attempt: 5,
-					delay: 250,
-					random: 250
-				},
-				init: {
-					div:'',
-					allOverlays: false,
-					projection: "EPSG:3857",
-					center: [-35,-57],
-					zoom:4
-				},
-				classes: {//reemplazo todas estas por OpenLayers.bla?
-					Map: OpenLayers.Map,
-					Marker: OpenLayers.Marker,
-					InfoWindow: OpenLayers.Popup.Anchored,
-					// Circle: google.maps.Circle,
-					Rectangle: OpenLayers.Marker.Box,
-					OverlayView: OpenLayers.Layer.WMS
-					// StreetViewPanorama: google.maps.StreetViewPanorama,
-					// KmlLayer: google.maps.KmlLayer, // ACA hay que rescatar la que habia hecho osk
-					// TrafficLayer: google.maps.TrafficLayer,
-					// BicyclingLayer: google.maps.BicyclingLayer,
-					// GroundOverlay: google.maps.GroundOverlay,//?
-					// StyledMapType: google.maps.StyledMapType//?
-				}
-			};
-		}
-		
-		// store all arguments in a todo list 
-		for(i=0; i<arguments.length; i++){
-			args = arguments[i] || {};
-			// resolve string todo - action without parameters can be simplified as string 
-			if (typeof(args) === 'string'){
-				args = {action:args};
-			}
-			list.push(args);
-		}
-		// resolve empty call - run init
-		if (!list.length) {
-			list.push({});
-		}
-		
-		// loop on each jQuery object
-		$.each(this, function() {
-			var $this = $(this), ol = $this.data('openlayers');
-			empty = false;
-			if (!ol){
-				ol = new ArgenmapOpenLayers($this);
-				$this.data('openlayers', ol);
-			}
-			// direct call : bypass jQuery method (not stackable, return mixed)
-			if ( (list.length == 1) && (isDirect(list[0])) ){
-				results.push(ol._direct(list[0]));
-			} else {
-				ol._plan(list);
+		//if(!this.length) return [];
+		return this.each(function(){
+			var $this = $(this);
+			var argenmap = $this.data('argenmap');
+			if(!argenmap) //dom element sin inicializar
+			{
+				argenmap = new ArgenMap($this,opciones);
+				$this.data('argenmap',argenmap);
+				argenmap.inicializar();
 			}
 		});
-		
-		// return for direct call (only) 
-		if (results.length){
-			if (results.length === 1){ // 1 css selector
-				return results[0];
-			} else {
-				return results;
-			}
-		}
-		// manage setDefault call
-		if (empty && (arguments.length == 2) && (typeof(arguments[0]) === 'string') && (arguments[0].toLowerCase() === 'setdefault')){
-			setDefault(arguments[1]);
-		}
-		return this;
-		
-		// se supone que deberia devolver asi para el chaining
-		// return this.each(function(){
-			// options.div = this;
-			// $(this).html("");
-			
-		// });
-	};
-	
+	}
+	//prueba modelo de subplugins
+	/*
+	mi idea es que al final haya un agregarCapa(opts), en las opts tiene que ir un "tipo"
+	que luego sea el switch para mandar a funciones de conveniencia: agregarCapaWMS, agregarCapaKML
+	Cuando el parametro de agregarCapa sea solo un string, intentar agregarCapaPredefinida(string)
+	Aun asi, los convenience tienen que existir: $(o).agregarCapaWMS, etc etc
+	Con esto, y con tiempo, podemos armar un diccionario de capas predefinidas,
+	hoy existen solo base IGN, IGN, Bing y Google, pero bien podriamos ir incrementando
+	este diccionario con cosas como "Idera Chaco" o "Satelital 500k" donde cada una ya
+	tiene todas las opciones predefinidas.
+	*/
+	$.fn.agregarCapa = function(opciones, extras)
+	{
+		//chainability
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			// var capa = null;
+			// capa = a._crearCapaWMS(opciones);
+			// if(capa) a._agregarCapa(capa);
+			a.agregarCapa(opciones, extras);
+		});
+	}
+	$.fn.agregarCapaWMS = function(opciones)
+	{
+		//chainability
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			// var capa = null;
+			// capa = a._crearCapaWMS(opciones);
+			// if(capa) a._agregarCapa(capa);
+			a.agregarCapaWMS(opciones);
+		});
+	}
+	$.fn.agregarCapaKML = function(opciones)
+	{
+		//chainability
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			// var capa = null;
+			// capa = a._crearCapaWMS(opciones);
+			// if(capa) a._agregarCapa(capa);
+			a.agregarCapaKML(opciones);
+		});
+	}
+	$.fn.agregarMarcador = function(opciones)
+	{
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			a.agregarMarcador(opciones);
+		});
+	}
 })(jQuery, window);

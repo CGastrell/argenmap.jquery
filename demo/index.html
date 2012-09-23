@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>OpenLayers argenmap</title>
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="../OpenLayers.argenmap.min.js"></script>
+				
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+				<script type="text/javascript" src="../argenmap.openlayers.jquery.js"></script>
+    </head>
+    <body onload="" style="margin:0">
+        <div id="prueba" style="margin:10px auto;width:600px;height:400px;"></div>
+        <script>
+				$(function(){
+					//creamos el mapa sin la capa ign para agregar luego como ejemplo
+					$('#prueba').argenmap({agregarCapaIGN:false}).agregarCapa("IGN");
+					
+					//la capa ign se puede agregar como una capa wms
+					// $('#prueba').agregarCapaWMS({
+						// nombre:"IGN_WMS",
+						// url:"http://www.ign.gob.ar/wms",
+						// capas:"capabasesigign",
+						// formato:"image/png",
+						// esCapaBase:false,
+						// transparente:true
+					// });
+				});
+				</script>
+    </body>
+</html>
