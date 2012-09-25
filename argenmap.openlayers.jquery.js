@@ -70,7 +70,8 @@
 		esCapaBase: 'isBaseLayer',
 		capaBase: 'baseLayer',
 		opacidad: 'opacity',
-		servicio: 'service'
+		servicio: 'service',
+		icono: 'icon'
 	}
 	/**
 	 * Traduce un objeto a traves del mapa de propiedades
@@ -115,7 +116,7 @@
 	function leerPlanas(mezcla)
 	{
 		var ll = leerLonLat(mezcla);
-		if(!ll || !$.isNumeric(ll.lon) || !$.isNumeric(ll.lat)) return ll;
+		if(!ll || !$.isNumeric(ll.lon) || !$.isNumeric(ll.lat)) return null;
 		//lo lamento por la gente que quiera usar una coordenada 3857 a menos de 180 metros del 0,0
 		if( (ll.lat > 180 || ll.lat < -180) || (ll.lon > 180 || ll.lon < -180) ) return ll;//se asume 3857
 		if( typeof(ll.transform) === "function" )
@@ -129,14 +130,12 @@
 	{
 		var empty = null;
 		var r = empty;
-		if (!mezcla || (typeof(mezcla) === 'string')){
-			r = empty;
-		}
-		//si tiene un objeto lonlat o latLng recursea con ese property
+		if (undefined == mezcla || (typeof(mezcla) === 'string')) return null;
+		//si tiene un prop lonlat o latLng recursea con ese property
 		if(mezcla.lonlat) {
-			r = toLatLng(mezcla.lonlat);
+			r = leerLonLat(mezcla.lonlat);
 		}else if(mezcla.latLng) {//si es un {todo} con action y latLng
-			r = toLatLng(mezcla.latLng);
+			r = leerLonLat(mezcla.latLng);
 		}
 		
 		// google.maps.LatLng object, esto no deberia pasar mas, salvo que
@@ -148,7 +147,7 @@
 		else if ( $.isNumeric(mezcla.lat) && $.isNumeric(mezcla.lon) ) {
 			r = new OpenLayers.LonLat(mezcla.lon,mezcla.lat);
 		}
-		// [X, Y] object: este caso es cuando es un array, de ser asi asumo que es [lat,lon] (lat PRIMERO!)
+		// [n, n] array: este caso es cuando es un array, de ser asi asumo que es [lat,lon] (lat PRIMERO!)
 		else if ($.isArray(mezcla)){ 
 			if ( !$.isNumeric(mezcla[0]) || !$.isNumeric(mezcla[1]) ) {
 				r = empty;
@@ -180,7 +179,8 @@
 			zoom:4,
 			agregarCapaIGN: true,
 			agregarBaseIGN: true,
-			mostrarCapaDeMarcadores: false
+			mostrarCapaDeMarcadores: false,
+			rutaAlScript:"./" //necesito algo asi para poder despues llamar relatives a las imagenes
 		};
 		this.depuracion = opciones.depuracion || false;
 		
@@ -209,7 +209,10 @@
 			if(!this._corroborarCapaBase(o.capas))
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
 				
-			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{displayInLayerSwitcher:this.opciones.mostrarCapaDeMarcadores}));
+			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{
+				displayInLayerSwitcher:this.opciones.mostrarCapaDeMarcadores,
+				nombre: "Marcadores"
+			}));
 				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			
@@ -316,25 +319,80 @@
 			
 			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
 			var l = new OpenLayers.Layer.Vector(o.nombre,o);
-			//esto esta medio fulo... 
-			//por defecto la gente usa geograficas, asumiendo eso, transformo cada
-			//geometry de epsg
-			$.each(l.features,function(index,item){
-				item.geometry.transform("EPSG:4326","EPSG:3857");
+			//al crearse el layer no tiene aun los features, delay al event loadend
+			l.events.register('loadend',l,function(e){
+				//por defecto kml usa geograficas, asumiendo eso, transformo cada
+				//geometry de epsg
+					$.each(l.features,function(index,item){
+						item.geometry.transform("EPSG:4326",l.projection);
+					});
+					//little kludge?
+					l.map.moveByPx(-1,-1);
 			});
-			//y si todo anda, hay que autoparsear los kml para q tengan popups
+			//PRUEBA: ver si podemos cargar el kml como si fuera un script tag...?
+			// new OpenLayers.Request.GET({
+				// url: o.url,
+				// callback:function(r){console.log(r)}
+			// });
+			
+			//BUG: la capa no se muestra hasta que el mapa se panea
+			// ya probe layer.redraw() map.updateSize() map.zoomToExtent(map.getExtent())
+			// inline y al event.added y event.loadend
+			// PROBAR!!! map.moveByPx(-1,-1);
+			
+			//hay que autoparsear los kml para q tengan popups
+			//http://openlayers.org/dev/examples/sundials-spherical-mercator.html
+			//tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
 			if(this.mapa) this.mapa.addLayer(l);
 		},
 		agregarMarcador: function(opciones)
 		{
-			console.log(opciones);
+			var coordenadas,icono;
+			icono = new OpenLayers.Icon(
+				this.opciones.rutaAlScript + "img/PinDown1.png",
+				new OpenLayers.Size(32,39),
+				new OpenLayers.Pixel(-7,-35)
+			);
+			coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
+			if(!coordenadas) return;
+			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
+			if(typeof(opciones) == "object" && undefined != opciones.lonlat){
+				delete opciones["lonlat"];
+			}else if($.isArray(opciones)){
+				opciones = {};
+			}
+			//hay que independizar el marcador por defecto
+			var predeterminadasMarcador = {
+				capa:"Marcadores",
+				nombre: "Marcador",
+				contenido: ""
+			};
+			var o = traducirObjeto($.extend({},predeterminadasMarcador,opciones));
+			var capa = this._traerCapaPorNombre(o.capa);
+			if(!capa) capa = this._agregarCapaDeMarcadores(o.capa);
+			var m = new OpenLayers.Marker(coordenadas,icono);
+			$.extend(m,o);
+			if(o.eventos)
+			{
+				o.eventos.scope = m;
+				m.events.on(o.eventos);
+			}
+			console.log(m);
+			capa.addMarker(m);
 		},
 		/* INTERNAS / PRIVADAS */
+		_agregarCapaDeMarcadores: function(nombre)
+		{
+			if(undefined == nombre) nombre = "Marcadores";
+			var c = new OpenLayers.Layer.Markers(nombre,{nombre:nombre});
+			if(this.mapa) this.mapa.addLayer(c);
+			return c;
+		},
 		_traerCapaPorNombre: function(nombre)
 		{
 			for(var i = 0; i < this.capas.length; i++)
 			{
-				if(this.capas[i].nombre = nombre) return this.capas[i];
+				if(this.capas[i].nombre == nombre) return this.capas[i];
 			}
 			return false;
 		},
@@ -394,6 +452,7 @@
 						srs: this.opciones.proyeccion
 					});
 					o = traducirObjeto({
+						nombre: "Base IGN",
 						noMagic: true,
 						proyeccion: this.opciones.proyeccion
 					});
@@ -410,6 +469,7 @@
 					});
 
 					o = traducirObjeto({
+						nombre: "IGN",
 						noMagic: true,
 						singleTile: false,
 						esCapaBase: false,
@@ -421,6 +481,7 @@
 					if(extras && extras.key)
 					c = new OpenLayers.Layer.Bing({
 							name: "Aérea (Bing)",
+							nombre: "Aérea (Bing)",
 							key: extras.key,//"Ang2jMeTgBWgNdYC_GbPxP37Gs1pYJXN-byoKn8zGW39FsxwZ3o7N2kvcdDbrnb_",
 							type: "Aerial"
 					});
@@ -441,7 +502,11 @@
 						document.body.appendChild(script);
 					}else{
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
-						c = new OpenLayers.Layer.Google("Satélite (Google)",{type:"satellite",numZoomLevels:20});
+						c = new OpenLayers.Layer.Google("Satélite (Google)",{
+							nombre:"Satélite (Google)",
+							type:"satellite",
+							numZoomLevels:20
+						});
 					}
 				break;
 			}
@@ -574,8 +639,31 @@
 			a.agregarCapaKML(opciones);
 		});
 	}
-	$.fn.agregarMarcador = function(opciones)
+	/**
+	 * Agrega un marcador al mapa instanciado en el selector
+	 * agregarMarcador(float,float)
+	 * agregarMarcador(objeto): {lonlat:OpenLayers.LonLat} ó {lon:float,lat:float}
+	 * agregarMarcador(string): "-35,-57"
+	 * Opciones:
+	 *   capa: string, nombre de la capa donde colocar el marcador
+	 *   contenido: string/HTML, contenido descriptivo del marcador
+	 *   nombre: string
+	 *   eventos: TO DO
+	 *   cuadro: objeto con opciones de cuadro (ver agregarCuadro)
+	 */
+	$.fn.agregarMarcador = function(opciones,lon)
 	{
+		//si llega con un par de numeros como args...
+		if(undefined != lon && $.isNumeric(opciones) && $.isNumeric(lon))
+		{
+			opciones = [opciones,lon];
+		}else if(typeof(opciones) == "string") {
+			//si llega con un string estilo "-34.218,-56.813"...
+			var arsplit = opciones.split(",");
+			arsplit[0] = parseFloat(arsplit[0]);
+			arsplit[1] = parseFloat(arsplit[1]);
+			if(isNaN(arsplit[0]) || isNaN(arsplit[1])) opciones = null;
+		}
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
