@@ -71,7 +71,8 @@
 		capaBase: 'baseLayer',
 		opacidad: 'opacity',
 		servicio: 'service',
-		icono: 'icon'
+		icono: 'icon',
+		escucharEventos: 'eventListeners'
 	}
 	/**
 	 * Traduce un objeto a traves del mapa de propiedades
@@ -132,18 +133,18 @@
 		var r = empty;
 		if (undefined == mezcla || (typeof(mezcla) === 'string')) return null;
 		//si tiene un prop lonlat o latLng recursea con ese property
-		if(mezcla.lonlat) {
+		if(mezcla.hasOwnProperty("lonlat")) {
 			r = leerLonLat(mezcla.lonlat);
-		}else if(mezcla.latLng) {//si es un {todo} con action y latLng
+		}else if(mezcla.hasOwnProperty("latLng")) {
 			r = leerLonLat(mezcla.latLng);
 		}
 		
 		// google.maps.LatLng object, esto no deberia pasar mas, salvo que
 		//estes en una configuracion cruzada con gmaps
-		if (typeof(mezcla.lat) === 'function') {
+		if (mezcla.hasOwnProperty("lat") && typeof(mezcla.lat) === 'function') {
 			r = new OpenLayers.LonLat(mezcla.lng(),mezcla.lat());
 		} 
-		// {lat:X, lon:Y} object, el argument es un OL.LonLat o similar!!! vuelve clonado
+		// {lat:X, lon:Y} object, el argument es un OL.LonLat o similar!!! 
 		else if ( $.isNumeric(mezcla.lat) && $.isNumeric(mezcla.lon) ) {
 			r = new OpenLayers.LonLat(mezcla.lon,mezcla.lat);
 		}
@@ -180,7 +181,7 @@
 			agregarCapaIGN: true,
 			agregarBaseIGN: true,
 			mostrarCapaDeMarcadores: false,
-			rutaAlScript:"./" //necesito algo asi para poder despues llamar relatives a las imagenes
+			rutaAlScript: OpenLayers._getScriptLocation()
 		};
 		this.depuracion = opciones.depuracion || false;
 		
@@ -209,10 +210,10 @@
 			if(!this._corroborarCapaBase(o.capas))
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
 				
-			o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{
-				displayInLayerSwitcher:this.opciones.mostrarCapaDeMarcadores,
-				nombre: "Marcadores"
-			}));
+			// o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{
+				// displayInLayerSwitcher:this.opciones.mostrarCapaDeMarcadores,
+				// nombre: "Marcadores"
+			// }));
 				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			
@@ -316,7 +317,6 @@
 				})
 				
 			};
-			
 			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
 			var l = new OpenLayers.Layer.Vector(o.nombre,o);
 			//al crearse el layer no tiene aun los features, delay al event loadend
@@ -343,6 +343,38 @@
 			//hay que autoparsear los kml para q tengan popups
 			//http://openlayers.org/dev/examples/sundials-spherical-mercator.html
 			//tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
+			var selector = new OpenLayers.Control.SelectFeature(l);
+			this.mapa.addControl(selector);
+			selector.activate();
+			var alCerrarCuadro = function(e)
+			{
+				selector.unselectAll();
+			};
+			var alSeleccionar = function(e)
+			{
+				var f = e.feature;
+				var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
+					f.geometry.getBounds().getCenterLonLat(),
+					new OpenLayers.Size(100,100),
+					"<h2>"+f.attributes.name + "</h2>" + f.attributes.description,
+					null, true, alCerrarCuadro);
+				f.cuadro = cuadro;
+				this.mapa.addPopup(cuadro);
+			};
+			var alDeSeleccionar = function(e)
+			{
+				var f2 = e.feature;
+				if(f.cuadro)
+				{
+					this.mapa.removePopup(f.cuadro);
+					f.cuadro.destroy();
+					delete f.cuadro;
+				}
+			};
+			l.events.on({
+				featureselected: alSeleccionar,
+				featureunselected: alDeSeleccionar
+			});
 			if(this.mapa) this.mapa.addLayer(l);
 		},
 		agregarMarcador: function(opciones)
@@ -367,17 +399,19 @@
 				nombre: "Marcador",
 				contenido: ""
 			};
+
 			var o = traducirObjeto($.extend({},predeterminadasMarcador,opciones));
 			var capa = this._traerCapaPorNombre(o.capa);
 			if(!capa) capa = this._agregarCapaDeMarcadores(o.capa);
 			var m = new OpenLayers.Marker(coordenadas,icono);
+			m.$el = $(m.icon.imageDiv);
 			$.extend(m,o);
 			if(o.eventos)
 			{
 				o.eventos.scope = m;
 				m.events.on(o.eventos);
 			}
-			console.log(m);
+			// console.log(m);
 			capa.addMarker(m);
 		},
 		/* INTERNAS / PRIVADAS */
@@ -406,7 +440,7 @@
 			var resultado = false;
 			for(var i = 0; i < capasArray.length; i++)
 			{
-				if(undefined != capasArray[i].isBaseLayer && capasArray[i].isBaseLayer == true)
+				if(capasArray[i].hasOwnProperty("isBaseLayer") && capasArray[i].isBaseLayer == true)
 				{
 					resultado = true;
 					break;
@@ -662,12 +696,18 @@
 			var arsplit = opciones.split(",");
 			arsplit[0] = parseFloat(arsplit[0]);
 			arsplit[1] = parseFloat(arsplit[1]);
-			if(isNaN(arsplit[0]) || isNaN(arsplit[1])) opciones = null;
+			if(isNaN(arsplit[0]) || isNaN(arsplit[1]))
+			{
+				opciones = null;
+			}else{
+				opciones = arsplit;
+			}
 		}
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
+			if(undefined == opciones) opciones = a.mapa.getCenter();
 			a.agregarMarcador(opciones);
 		});
 	}
