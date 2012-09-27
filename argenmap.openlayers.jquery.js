@@ -327,7 +327,7 @@
 						item.geometry.transform("EPSG:4326",l.projection);
 					});
 					//little kludge?
-					l.map.moveByPx(-1,-1);
+					l.map.pan(-1,-1);
 			});
 			//PRUEBA: ver si podemos cargar el kml como si fuera un script tag...?
 			// new OpenLayers.Request.GET({
@@ -359,16 +359,16 @@
 					"<h2>"+f.attributes.name + "</h2>" + f.attributes.description,
 					null, true, alCerrarCuadro);
 				f.cuadro = cuadro;
-				this.mapa.addPopup(cuadro);
+				this.map.addPopup(cuadro);
 			};
 			var alDeSeleccionar = function(e)
 			{
 				var f2 = e.feature;
-				if(f.cuadro)
+				if(f2.cuadro)
 				{
-					this.mapa.removePopup(f.cuadro);
-					f.cuadro.destroy();
-					delete f.cuadro;
+					this.map.removePopup(f2.cuadro);
+					f2.cuadro.destroy();
+					delete f2.cuadro;
 				}
 			};
 			l.events.on({
@@ -440,7 +440,8 @@
 			var resultado = false;
 			for(var i = 0; i < capasArray.length; i++)
 			{
-				if(capasArray[i].hasOwnProperty("isBaseLayer") && capasArray[i].isBaseLayer == true)
+				if( (capasArray[i].hasOwnProperty("isBaseLayer") && capasArray[i].isBaseLayer == true)
+					|| (capasArray[i].hasOwnProperty("esCapaBase") && capasArray[i].esCapaBase == true) )
 				{
 					resultado = true;
 					break;
