@@ -260,8 +260,12 @@ div.olControlSaveFeaturesItemInactive {
 }
 
 .olPopupCloseBox {
-  background: url("img/close.gif") no-repeat;
+  background: url("img/close.png") no-repeat;
+	opacity:0.75;
   cursor: pointer;
+}
+.olPopupCloseBox:hover {
+	opacity:1;
 }
 
 .olFramedCloudPopupContent {
