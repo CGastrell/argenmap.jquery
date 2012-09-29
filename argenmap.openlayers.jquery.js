@@ -74,18 +74,49 @@
 		icono: 'icon',
 		escucharEventos: 'eventListeners'
 	}
+	var rutaRelativa = "./";
+	var _getScriptLocation = (function() {
+            var r = new RegExp("(^|(.*?\\/))(argenmap.openlayers.jquery.js)(\\?|$)"),
+                s = document.getElementsByTagName('script'),
+                src, m, l = "";
+            for(var i=0, len=s.length; i<len; i++) {
+                src = s[i].getAttribute('src');
+                if(src) {
+                    m = src.match(r);
+                    if(m) {
+                        rutaRelativa = m[1];
+                        break;
+                    }
+                }
+            }
+            return (function() { return rutaRelativa; });
+        })()
+	//$('body').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.argenmap.min.js') );
+	//$('body').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
+	$.getScript(rutaRelativa + 'OpenLayers.argenmap.min.js',function(){
+		OpenLayers.ImgPath = rutaRelativa + "img/";
+	});
 	/**
 	 * Traduce un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
 	 */
-	function traducirObjeto(objeto)
+	function traducirObjeto(objeto,alReves)
 	{
 		var resultado = {};
+		var mapa = $.extend({},mapaDePropiedades);
+		if(alReves != undefined && alReves == true)
+		{
+			for(var i in mapa)
+			{
+				mapa[mapa[i]] = i;
+				delete mapa[i];
+			}
+		}
 		for(var k in objeto)
 		{
-			if(typeof(mapaDePropiedades[k]) != "undefined")
+			if(typeof(mapa[k]) != "undefined")
 			{
-				resultado[mapaDePropiedades[k]] = objeto[k];
+				resultado[mapa[k]] = objeto[k];
 			}else{
 				resultado[k] = objeto[k];
 			}
@@ -181,7 +212,7 @@
 			agregarCapaIGN: true,
 			agregarBaseIGN: true,
 			mostrarCapaDeMarcadores: false,
-			rutaAlScript: OpenLayers._getScriptLocation()
+			rutaAlScript: rutaRelativa
 		};
 		this.depuracion = opciones.depuracion || false;
 		
@@ -202,7 +233,8 @@
 			this._crearCapasPredefinidas(this.opciones.capas);
 			var o = {
 				centro: leerCoordenadas(this.opciones.centro,this.opciones.proyeccion),
-				capas: this.capas
+				capas: this.capas,
+				theme: rutaRelativa + "theme/default/style.css"
 			};
 			
 			//tuve que hacer esto porque OL no arranca sin capa base, y tampoco puedo
@@ -595,7 +627,7 @@
 					margin:0,//idem
 					border:0,//idem
 					width: '100%',
-					'min-height': '200px',
+					'min-height': '150px',
 					height:(alto - f.outerHeight() - h.outerHeight()) + 'px',
 					position: 'relative',
 					'background-color': 'rgb(229, 227, 223)',
@@ -610,8 +642,25 @@
 				this.$el.append(h).append(c).append(f);
 		}
 	}
+	$.isNumeric = function( obj ) {
+		return !isNaN( parseFloat(obj) ) && isFinite( obj );
+	}
+	
 	$.fn.argenmap = function(opciones)
 	{
+		/*
+		if(typeof(OpenLayers) != "object")
+		{
+			window['argenmapDelegado'] = $.proxy(function(){
+				this.argenmap(opciones);
+				delete window['argenmapDelegado'];
+			},this);
+			$.getScript(rutaRelativa + "OpenLayers.argenmap.min.js",function(){
+				this.argenmap(opciones);
+			});
+			return;
+		}
+		*/
 		//if(!this.length) return [];
 		return this.each(function(){
 			var $this = $(this);
