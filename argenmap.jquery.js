@@ -205,10 +205,10 @@
 		this.predefinidos = {
 			proyeccion: "EPSG:3857",
 			centro:[-35,-57],
-			capas:[],
+			capas:["google"],
 			zoom:4,
 			agregarCapaIGN: true,
-			agregarBaseIGN: true,
+			agregarBaseIGN: false,
 			mostrarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa
 		};
@@ -216,6 +216,9 @@
 		
 		//merge predefinidos con opciones de usuario
 		this.opciones = $.extend({}, this.predefinidos, opciones);
+		
+		//esto es para que en la version 1.0 de argenmap.jquery
+		//sea menos flexible el mapa predeterminado
 		if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
 		if(this.opciones.agregarBaseIGN) this.opciones.capas.push("baseIGN");
 	}
@@ -568,8 +571,8 @@
 						document.body.appendChild(script);
 					}else{
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
-						c = new OpenLayers.Layer.Google("Satélite (Google)",{
-							nombre:"Satélite (Google)",
+						c = new OpenLayers.Layer.Google("Satélite",{
+							nombre:"Satélite",
 							type:"satellite",
 							esCapaBase: true,
 							numZoomLevels:20
@@ -759,6 +762,7 @@
 			}
 		}
 		return this.each(function(){
+			var o = $.extend({},opciones);
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
