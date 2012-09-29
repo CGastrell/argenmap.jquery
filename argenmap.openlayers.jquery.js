@@ -511,7 +511,6 @@
 					p = traducirObjeto({
 						capas: "capabasesigign",
 						formato: "image/png",
-						esCapaBase: true,
 						singleTile: false,
 						transparente: false,
 						version: "1.1.1",
@@ -519,6 +518,7 @@
 						srs: this.opciones.proyeccion
 					});
 					o = traducirObjeto({
+						esCapaBase: true,
 						nombre: "Base IGN",
 						noMagic: true,
 						proyeccion: this.opciones.proyeccion
@@ -548,6 +548,7 @@
 					if(extras && extras.key)
 					c = new OpenLayers.Layer.Bing({
 							name: "Aérea (Bing)",
+							esCapaBase:true,
 							nombre: "Aérea (Bing)",
 							key: extras.key,//"Ang2jMeTgBWgNdYC_GbPxP37Gs1pYJXN-byoKn8zGW39FsxwZ3o7N2kvcdDbrnb_",
 							type: "Aerial"
@@ -572,6 +573,7 @@
 						c = new OpenLayers.Layer.Google("Satélite (Google)",{
 							nombre:"Satélite (Google)",
 							type:"satellite",
+							esCapaBase: true,
 							numZoomLevels:20
 						});
 					}
