@@ -35,7 +35,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-(function ($, window, undefined) {
+(function($, window)
+{
+	var ruta;
+	var _getScriptLocation = (function() {
+		var r = new RegExp("(^|(.*?\\/))(argenmap.openlayers.jquery.js)(\\?|$)"),
+			s = document.getElementsByTagName('script'),
+			src, m, l = "";
+		for(var i=0, len=s.length; i<len; i++) {
+			src = s[i].getAttribute('src');
+			if(src) {
+				m = src.match(r);
+				if(m) {
+					ruta = m[1];
+					break;
+				}
+			}
+		}
+		return (function() { return ruta; });
+	})()
+	$.getScript(ruta + "OpenLayers.argenmap.min.js",cargarArgenmap);
+})(jQuery,window);
+var cargarArgenmap = function ($, window, undefined) {
 	//-----------------------------------------------------------------------//
 	// jQuery event
 	//-----------------------------------------------------------------------//
@@ -76,26 +97,26 @@
 	}
 	var rutaRelativa = "./";
 	var _getScriptLocation = (function() {
-            var r = new RegExp("(^|(.*?\\/))(argenmap.openlayers.jquery.js)(\\?|$)"),
-                s = document.getElementsByTagName('script'),
-                src, m, l = "";
-            for(var i=0, len=s.length; i<len; i++) {
-                src = s[i].getAttribute('src');
-                if(src) {
-                    m = src.match(r);
-                    if(m) {
-                        rutaRelativa = m[1];
-                        break;
-                    }
-                }
-            }
-            return (function() { return rutaRelativa; });
-        })()
+		var r = new RegExp("(^|(.*?\\/))(argenmap.openlayers.jquery.js)(\\?|$)"),
+			s = document.getElementsByTagName('script'),
+			src, m, l = "";
+		for(var i=0, len=s.length; i<len; i++) {
+			src = s[i].getAttribute('src');
+			if(src) {
+				m = src.match(r);
+				if(m) {
+					rutaRelativa = m[1];
+					break;
+				}
+			}
+		}
+		return (function() { return rutaRelativa; });
+	})()
 	//$('body').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.argenmap.min.js') );
 	//$('body').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
-	$.getScript(rutaRelativa + 'OpenLayers.argenmap.min.js',function(){
-		OpenLayers.ImgPath = rutaRelativa + "img/";
-	});
+	// $.getScript(rutaRelativa + 'OpenLayers.argenmap.min.js',function(){
+		// OpenLayers.ImgPath = rutaRelativa + "img/";
+	// });
 	/**
 	 * Traduce un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
@@ -763,4 +784,4 @@
 			a.agregarMarcador(opciones);
 		});
 	}
-})(jQuery, window);
+};
