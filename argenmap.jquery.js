@@ -76,7 +76,7 @@
 	}
 	var rutaRelativa = "./";
 	var _getScriptLocation = (function() {
-            var r = new RegExp("(^|(.*?\\/))(argenmap.openlayers.jquery.js)(\\?|$)"),
+            var r = new RegExp("(^|(.*?\\/))(argenmap.jquery.js)(\\?|$)"),
                 s = document.getElementsByTagName('script'),
                 src, m, l = "";
             for(var i=0, len=s.length; i<len; i++) {
@@ -653,8 +653,8 @@
 	{
 		if(!window.OpenLayers)
 		{
-			$('body').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.argenmap.min.js') );
-			$('body').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
+			$('head').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.js') );
+			$('head').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
 		}
 		/*
 		if(typeof(OpenLayers) != "object")
