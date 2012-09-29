@@ -91,8 +91,6 @@
             }
             return (function() { return rutaRelativa; });
         })()
-	$('body').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.argenmap.min.js') );
-	$('body').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
 	// $.getScript(rutaRelativa + 'OpenLayers.argenmap.min.js',function(){
 		// OpenLayers.ImgPath = rutaRelativa + "img/";
 	// });
@@ -650,6 +648,11 @@
 	
 	$.fn.argenmap = function(opciones)
 	{
+		if(!window.OpenLayers)
+		{
+			$('body').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.argenmap.min.js') );
+			$('body').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
+		}
 		/*
 		if(typeof(OpenLayers) != "object")
 		{
