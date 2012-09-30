@@ -74,24 +74,25 @@
 		icono: 'icon',
 		escucharEventos: 'eventListeners'
 	}
-	var rutaRelativa = "./";
-	var _getScriptLocation = (function() {
-		var r = new RegExp("(^|(.*?\\/))(argenmap.jquery.js)(\\?|$)"),
-			s = document.getElementsByTagName('script'),
-			src, m, l = "";
-		for(var i=0, len=s.length; i<len; i++) {
-			src = s[i].getAttribute('src');
-			if(src) {
-				m = src.match(r);
-				if(m) {
-					rutaRelativa = m[1];
-					break;
-				}
-			}
-		}
-		OpenLayers.ImgPath = rutaRelativa;
-		return (function() { return rutaRelativa; });
-	})()
+	var rutaRelativa = "http://mapa.ign.gob.ar/cg/argenmap-v2/";
+	OpenLayers.ImgPath = rutaRelativa;
+	// var _getScriptLocation = (function() {
+		// var r = new RegExp("(^|(.*?\\/))(argenmap.jquery.js)(\\?|$)"),
+			// s = document.getElementsByTagName('script'),
+			// src, m, l = "";
+		// for(var i=0, len=s.length; i<len; i++) {
+			// src = s[i].getAttribute('src');
+			// if(src) {
+				// m = src.match(r);
+				// if(m) {
+					// rutaRelativa = m[1];
+					// break;
+				// }
+			// }
+		// }
+		// OpenLayers.ImgPath = rutaRelativa;
+		// return (function() { return rutaRelativa; });
+	// })()
 	// $.getScript(rutaRelativa + 'OpenLayers.argenmap.min.js',function(){
 		// OpenLayers.ImgPath = rutaRelativa + "img/";
 	// });
@@ -208,8 +209,8 @@
 			centro:[-35,-57],
 			capas:["google"],
 			zoom:4,
-			agregarCapaIGN: true,
-			agregarBaseIGN: false,
+			agregarCapaIGN: false,
+			agregarBaseIGN: true,
 			mostrarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa
 		};
@@ -544,19 +545,21 @@
 						esCapaBase: false,
 						proyeccion: this.opciones.proyeccion
 					});
+					o = $.extend({},o,extras);
 					c = new OpenLayers.Layer.WMS("IGN","http://www.ign.gob.ar/wms",p,o);
 				break;
 				case "bing":
 					if(extras && extras.key)
 					c = new OpenLayers.Layer.Bing({
 							name: "Aérea (Bing)",
-							esCapaBase:true,
+							isBaseLayer:true,
 							nombre: "Aérea (Bing)",
 							key: extras.key,//"Ang2jMeTgBWgNdYC_GbPxP37Gs1pYJXN-byoKn8zGW39FsxwZ3o7N2kvcdDbrnb_",
 							type: "Aerial"
 					});
 				break;
 				case "google":
+					this.agregarCapa("ign",{displayInLayerSwitcher:false});
 					if(typeof(google) != 'object' || typeof(google.maps) != 'object')//este OR no esta bien
 					{
 						//async load de api de google segun guias
@@ -575,7 +578,7 @@
 						c = new OpenLayers.Layer.Google("Satélite",{
 							nombre:"Satélite",
 							type:"satellite",
-							esCapaBase: true,
+							isBaseLayer: true,
 							numZoomLevels:20
 						});
 					}
