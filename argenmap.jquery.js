@@ -75,7 +75,7 @@
 		escucharEventos: 'eventListeners'
 	}
 	var rutaRelativa = "http://mapa.ign.gob.ar/cg/argenmap-v2/";
-	OpenLayers.ImgPath = rutaRelativa;
+	OpenLayers.ImgPath = rutaRelativa + "img/";
 	// var _getScriptLocation = (function() {
 		// var r = new RegExp("(^|(.*?\\/))(argenmap.jquery.js)(\\?|$)"),
 			// s = document.getElementsByTagName('script'),
@@ -266,6 +266,14 @@
 				addlayer:function(e){this.capas = this.mapa.layers;},
 				removelayer:function(e){this.capas = this.mapa.layers;},
 				changelayer:function(e){this.capas = this.mapa.layers;},
+				// changebaselayer:function(e){
+					// var c = this._traerCapaPorNombre("IGN");
+					// if(e.layer.nombre == "Satélite")
+						// if(c && c.options.displayInLayerSwitcher == false) c.display(true);
+					// }else{
+						// if(c && this._traerCapaPorNombre("Satélite")
+					// }
+				// },
 				scope:this
 			});
 			
@@ -364,11 +372,6 @@
 					//little kludge?
 					l.map.pan(-1,-1);
 			});
-			//PRUEBA: ver si podemos cargar el kml como si fuera un script tag...?
-			// new OpenLayers.Request.GET({
-				// url: o.url,
-				// callback:function(r){console.log(r)}
-			// });
 			
 			//BUG: la capa no se muestra hasta que el mapa se panea
 			// ya probe layer.redraw() map.updateSize() map.zoomToExtent(map.getExtent())
@@ -446,7 +449,6 @@
 				o.eventos.scope = m;
 				m.events.on(o.eventos);
 			}
-			// console.log(m);
 			capa.addMarker(m);
 		},
 		/* INTERNAS / PRIVADAS */
@@ -559,7 +561,6 @@
 					});
 				break;
 				case "google":
-					this.agregarCapa("ign",{displayInLayerSwitcher:false});
 					if(typeof(google) != 'object' || typeof(google.maps) != 'object')//este OR no esta bien
 					{
 						//async load de api de google segun guias
@@ -574,12 +575,22 @@
 						script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=argenmapGoogleAPICallback";
 						document.body.appendChild(script);
 					}else{
+						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
+						if(this.mapa) this.mapa.addLayer(ign);
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
 						c = new OpenLayers.Layer.Google("Satélite",{
 							nombre:"Satélite",
 							type:"satellite",
 							isBaseLayer: true,
 							numZoomLevels:20
+						});
+						c.capaIGN = ign;
+						c.events.on({
+							visibilitychanged:function(e){
+								console.log(e.object.capaIGN);
+								console.log(e.object.getVisibility());
+								e.object.capaIGN.display(e.object.getVisibility());
+							}
 						});
 					}
 				break;

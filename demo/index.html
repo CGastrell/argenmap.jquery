@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="style.css" type="text/css">
 				
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+				<script type="text/javascript" src="../OpenLayers.js"></script>
 				<script type="text/javascript" src="../argenmap.jquery.js"></script>
     </head>
     <body onload="" style="margin:0">
@@ -15,7 +16,7 @@
         <script>
 				$(function(){
 					//creamos el mapa sin la capa ign para agregar luego como ejemplo
-					$('#prueba').argenmap({agregarCapaIGN:false}).agregarCapa("IGN");
+					$('#prueba').argenmap().agregarCapa("google");
 					
 					//la capa ign se puede agregar como una capa wms
 					// $('#prueba').agregarCapaWMS({
