@@ -76,21 +76,22 @@
 	}
 	var rutaRelativa = "./";
 	var _getScriptLocation = (function() {
-            var r = new RegExp("(^|(.*?\\/))(argenmap.jquery.js)(\\?|$)"),
-                s = document.getElementsByTagName('script'),
-                src, m, l = "";
-            for(var i=0, len=s.length; i<len; i++) {
-                src = s[i].getAttribute('src');
-                if(src) {
-                    m = src.match(r);
-                    if(m) {
-                        rutaRelativa = m[1];
-                        break;
-                    }
-                }
-            }
-            return (function() { return rutaRelativa; });
-        })()
+		var r = new RegExp("(^|(.*?\\/))(argenmap.jquery.js)(\\?|$)"),
+			s = document.getElementsByTagName('script'),
+			src, m, l = "";
+		for(var i=0, len=s.length; i<len; i++) {
+			src = s[i].getAttribute('src');
+			if(src) {
+				m = src.match(r);
+				if(m) {
+					rutaRelativa = m[1];
+					break;
+				}
+			}
+		}
+		OpenLayers.ImgPath = rutaRelativa;
+		return (function() { return rutaRelativa; });
+	})()
 	// $.getScript(rutaRelativa + 'OpenLayers.argenmap.min.js',function(){
 		// OpenLayers.ImgPath = rutaRelativa + "img/";
 	// });
@@ -651,11 +652,11 @@
 	
 	$.fn.argenmap = function(opciones)
 	{
-		if(!window.OpenLayers)
-		{
-			$('head').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.js') );
-			$('head').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
-		}
+		// if(!window.OpenLayers)
+		// {
+			// $('head').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.js') );
+			// $('head').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
+		// }
 		/*
 		if(typeof(OpenLayers) != "object")
 		{
