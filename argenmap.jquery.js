@@ -461,7 +461,7 @@
 			}
 			o = traducirObjeto($.extend({},o,opciones));
 			var c = new OpenLayers.Layer.Markers(o.nombre,o);
-			console.log(c);
+
 			if(this.mapa) this.mapa.addLayer(c);
 			return c;
 		},
@@ -586,7 +586,6 @@
 						document.body.appendChild(script);
 					}else{
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
-						// console.log(extras);
 						var o = {
 							nombre:"Satélite",
 							type:"satellite",
