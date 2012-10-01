@@ -72,7 +72,8 @@
 		opacidad: 'opacity',
 		servicio: 'service',
 		icono: 'icon',
-		escucharEventos: 'eventListeners'
+		escucharEventos: 'eventListeners',
+		listarCapa: 'displayInLayerSwitcher'
 	}
 	var rutaRelativa = "http://mapa.ign.gob.ar/cg/argenmap-v2/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
@@ -211,7 +212,7 @@
 			zoom:4,
 			agregarCapaIGN: false,
 			agregarBaseIGN: true,
-			mostrarCapaDeMarcadores: false,
+			listarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa
 		};
 		this.depuracion = opciones.depuracion || false;
@@ -244,11 +245,6 @@
 			//forzar a tener una capa base. Que diria Lugosi si no se puede tener un mapa sin base?
 			if(!this._corroborarCapaBase(o.capas))
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
-				
-			// o.capas.push(new OpenLayers.Layer.Markers("Marcadores",{
-				// displayInLayerSwitcher:this.opciones.mostrarCapaDeMarcadores,
-				// nombre: "Marcadores"
-			// }));
 				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			
@@ -437,13 +433,15 @@
 			//hay que independizar el marcador por defecto
 			var predeterminadasMarcador = {
 				capa:"Marcadores",
+				listarCapa: false,
 				nombre: "Marcador",
 				contenido: ""
 			};
-
-			var o = traducirObjeto($.extend({},predeterminadasMarcador,opciones));
+			var o = $.extend({},predeterminadasMarcador,opciones);
 			var capa = this._traerCapaPorNombre(o.capa);
-			if(!capa) capa = this._agregarCapaDeMarcadores(o.capa);
+			
+			if(!capa) capa = this._agregarCapaDeMarcadores({nombre:o.capa,listarCapa:o.listarCapa});
+			o = traducirObjeto(o);
 			var m = new OpenLayers.Marker(coordenadas,icono);
 			m.$el = $(m.icon.imageDiv);
 			$.extend(m,o);
@@ -455,10 +453,15 @@
 			capa.addMarker(m);
 		},
 		/* INTERNAS / PRIVADAS */
-		_agregarCapaDeMarcadores: function(nombre)
+		_agregarCapaDeMarcadores: function(opciones)
 		{
-			if(undefined == nombre) nombre = "Marcadores";
-			var c = new OpenLayers.Layer.Markers(nombre,{nombre:nombre});
+			var o = {
+				nombre: "Marcadores",
+				listarCapa: false
+			}
+			o = traducirObjeto($.extend({},o,opciones));
+			var c = new OpenLayers.Layer.Markers(o.nombre,o);
+			console.log(c);
 			if(this.mapa) this.mapa.addLayer(c);
 			return c;
 		},
@@ -564,7 +567,7 @@
 					});
 				break;
 				case "satelital_base":
-					this.agregarCapa("Google",{noCambiarAutomaticamente:true});
+					this._crearCapaPredefinida("satelital",{noCambiarAutomaticamente:true});
 				break;
 				case "satelital":
 				case "google":
@@ -575,7 +578,7 @@
 						window["argenmapGoogleAPICallback"] = $.proxy(function()
 						{
 							delete window["argenmapGoogleAPICallback"];
-							this.agregarCapa("Google");
+							this.agregarCapa("satelital",extras);
 						},this);
 						var script = document.createElement("script");
 						script.type = "text/javascript";
@@ -583,22 +586,28 @@
 						document.body.appendChild(script);
 					}else{
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
-						if(this.mapa) this.mapa.addLayer(ign);
-						var o = $.extend({
-								nombre:"Satélite",
-								type:"satellite",
-								isBaseLayer: true,
-								numZoomLevels:20
-							},extras);
+						// console.log(extras);
+						var o = {
+							nombre:"Satélite",
+							type:"satellite",
+							isBaseLayer: true,
+							numZoomLevels:20,
+							companionLayer: ign
+						};
+						o = $.extend({},o,extras);
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
 						c = new OpenLayers.Layer.Google("Satélite",o);
-						c.capaIGN = ign;
+						c.companionLayer = ign;
 						c.events.on({
 							visibilitychanged:function(e){
-								e.object.capaIGN.display(e.object.getVisibility());
+								e.object.companionLayer.setVisibility(e.object.getVisibility());
+							},
+							added: function(e)
+							{
+								e.map.addLayer(e.layer.companionLayer);
 							},
 							removed: function(e){
-								console.log(e);
+								e.map.removeLayer(e.layer.companionLayer);
 							}
 						});
 					}

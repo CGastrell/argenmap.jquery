@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="style.css" type="text/css">
 				
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+				<script type="text/javascript" src="../OpenLayers.js"></script>
 				<script type="text/javascript" src="../argenmap.jquery.js"></script>
 				<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> -->
     </head>
@@ -21,13 +22,17 @@
 					//necesita acceder a una imagen y esta se encuentra en el directorio img/
 					//que se descarga por defecto junto al script
 					$('#prueba').argenmap();
+					
+					//sin ningun parametro el marcador se ubica en el centro del mapa
+					$('#prueba').agregarMarcador();
+					
 					//$('#prueba').agregarMarcador([-35,-57]);
-					$('#prueba').agregarMarcador({
-						lonlat:[-34,-58],
-						eventos:{
-							click:function(e){console.log(this)}
-						}
-					});
+					//$('#prueba').agregarMarcador({
+					//	lonlat:[-34,-58],
+					//	eventos:{
+					//		click:function(e){console.log(this)}
+					//	}
+					//});
 				});
 				</script>
     </body>
