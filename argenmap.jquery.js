@@ -207,7 +207,7 @@
 		this.predefinidos = {
 			proyeccion: "EPSG:3857",
 			centro:[-35,-57],
-			capas:["google"],
+			capas:["satelital_base"],
 			zoom:4,
 			agregarCapaIGN: false,
 			agregarBaseIGN: true,
@@ -306,7 +306,10 @@
 			{
 				var c = this._crearCapaPredefinida(opciones.toLowerCase(),extras);
 				if(c) this.mapa.addLayer(c);
-				if(c && c.isBaseLayer) this.mapa.setBaseLayer(c);
+				if(c && c.isBaseLayer)
+				{
+					if(!c.hasOwnProperty("noCambiarAutomaticamente")) this.mapa.setBaseLayer(c);
+				}
 				return;
 			}
 			/*direccionamos a la funcion segun el tipo*/
@@ -325,7 +328,6 @@
 		agregarCapaWMS: function(opciones)
 		{
 			var predeterminadasWms = {
-				esCapaBase: true,
 				singleTile: false,
 				transparente: false,
 				formato: "image/jpg",
@@ -333,6 +335,7 @@
 				servicio: "wms",
 				srs: this.opciones.proyeccion,
 				noMagic: true,
+				esCapaBase: true,
 				proyeccion: this.opciones.proyeccion
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
@@ -560,6 +563,10 @@
 							type: "Aerial"
 					});
 				break;
+				case "satelital_base":
+					this.agregarCapa("Google",{noCambiarAutomaticamente:true});
+				break;
+				case "satelital":
 				case "google":
 					if(typeof(google) != 'object' || typeof(google.maps) != 'object')//este OR no esta bien
 					{
@@ -577,19 +584,21 @@
 					}else{
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
 						if(this.mapa) this.mapa.addLayer(ign);
+						var o = $.extend({
+								nombre:"Satélite",
+								type:"satellite",
+								isBaseLayer: true,
+								numZoomLevels:20
+							},extras);
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
-						c = new OpenLayers.Layer.Google("Satélite",{
-							nombre:"Satélite",
-							type:"satellite",
-							isBaseLayer: true,
-							numZoomLevels:20
-						});
+						c = new OpenLayers.Layer.Google("Satélite",o);
 						c.capaIGN = ign;
 						c.events.on({
 							visibilitychanged:function(e){
-								console.log(e.object.capaIGN);
-								console.log(e.object.getVisibility());
 								e.object.capaIGN.display(e.object.getVisibility());
+							},
+							removed: function(e){
+								console.log(e);
 							}
 						});
 					}
