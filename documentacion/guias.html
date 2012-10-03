@@ -25,6 +25,9 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
 		-->
+		<!-- este js va aca para poder ejecutar codigo inline -->
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
     <script type="text/javascript">
       var _gaq = _gaq || [];
       //_gaq.push(['_setAccount', 'UA-146052-10']);
@@ -97,9 +100,9 @@
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
           <li><a href="#guias-y-tutoriales"><i class="icon-chevron-right"></i> Guías y tutoriales</a></li>
-          <li><a href="#file-structure"><i class="icon-chevron-right"></i> File structure</a></li>
-          <li><a href="#contents"><i class="icon-chevron-right"></i> What's included</a></li>
-          <li><a href="#html-template"><i class="icon-chevron-right"></i> HTML template</a></li>
+          <li><a href="#un-mapa"><i class="icon-chevron-right"></i> Un mapa</a></li>
+          <li><a href="#capas"><i class="icon-chevron-right"></i> Capas</a></li>
+          <li><a href="#html-template"><i class="icon-chevron-right"></i> Marcadores</a></li>
           <li><a href="#examples"><i class="icon-chevron-right"></i> Examples</a></li>
           <li><a href="#what-next"><i class="icon-chevron-right"></i> What next?</a></li>
         </ul>
@@ -108,7 +111,7 @@
 
 
 
-        <!-- mapas
+        <!-- guias
         ================================================== -->
         <section id="guias-y-tutoriales">
           <div class="page-header">
@@ -122,7 +125,7 @@
 					<p>En estas guías se asume que para ejecutar las pruebas se cuenta con un HTML bien redactado y que lleva
 						incluido el script de jQuery y el de ArgenMap v2:
 					</p>
-					<pre class="prettyprint">&lt;!DOCTYPE html&gt;
+					<pre class="prettyprint lang-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
   &lt;!-- jQuery, vinculado directo a cdn de google --&gt;
@@ -143,14 +146,23 @@
           <div class="row-fluid">
             <div class="span6">
               <h2>Código</h2>
-              <p><strong>Todo el código</strong> que se encuentra en estas guías se refiere a JavaScript y/o HTML.
-							<br />A menudo se darán ejemplos con un botón para poder ejecutar el código y ver su resultado.</p>
+              <p><strong>Todo el código</strong> que se encuentra en estas guías se refiere
+							a JavaScript y/o HTML.<br />A menudo se darán ejemplos con un
+							botón para poder ejecutar el código y ver su resultado.<br />
+							Este es un script tag tal como esta insertado en esta página
+							(sólo el selector es distinto).</p>
               <pre class="prettyprint">&lt;script&gt;
   //al ejecutar este c&oacute;digo se ver&aacute;
   //el resultado en el cuadro de ejemplo
 	$('#mapa').argenmap();
 &lt;/script&gt;</pre>
-						<a id="guias-demo1" class="btn btn-large btn-primary" href="#guias-demo1">Ver demostración</a>	
+						<a id="guias-demo1" class="btn btn-large btn-primary btn-block" href="#guias-demo1">Ejecutar ejemplo</a>
+						<script>
+							$('#guias-demo1').click(function(){
+								$('#guias-demo1-resultado').argenmap();
+								return false;
+							});
+						</script>
             </div>
             <div class="span6">
               <h2>Resultado</h2>
@@ -170,23 +182,150 @@
           <div class="page-header">
             <h1>2. Un mapa</h1>
           </div>
-          <p class="lead">Within the download you'll find the following file structure and contents, logically grouping common assets and providing both compiled and minified variations.</p>
-          <p>Once downloaded, unzip the compressed folder to see the structure of (the compiled) Bootstrap. You'll see something like this:</p>
+          <p class="lead">ArgenMap es una librería para mostrar mapas de Argentina. Su función más
+					básica será instanciar un mapa en el/los selector/es indicados con jQuery</p>
+          <p>Las opciones del mapa pueden ser incluidas al momento de inicializarlo
+					mediante un objeto de JavaScript, o bien pueden ser modificadas luego
+					a través de llamadas al mismo selector.</p>
+          <div class="row-fluid">
+            <div class="span6">
+							<p>Este es un ejemplo de como inicializar un mapa con distintas opciones:</p>
 <pre class="prettyprint">
-  bootstrap/
-  ├── css/
-  │   ├── bootstrap.css
-  │   ├── bootstrap.min.css
-  ├── js/
-  │   ├── bootstrap.js
-  │   ├── bootstrap.min.js
-  ├── img/
-  │   ├── glyphicons-halflings.png
-  │   ├── glyphicons-halflings-white.png
-  └── README.md
+//inicialización básica, con centro
+//predefinido en latitud -35, longitud -57
+$('#prueba').argenmap();
+
+//inicialización con centro en el Aconcagua
+$('#prueba').argenmap(
+  {
+    centro: [-32.6533333,-70.0108333],
+    zoom: 12
+  }
+);  <span class="nocode"><a id="mapas-demo1a" class="btn btn-mini btn-primary" href="#mapas-demo1">Ejecutar ejemplo</a></span>
+
+//vista del Parque Centenario
+$('#prueba').argenmap(
+  {
+    centro: [-34.606942257,-58.435303252],
+    zoom: 14
+  }
+);  <span class="nocode"><a id="mapas-demo1b" class="btn btn-mini btn-primary" href="#mapas-demo1">Ejecutar ejemplo</a></span>
 </pre>
-          <p>This is the most basic form of Bootstrap: compiled files for quick drop-in usage in nearly any web project. We provide compiled CSS and JS (<code>bootstrap.*</code>), as well as compiled and minified CSS and JS (<code>bootstrap.min.*</code>). The image files are compressed using <a href="http://imageoptim.com/">ImageOptim</a>, a Mac app for compressing PNGs.</p>
-          <p>Please note that all JavaScript plugins require jQuery to be included.</p>
+						
+<script>
+	$('#mapas-demo1a').click(function(){
+		$('#mapas-demo1-resultado').removerArgenmap();
+		$('#mapas-demo1-resultado').argenmap({
+			centro: [-32.6533333,-70.0108333],
+			zoom:12
+		});
+		return false;
+	});
+	$('#mapas-demo1b').click(function(){
+		$('#mapas-demo1-resultado').removerArgenmap();
+		$('#mapas-demo1-resultado').argenmap({
+			centro: [-34.60694225711531,-58.43530325200574],
+			zoom: 14
+		});
+		return false;
+	});
+</script>
+						</div>
+						<div class="span6">
+							<h2>Resultado</h2>
+							<div id="mapas-demo1-resultado" class="resultado" style="height:370px"></div>
+						</div>
+					</div>
+          <p>Utilizando un objeto con propiedades <code>centro</code> y <code>zoom</code> se puede configurar el mapa
+					para la zona que se quiere enfocar.</p>
+					<h2>.centrarMapa(lat, lon, [zoom])</h2>
+					<p><code>lat</code> (requerido): número indicando los grados decimales de latitud</p>
+					<p><code>lon</code> (requerido): número indicando los grados decimales de longitud</p>
+					<p><code>lat</code> (opcional): número indicando el nivel de zoom al que se
+					quiere visualizar el mapa.</p>
+					<p>Si no se provee latitud o longitud, la llamada no tendrá efecto.</p>
+          <div class="row-fluid">
+            <div class="span6">
+							<h3>Ejemplos</h3>
+<pre class="prettyprint">
+//se instancia de mapa y
+//la llamada puede encadenarse:
+$('#prueba').argenmap().centrarMapa(-34.872,-57.965);
+<span class="nocode"><a id="mapas-demo2a" class="btn btn-mini btn-primary" href="#mapas-demo2">Ejecutar ejemplo</a></span>
+
+//una vez instanciado, podemos simplemente
+//hacer la llamada
+//vista del Parque Centenario
+$('#prueba').centrarMapa(-34.606942,-58.435303,14);
+<span class="nocode"><a id="mapas-demo2b" class="btn btn-mini btn-primary" href="#mapas-demo2">Ejecutar ejemplo</a></span>
+
+//lago Nahuel Huapi
+$('#prueba').centrarMapa(-41.1217892025491,-71.30959756653107,10);
+<span class="nocode"><a id="mapas-demo2c" class="btn btn-mini btn-primary" href="#mapas-demo2">Ejecutar ejemplo</a></span>
+</pre>
+						
+<script>
+	$('#mapas-demo2a').click(function(){
+		$('#mapas-demo2-resultado').argenmap().centrarMapa(-34.872,-57.965);
+		return false;
+	});
+	$('#mapas-demo2b').click(function(){
+		$('#mapas-demo2-resultado').argenmap().centrarMapa(-34.606942257,-58.435303252,14);
+		return false;
+	});
+	$('#mapas-demo2c').click(function(){
+		$('#mapas-demo2-resultado').argenmap().centrarMapa(-41.1217892025491,-71.30959756653107,10);
+		return false;
+	});
+</script>
+						</div>
+						<div class="span6">
+							<h3>Resultado</h3>
+							<div id="mapas-demo2-resultado" class="resultado" style="height:370px"></div>
+						</div>
+					</div>
+					<h2>.nivelDeZoom(zoom)</h2>
+					<p>Acerca o aleja la vista del mapa sin cambiar de posición.</p>
+					<p><code>zoom</code> (requerido): número indicando el nivel de zoom al que se
+					quiere visualizar el mapa.</p>
+          <div class="row-fluid">
+            <div class="span6">
+							<h3>Ejemplos</h3>
+<pre class="prettyprint">
+//vista del Parque Centenario
+$('#prueba').argenmap()
+  .centrarMapa(-34.606942,-58.435303,14);
+<span class="nocode"><a id="mapas-demo3a" class="btn btn-mini btn-primary" href="#mapas-demo3">Ejecutar ejemplo</a></span>
+
+//para alejar, se disminuye el nivel de zoom
+$('#prueba').nivelDeZoom(12);
+<span class="nocode"><a id="mapas-demo3b" class="btn btn-mini btn-primary" href="#mapas-demo3">Ejecutar ejemplo</a></span>
+
+//para acercar, se aumenta el nivel de zoom
+$('#prueba').nivelDeZoom(15);
+<span class="nocode"><a id="mapas-demo3c" class="btn btn-mini btn-primary" href="#mapas-demo3">Ejecutar ejemplo</a></span>
+</pre>
+						
+<script>
+	$('#mapas-demo3a').click(function(){
+		$('#mapas-demo3-resultado').argenmap().centrarMapa(-34.606942257,-58.435303252,14);
+		return false;
+	});
+	$('#mapas-demo3b').click(function(){
+		$('#mapas-demo3-resultado').argenmap().centrarMapa(-34.606942257,-58.435303252,14).nivelDeZoom(12);
+		return false;
+	});
+	$('#mapas-demo3c').click(function(){
+		$('#mapas-demo3-resultado').argenmap().centrarMapa(-34.606942257,-58.435303252,14).nivelDeZoom(15);
+		return false;
+	});
+</script>
+						</div>
+						<div class="span6">
+							<h3>Resultado</h3>
+							<div id="mapas-demo3-resultado" class="resultado" style="height:280px"></div>
+						</div>
+					</div>
         </section>
 
 
@@ -352,10 +491,11 @@
 
     <!-- Le javascript
     ================================================== -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
-    <script src="http://mapa.ign.gob.ar/cg/argenmap-v2/build"></script>
+
+    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-full-closure.js"></script>
+    <script src="../argenmap.jquery.js"></script>
     <!-- Placed at the end of the document so the pages load faster 
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
     <script src="bootstrap/js/bootstrap-alert.js"></script>
@@ -378,10 +518,6 @@
 		<script>
 			$(document).ready(function(){
 				prettyPrint();
-				$('#guias-demo1').click(function(){
-					$('#guias-demo1-resultado').argenmap();
-					return false;
-				});
 			});
 		</script>
 

@@ -223,13 +223,13 @@
 		//esto es para que en la version 1.0 de argenmap.jquery
 		//sea menos flexible el mapa predeterminado
 		if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
-		if(this.opciones.agregarBaseIGN) this.opciones.capas.push("baseIGN");
+		if(this.opciones.agregarBaseIGN) this.opciones.capas.unshift("baseIGN");
 	}
 	//logica de metodos separada, por obsesividad
 	ArgenMap.prototype = {
 		inicializar: function()
 		{
-			if(this.mapa) return;
+			// if(this.mapa) return;
 			this._prepararDiv();
 			//al inicializar no necesito agregar las capas, las paso como array en las opciones
 			//este es el unico momento en el que this.mapa.layers = this.capas,
@@ -262,14 +262,6 @@
 				addlayer:function(e){this.capas = this.mapa.layers;},
 				removelayer:function(e){this.capas = this.mapa.layers;},
 				changelayer:function(e){this.capas = this.mapa.layers;},
-				// changebaselayer:function(e){
-					// var c = this._traerCapaPorNombre("IGN");
-					// if(e.layer.nombre == "Satélite")
-						// if(c && c.options.displayInLayerSwitcher == false) c.display(true);
-					// }else{
-						// if(c && this._traerCapaPorNombre("Satélite")
-					// }
-				// },
 				scope:this
 			});
 			
@@ -452,6 +444,16 @@
 			}
 			capa.addMarker(m);
 		},
+		
+		centrarMapa: function(lat,lon,zoom)
+		{
+			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
+			if(this.mapa) this.mapa.setCenter(coordenadas,zoom);
+		},
+		nivelDeZoom: function(zoom)
+		{
+			if(this.mapa) this.mapa.zoomTo(zoom);
+		},
 		/* INTERNAS / PRIVADAS */
 		_agregarCapaDeMarcadores: function(opciones)
 		{
@@ -470,6 +472,14 @@
 			for(var i = 0; i < this.capas.length; i++)
 			{
 				if(this.capas[i].nombre == nombre) return this.capas[i];
+			}
+			return false;
+		},
+		_traerCapaPorReferencia: function(capa)
+		{
+			for(var i = 0; i < this.capas.length; i++)
+			{
+				if(this.capas[i] == capa) return this.capas[i];
 			}
 			return false;
 		},
@@ -571,18 +581,20 @@
 				break;
 				case "satelital":
 				case "google":
-					if(typeof(google) != 'object' || typeof(google.maps) != 'object')//este OR no esta bien
+					if(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'))//este OR no esta bien
 					{
+						// console.log('tierra llamando a google');
 						//async load de api de google segun guias
 						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
 						window["argenmapGoogleAPICallback"] = $.proxy(function()
 						{
+							window["argenmapGoogleAPICallback"] = null;
 							delete window["argenmapGoogleAPICallback"];
 							this.agregarCapa("satelital",extras);
 						},this);
 						var script = document.createElement("script");
 						script.type = "text/javascript";
-						script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=argenmapGoogleAPICallback";
+						script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback";
 						document.body.appendChild(script);
 					}else{
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
@@ -593,8 +605,8 @@
 							numZoomLevels:20,
 							companionLayer: ign
 						};
-						o = $.extend({},o,extras);
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
+						o = $.extend({},o,extras);
 						c = new OpenLayers.Layer.Google("Satélite",o);
 						c.companionLayer = ign;
 						c.events.on({
@@ -606,8 +618,10 @@
 								e.map.addLayer(e.layer.companionLayer);
 							},
 							removed: function(e){
-								e.map.removeLayer(e.layer.companionLayer);
-							}
+								var l = this._traerCapaPorReferencia(e.layer.companionLayer);
+								if(l) e.map.removeLayer(l);
+							},
+							scope:this
 						});
 					}
 				break;
@@ -763,6 +777,18 @@
 			a.agregarCapaKML(opciones);
 		});
 	}
+	$.fn.removerArgenmap = function()
+	{
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			
+			$this.data('argenmap',null);
+			$this.html("");
+			a = null;
+		});
+	}
 	/**
 	 * Agrega un marcador al mapa instanciado en el selector
 	 * agregarMarcador(float,float)
@@ -800,6 +826,28 @@
 			if(!a) return;
 			if(undefined == opciones) opciones = a.mapa.getCenter();
 			a.agregarMarcador(opciones);
+		});
+	}
+	$.fn.centrarMapa = function(lat,lon,zoom)
+	{
+		if(undefined == lat || undefined == lon) return this;
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			
+			a.centrarMapa(lat,lon,zoom);
+		});
+	}
+	$.fn.nivelDeZoom = function(zoom)
+	{
+		if(undefined == zoom) return this;
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			
+			a.nivelDeZoom(zoom);
 		});
 	}
 })(jQuery, window);
