@@ -123,7 +123,7 @@
 						a la sección de desarrolladores, donde podrás hallar un listado detallado de los métodos y funciones de ArgenMap v2.
 					</p>
 					<p>En estas guías se asume que para ejecutar las pruebas se cuenta con un HTML bien redactado y que lleva
-						incluido el script de jQuery y el de ArgenMap v2:
+						incluido el script de jQuery y el de ArgenMap v2 como este:
 					</p>
 					<pre class="prettyprint lang-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -143,6 +143,38 @@
     &lt;div id=&quot;prueba&quot; style=&quot;height:250px;&quot;&gt;&lt;/div&gt;
   &lt;/body&gt;
 &lt;/html&gt;</pre>
+					<p>Tal vez tu página no se ve así, pero lo importante es que incluyas
+					los scripts de jQuery y de ArgenMap en el head de tu página:
+					<pre class="prettyprint">
+&lt;head&gt;
+...
+&lt;!-- jQuery, vinculado directo a cdn de google --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;!-- ArgenMap v2, vinculado directo desde el Instituto Geogr&#225;fico Nacional --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://mapa.ign.gob.ar/cg/argenmap-v2/build&quot;&gt;&lt;/script&gt;
+...
+&lt;/head&gt;</pre>
+					<p>...luego colocas un DIV donde quieres mostrar un mapa. Es importante
+					que, sea por CSS o por estilo en el DIV, la altura esté definida. Recuerda
+					asignarle un ID o alguna clase por la cual luego puedas hacer referencia
+					con jQuery</p>
+					<pre class="prettyprint">
+...
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+...</pre>
+					<p>Y por último simplemente haces la llamada desde un script en la página.
+					Teniendo en cuenta que las librerías pueden demorar en cargarse, es mejor
+					ejecutar cualquier llamada una vez que la página esté cargada.
+					</p>
+					<pre class="prettyprint">
+&lt;script&gt;
+//con esta llamada, el c&oacute;digo se ejecuta
+//cuando la p&aacute;gina termin&oacute; de cargarse
+$(document).ready(function(){
+  $('#mapa').argenmap();
+});
+&lt;/script&gt;</pre>
+
           <div class="row-fluid">
             <div class="span6">
               <h2>Código</h2>
@@ -256,11 +288,11 @@ $('#prueba').argenmap().centrarMapa(-34.872,-57.965);
 //una vez instanciado, podemos simplemente
 //hacer la llamada
 //vista del Parque Centenario
-$('#prueba').centrarMapa(-34.606942,-58.435303,14);
+$('#prueba').centrarMapa(-34.6069,-58.4353,14);
 <span class="nocode"><a id="mapas-demo2b" class="btn btn-mini btn-primary" href="#mapas-demo2">Ejecutar ejemplo</a></span>
 
 //lago Nahuel Huapi
-$('#prueba').centrarMapa(-41.1217892025491,-71.30959756653107,10);
+$('#prueba').centrarMapa(-41.1217,-71.3095,10);
 <span class="nocode"><a id="mapas-demo2c" class="btn btn-mini btn-primary" href="#mapas-demo2">Ejecutar ejemplo</a></span>
 </pre>
 						
@@ -294,7 +326,7 @@ $('#prueba').centrarMapa(-41.1217892025491,-71.30959756653107,10);
 <pre class="prettyprint">
 //vista del Parque Centenario
 $('#prueba').argenmap()
-  .centrarMapa(-34.606942,-58.435303,14);
+  .centrarMapa(-34.6069,-58.4353,14);
 <span class="nocode"><a id="mapas-demo3a" class="btn btn-mini btn-primary" href="#mapas-demo3">Ejecutar ejemplo</a></span>
 
 //para alejar, se disminuye el nivel de zoom
@@ -494,7 +526,7 @@ $('#prueba').nivelDeZoom(15);
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
 
-    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-full-closure.js"></script>
+    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-argenmap-closure.js"></script>
     <script src="../argenmap.jquery.js"></script>
     <!-- Placed at the end of the document so the pages load faster 
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
