@@ -208,10 +208,11 @@
 		this.predefinidos = {
 			proyeccion: "EPSG:3857",
 			centro:[-35,-57],
-			capas:["satelital_base"],
+			capas:[],
 			zoom:4,
-			agregarCapaIGN: false,
-			agregarBaseIGN: true,
+			tipo: 'baseign',
+			// agregarCapaIGN: false,
+			// agregarBaseIGN: true,
 			listarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa
 		};
@@ -222,8 +223,20 @@
 		
 		//esto es para que en la version 1.0 de argenmap.jquery
 		//sea menos flexible el mapa predeterminado
-		if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
-		if(this.opciones.agregarBaseIGN) this.opciones.capas.unshift("baseIGN");
+		switch(this.opciones.tipo.toLowerCase())
+		{
+			case 'baseign':
+				this.opciones.capas.unshift('baseIGN');
+			break;
+			case 'satelital':
+			case 'hybridoign':
+				this.opciones.capas.push('satelital_base');
+			break;
+			default:
+				this.opciones.capas.unshift('baseIGN');
+		}
+		// if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
+		// if(this.opciones.agregarBaseIGN) this.opciones.capas.unshift("baseIGN");
 	}
 	//logica de metodos separada, por obsesividad
 	ArgenMap.prototype = {
