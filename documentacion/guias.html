@@ -58,8 +58,15 @@
               <li class="">
                 <a href="./index.html">Inicio</a>
               </li>
-              <li class="active">
-                <a href="./guias.html">Guías</a>
+              <li class="active dropdown">
+                <a href="./guias.html" class="dropdown-toggle" data-toggle="dropdown">Guías
+								<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="./guias.html#guias-y-tutoriales">Guías y tutoriales</a></li>
+									<li><a href="./guias.html#un-mapa">Un mapa</a></li>
+									<li><a href="./guias.html#capas">Capas</a></li>
+								</ul>
               </li>
               <li class="">
                 <a href="./scaffolding.html">Scaffolding</a>
@@ -221,7 +228,7 @@ $(document).ready(function(){
           <p class="lead">ArgenMap es una librería para mostrar mapas de Argentina. Su función más
 					básica será instanciar un mapa en el/los selector/es indicados con jQuery</p>
 					
-					<div class="alert alert-info"><h2>.argenmap(opciones)</h2></div>
+					<div class="alert alert-info"><h2>.argenmap([opciones])</h2></div>
           <p>Las opciones del mapa pueden ser incluidas al momento de inicializarlo
 					mediante un objeto de JavaScript, o bien pueden ser modificadas luego
 					a través de llamadas al mismo selector.</p>
@@ -345,11 +352,14 @@ $('#prueba').argenmap({
 					</div>
 					
 					<div class="alert alert-info"><h2>.centrarMapa(lat, lon, [zoom])</h2></div>
+					<p>Luego de instanciar un mapa, puede usarse <code>.centrarMapa(lat,lon[,zoom])</code> para cambiar
+					el centro, y opcionalmente el nivel de zoom, del mapa</p>
 					<p><code>lat</code> (requerido): número indicando los grados decimales de latitud</p>
 					<p><code>lon</code> (requerido): número indicando los grados decimales de longitud</p>
 					<p><code>lat</code> (opcional): número indicando el nivel de zoom al que se
 					quiere visualizar el mapa.</p>
-					<p>Si no se provee latitud o longitud, la llamada no tendrá efecto.</p>
+					<p>Si no se provee latitud o longitud,
+					la llamada no tendrá efecto.</p>
           <div class="row-fluid">
             <div class="span6">
 							<h3>Ejemplos</h3>
@@ -389,10 +399,11 @@ $('#prueba').centrarMapa(-41.1217,-71.3095,10);
 						</div>
 						<div class="span6">
 							<h3>Resultado</h3>
-							<div id="mapas-demo3-resultado" class="resultado" style="height:370px"></div>
+							<div id="mapas-demo3-resultado" class="resultado" style="height:350px"></div>
 						</div>
 					</div>
-					<h2>.nivelDeZoom(zoom)</h2>
+					
+					<div class="alert alert-info"><h2>.nivelDeZoom(zoom)</h2></div>
 					<p>Acerca o aleja la vista del mapa sin cambiar de posición.</p>
 					<p><code>zoom</code> (requerido): 1 - 22 número indicando el nivel de zoom al que se
 					quiere visualizar el mapa.</p>
@@ -657,8 +668,18 @@ $('#prueba').argenmap({tipo:satelital})
     ================================================== -->
 		<script>
 			$(document).ready(function(){
-				prettyPrint();
-			});
+				var $window = $(window);
+				// side bar
+				$('.bs-docs-sidenav').affix({
+					offset: {
+						top: function () { return $window.width() <= 980 ? 290 : 210 }
+					, bottom: 270
+					}
+				})
+
+				// make code pretty
+				window.prettyPrint && prettyPrint()
+		});
 		</script>
 
     <!-- Analytics
