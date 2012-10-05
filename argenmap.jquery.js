@@ -229,8 +229,11 @@
 				this.opciones.capas.unshift('baseIGN');
 			break;
 			case 'satelital':
-			case 'hybridoign':
-				this.opciones.capas.push('satelital_base');
+			case 'hibridoign':
+				this.opciones.capas.push('satelital');
+			break;
+			case 'vacio':
+			case 'blanco':
 			break;
 			default:
 				this.opciones.capas.unshift('baseIGN');
@@ -580,6 +583,10 @@
 					c = new OpenLayers.Layer.WMS("IGN","http://www.ign.gob.ar/wms",p,o);
 				break;
 				case "bing":
+					//corte temprano para evitar instancia de capa si el mapa
+					//no esta en spherical mercator
+					if(this.opciones.proyeccion != "EPSG:3857" || this.opciones.proyeccion != "EPSG:900913")
+						return c;
 					if(extras && extras.key)
 					c = new OpenLayers.Layer.Bing({
 							name: "Aérea (Bing)",
@@ -590,10 +597,16 @@
 					});
 				break;
 				case "satelital_base":
-					this._crearCapaPredefinida("satelital",{noCambiarAutomaticamente:true});
+					return this._crearCapaPredefinida("satelital",{noCambiarAutomaticamente:true});
 				break;
+				case "hibridoign":
 				case "satelital":
 				case "google":
+					//corte temprano para evitar instancia de capa si el mapa
+					//no esta en spherical mercator
+					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913")
+						return c;
+						
 					if(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'))//este OR no esta bien
 					{
 						// console.log('tierra llamando a google');
@@ -710,25 +723,6 @@
 	
 	$.fn.argenmap = function(opciones)
 	{
-		// if(!window.OpenLayers)
-		// {
-			// $('head').append( $('<script />').attr('src',rutaRelativa + 'OpenLayers.js') );
-			// $('head').append( $('<script>OpenLayers.ImgPath = "' + rutaRelativa + 'img/";</script>') );
-		// }
-		/*
-		if(typeof(OpenLayers) != "object")
-		{
-			window['argenmapDelegado'] = $.proxy(function(){
-				this.argenmap(opciones);
-				delete window['argenmapDelegado'];
-			},this);
-			$.getScript(rutaRelativa + "OpenLayers.argenmap.min.js",function(){
-				this.argenmap(opciones);
-			});
-			return;
-		}
-		*/
-		//if(!this.length) return [];
 		return this.each(function(){
 			var $this = $(this);
 			var argenmap = $this.data('argenmap');
@@ -740,7 +734,6 @@
 			}
 		});
 	}
-	//prueba modelo de subplugins
 	/*
 	mi idea es que al final haya un agregarCapa(opts), en las opts tiene que ir un "tipo"
 	que luego sea el switch para mandar a funciones de conveniencia: agregarCapaWMS, agregarCapaKML
