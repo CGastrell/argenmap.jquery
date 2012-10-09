@@ -550,7 +550,7 @@ $('#prueba').argenmap({tipo:satelital})
 							<dt>Opcionales</dt><dd>&nbsp;</dd>
 							<dt><code>formato</code></dt>
 							<dd>valor por defecto: <code>"image/jpg"</code> Cadena de texto indicando un formato MIME de archivo: "image/jpg"
-							"image/png". Por defecto se asume "image/jpg" (ver <code>transparencia</code>).</dd>
+							"image/png", "image/png8", "image/gif".</dd>
 							<dt><code>transparente</code></dt>
 							<dd>valor por defecto: <code>false</code> Boolean indicando si la capa tiene trasparencias.
 							Esta opción debe ser coherente con <code>formato</code>: solo "image/png", "image/gif" o
@@ -593,20 +593,30 @@ $('#prueba').argenmap({tipo:satelital})
 					
 					<h3>tipo: KML</h3>
 					<p>
-						Es una capa que se importa desde un archivo <code>.kml</code>. Las opciones, además de
-						<code>nombre</code> son:
+						Es una capa que se importa desde un archivo <code>.kml</code>. Sus opciones son:
 						<dl class="dl-horizontal">
 							<dt><code>url</code></dt>
 							<dd>cadena de texto indicando donde se encuentra, relativo al archivo HTML donde se
 							encuentra el mapa, el archivo KML.</dd>
+							<dt><code>nombre</code></dt>
+							<dd>cadena de texto indicando el nombre que tendrá la capa. Recuerda que es importante definir el nombre e
+							intentar que sea único.</dd>
 						</dl>
 						<div class="alert alert-error">
 							El archivo KML debe estar en el mismo protocolo, host y dominio que el archivo desde donde
 							se instancia el mapa. De no ser así, probablemente recibas un error referente a
 							<a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del
 							mismo origen (Same origin policy)</em></strong></a>.<br />
-							Mientras <code>url</code> es una ruta relativa, nunca tendrás este problema.
+							Mientras <code>url</code> sea una ruta relativa, nunca tendrás este problema.
 						</div>
+						<h4>Ejemplo:</h4>
+<pre class="prettyprint">
+{
+  tipo: 'kml',
+  url: '../demo/prueba.kml',
+  nombre: 'Capa KML'
+}
+</pre>
 				</section>
 
 
