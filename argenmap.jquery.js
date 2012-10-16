@@ -348,7 +348,7 @@
 		},
 		agregarCapaKML: function(opciones)
 		{
-			if(typeof(opciones) != "object" || typeof(opciones.url) != "string") return;
+			if(typeof(opciones) != "object" && typeof(opciones.url) != "string") return;
 			
 			var predeterminadasKml = {
 				esCapaBase: false,
@@ -385,9 +385,10 @@
 			// inline y al event.added y event.loadend
 			// PROBAR!!! map.moveByPx(-1,-1);
 			
-			//hay que autoparsear los kml para q tengan popups
 			//http://openlayers.org/dev/examples/sundials-spherical-mercator.html
-			//tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
+			//TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
+			//TODO: revisar el framedCloud, agregar a la capa el control
+			//y hookear con onRemove para sacarlo, revisar NOMBRE del popup
 			var selector = new OpenLayers.Control.SelectFeature(l);
 			this.mapa.addControl(selector);
 			selector.activate();
@@ -430,12 +431,19 @@
 				new OpenLayers.Size(32,39),
 				new OpenLayers.Pixel(-7,-35)
 			);
-			coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
+			if(undefined == opciones)
+			{
+				coordenadas = this.mapa.getCenter();
+				opciones = {}
+			}else{
+				coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
+			}
 			if(!coordenadas) return;
 			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
 			if(typeof(opciones) == "object" && undefined != opciones.lonlat){
 				delete opciones["lonlat"];
 			}else if($.isArray(opciones)){
+				//esto es por si se llamo a agregarMarcador([lat,lon])
 				opciones = {};
 			}
 			//hay que independizar el marcador por defecto
@@ -443,16 +451,45 @@
 				capa:"Marcadores",
 				listarCapa: false,
 				nombre: "Marcador",
-				contenido: ""
+				contenido: "",
+				mostrarConClick: true
 			};
 			var o = $.extend({},predeterminadasMarcador,opciones);
+			if(o.mostrarConClick)
+			{
+				var alCerrarCuadro = function(e)
+				{
+					console.log(e)
+					// var f2 = e.object;
+					// if(f2.cuadro)
+					// {
+						// this.map.removePopup(f2.cuadro);
+						// f2.cuadro.destroy();
+						// delete f2.cuadro;
+					// }
+				};
+				o.eventos = {
+					click: function(e){
+						var f = e.object;
+						var cuadro = new OpenLayers.Popup.FramedCloud("cuadro_" + this.nombre,
+							this.lonlat,
+							new OpenLayers.Size(100,100),
+							this.contenido,
+							this.icon, true, function(e){console.log(e)});
+						this.cuadro = cuadro;
+						this.map.addPopup(cuadro,true);
+					}
+				}
+			}
 			var capa = this._traerCapaPorNombre(o.capa);
 			
 			if(!capa) capa = this._agregarCapaDeMarcadores({nombre:o.capa,listarCapa:o.listarCapa});
 			o = traducirObjeto(o);
 			var m = new OpenLayers.Marker(coordenadas,icono);
 			m.$el = $(m.icon.imageDiv);
-			$.extend(m,o);
+			// console.log(o);
+			m = $.extend(m,o);
+			// console.log(m);
 			if(o.eventos)
 			{
 				o.eventos.scope = m;
@@ -830,7 +867,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			if(undefined == opciones) opciones = a.mapa.getCenter();
 			a.agregarMarcador(opciones);
 		});
 	}

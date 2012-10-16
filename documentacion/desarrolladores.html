@@ -461,14 +461,8 @@ $('#prueba').nivelDeZoom(15);
 					capas desde otros servidores o mismo del servicio WMS del Instituto
 					Geográfico Nacional.</p>
 					
-					<div class="alert alert-warn">Todas las capas, sin importar que tipo sean,
-					llevan una propiedad <code>nombre</code> para poder identificarlas luego. Es importante
-					intentar que <code>nombre</code> sea único, pero no es imprescindible.<br />
-					Cualquier otra operación a realizar con la capa, deberá ser referida
-					por el nombre (removerCapa, modificarCapa, modificarTransparenciaDeCapa)
-					</div>
+					<h2>.agregarCapa(capa)</h2>
 					
-					<div class="alert alert-info"><h2>.agregarCapa(capaPredefinida)</h2></div>
           <h3>Capas predefinidas</h3>
 					<p>Las capas predefinidas son capas que pueden agregarse simplemente por su nombre, sin necesidad
 					de ningún otro parámetro, haciendo la llamada <code>.agregarCapa(<em>"nombre_de_capa"</em>)</code></p>
@@ -529,8 +523,21 @@ $('#prueba').argenmap({tipo:satelital})
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>.agregarCapaWMS(opciones)</h2></div>
-					<p>Las opciones que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:
+					<h3>Capas por tipo</h3>
+					
+					<p>Se puede ejecutar <code>.agregarCapa</code> pasando como parámetro un objeto
+					de opciones que defina una capa. Entre estas opciones es vital proveer la
+					variable <code>tipo</code> que definirá el resto de las opciones a proveer.</p>
+					<p>Todas las capas, sin importar que tipo sean, pueden (y deberían) llevar una
+					propiedad <code>nombre</code> para poder identificarlas luego. Es importante intentar
+					que <code>nombre</code> sea único, pero no es imprescindible.<br />
+					Cualquier otra operación a realizar con la capa, deberá ser referida
+					por el nombre (removerCapa, modificarCapa, modificarTransparenciaDeCapa)
+					</p>
+					<p>Los <code>tipos</code> disponibles son:</p>
+					<h3>tipo: WMS</h3>
+					<p>La capa es de un servidor WMS, las opciones que pueden pasarse son
+					los parámetros que pueden pasarse a cualquier WMS:
 						<dl class="dl-horizontal">
 							<dt><code>url</code></dt>
 							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms</em></dd>
@@ -564,7 +571,7 @@ $('#prueba').argenmap({tipo:satelital})
   transparente: false
 }
 
-//debido a los valores por defecto, estas opciones podr&iacute;an enunciarse as&iacute;:
+//debido a los valores por defecto, estas opciones podrían enunciarse así:
 {
   tipo: 'wms',
   url: 'http://www.ign.gob.ar/wms',
@@ -572,7 +579,7 @@ $('#prueba').argenmap({tipo:satelital})
   capas: 'capabasesigign'
 }
 
-//y la misma capa, en modo transparente para superposici&oacute;n:
+//y la misma capa, en modo transparente para superposición:
 {
   tipo: 'wms',
   url: 'http://www.ign.gob.ar/wms',
@@ -599,7 +606,8 @@ $('#prueba').argenmap({tipo:satelital})
 							El archivo KML debe estar en el mismo protocolo, host y dominio que el archivo desde donde
 							se instancia el mapa. De no ser así, probablemente recibas un error referente a
 							<a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del
-							mismo origen (Same origin policy)</em></strong></a>.
+							mismo origen (Same origin policy)</em></strong></a>.<br />
+							Mientras <code>url</code> sea una ruta relativa, nunca tendrás este problema.
 						</div>
 						<h4>Ejemplo:</h4>
 <pre class="prettyprint">
