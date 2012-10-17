@@ -334,7 +334,7 @@
 			var predeterminadasWms = {
 				singleTile: false,
 				transparente: false,
-				formato: "image/jpg",
+				formato: "image/jpeg",
 				version: "1.1.1",
 				servicio: "wms",
 				srs: this.opciones.proyeccion,
