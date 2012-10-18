@@ -84,6 +84,7 @@
 		escucharEventos: 'eventListeners',
 		listarCapa: 'displayInLayerSwitcher'
 	}
+
 	var rutaRelativa = "http://mapa.ign.gob.ar/cg/argenmap-v2/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
 	// var _getScriptLocation = (function() {
@@ -107,8 +108,13 @@
 		// OpenLayers.ImgPath = rutaRelativa + "img/";
 	// });
 	/**
-	 * Traduce un objeto a traves del mapa de propiedades
+	 * Traduce las keys de un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
+	 * La idea es que el plugin acepta parámetros y métodos en castellano y los
+	 * pase en inglés a OL.
+	 * @param {Object} objeto el objeto al cual se le quieren traducir las keys.
+	 * @param {boolean} alReves. Si es true traducen las keys de inglés a español
+	 * @return {Object} el objeto con las keys traducidas a español
 	 */
 	function traducirObjeto(objeto,alReves)
 	{
