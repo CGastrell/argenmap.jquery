@@ -113,8 +113,8 @@
 	 * La idea es que el plugin acepta parámetros y métodos en castellano y los
 	 * pase en inglés a OL.
 	 * @param {Object} objeto el objeto al cual se le quieren traducir las keys.
-	 * @param {boolean} alReves. Si es true traducen las keys de inglés a español
-	 * @return {Object} el objeto con las keys traducidas a español
+	 * @param {boolean} alReves. Si es true traducen las keys de inglés a español.
+	 * @return {Object} el objeto con las keys traducidas a español.
 	 */
 	function traducirObjeto(objeto,alReves)
 	{
@@ -141,9 +141,8 @@
 	}
 	/**
 	 * Devuelve un objeto OpenLayers.LonLat
-	 * @param coords mixed Un par de coordenadas objeto/array
-	 * @param proyeccion string Codigo EPSG que defina el sistema de
-	 * coordenadas en el que se quiere el resultado
+	 * @param {mixed} coords Un par de coordenadas objeto/array
+	 * @param {string} proyeccion Código EPSG que defina el sistema de coordenadas en el que se quiere el resultado
 	 * @see leerPlanas
 	 * @see leerLonLat
 	 */
@@ -161,6 +160,8 @@
 			break;
 		}
 	}
+	/**
+	 */
 	function leerPlanas(mezcla)
 	{
 		var ll = leerLonLat(mezcla);
@@ -174,6 +175,11 @@
 			return ll;
 		}
 	}
+	/**
+	 * Devuelve un OpenLayers.LonLat a partir de una array con propiedad {lon,lat}
+	 * @param {Mixed} mezcla. Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}
+	 * @return {OpenLayers.LonLat} el objeto OpenLayers.LonLat
+	 */
 	function leerLonLat(mezcla)
 	{
 		var empty = null;
@@ -186,6 +192,7 @@
 			r = leerLonLat(mezcla.latLng);
 		}
 		
+		// MAGIC: se supone que es para aceptar google.maps.latLng también
 		// google.maps.LatLng object, esto no deberia pasar mas, salvo que
 		//estes en una configuracion cruzada con gmaps
 		if (mezcla.hasOwnProperty("lat") && typeof(mezcla.lat) === 'function') {
@@ -205,6 +212,7 @@
 		}
 		if(r == null) return r;//si hasta aca no esta resuelto, ya fue
 		//adivinacion de epsg, fallaria solo si es una plana a menos de 180m del 0,0
+		// MAGIC
 		if( r.lat != undefined && r.lon !=undefined  && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
 		return r;
 	}
