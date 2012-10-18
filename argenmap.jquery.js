@@ -140,9 +140,9 @@
 		return resultado;
 	}
 	/**
-	 * Devuelve un objeto OpenLayers.LonLat
-	 * @param {mixed} coords Un par de coordenadas objeto/array
-	 * @param {string} proyeccion Código EPSG que defina el sistema de coordenadas en el que se quiere el resultado
+	 * Devuelve un objeto OpenLayers.LonLat a partir de un par de coordenadas. Devuelve las coordenadas como planas o geográficas según el parámetro proyeccion.
+	 * @param {mixed} coords Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a leerLonLat() con @mezcla como argumento).
+	 * @param {string} proyeccion Código EPSG que defina el sistema de coordenadas en el que se quiere el resultado. 'epsg:4326' o 'epsg:3857' solamente.
 	 * @see leerPlanas
 	 * @see leerLonLat
 	 */
@@ -161,11 +161,15 @@
 		}
 	}
 	/**
+	 * Devuelve un OpenLayers.LonLat en el SRS epsg:3857 a partir de un par de coordendas en el SRS epsg:4326.
+	 * @param {Mixed} mezcla Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a leerLonLat() con @mezcla como argumento).
+	 * @return {OpenLayers.LonLat} el objeto OpenLayers.LonLat con las coordenadas en epsg:3857.
 	 */
 	function leerPlanas(mezcla)
 	{
 		var ll = leerLonLat(mezcla);
 		if(!ll || !$.isNumeric(ll.lon) || !$.isNumeric(ll.lat)) return null;
+		// MAGIC
 		//lo lamento por la gente que quiera usar una coordenada 3857 a menos de 180 metros del 0,0
 		if( (ll.lat > 180 || ll.lat < -180) || (ll.lon > 180 || ll.lon < -180) ) return ll;//se asume 3857
 		if( typeof(ll.transform) === "function" )
