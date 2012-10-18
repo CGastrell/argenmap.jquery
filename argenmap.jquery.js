@@ -58,6 +58,15 @@
 				clearInterval(interval);
 		}
 	};
+	//set de OL
+	OpenLayers.Popup.FramedCloud.prototype.autoSize = false;
+	AutoSizeFramedCloudMinSize = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
+			'autoSize': true, 
+			'minSize': new OpenLayers.Size(100,100)
+	});
+	AutoSizeFramedCloud = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
+		'autoSize': true
+	});
 	/**
 	 * Mapa de propiedades traducidas
 	 */
@@ -188,8 +197,9 @@
 				r = new OpenLayers.LonLat(mezcla[1], mezcla[0]);
 			}
 		}
+		if(r == null) return r;//si hasta aca no esta resuelto, ya fue
 		//adivinacion de epsg, fallaria solo si es una plana a menos de 180m del 0,0
-		if( r && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
+		if( r.lat != undefined && r.lon !=undefined  && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
 		return r;
 	}
 	/* CLASE ARGENMAP */
@@ -425,28 +435,29 @@
 		},
 		agregarMarcador: function(opciones)
 		{
-			var coordenadas,icono;
-			icono = new OpenLayers.Icon(
-				this.opciones.rutaAlScript + "img/PinDown1.png",
-				new OpenLayers.Size(32,39),
-				new OpenLayers.Pixel(-7,-35)
-			);
+			var coordenadas;
 			if(undefined == opciones)
 			{
+				//si se llama sin argumentos, marcamos el centro
 				coordenadas = this.mapa.getCenter();
 				opciones = {}
 			}else{
 				coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
 			}
+			//si a esta altura no esta definido coordenadas, cancelamos
 			if(!coordenadas) return;
 			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
-			if(typeof(opciones) == "object" && undefined != opciones.lonlat){
+			if(typeof(opciones) == "object"){
 				delete opciones["lonlat"];
+				delete opciones["latlng"];
+				delete opciones["lat"];
+				delete opciones["lon"];
+				delete opciones["lng"];
 			}else if($.isArray(opciones)){
 				//esto es por si se llamo a agregarMarcador([lat,lon])
 				opciones = {};
 			}
-			//hay que independizar el marcador por defecto
+			//hay que independizar el icono por defecto
 			var predeterminadasMarcador = {
 				capa:"Marcadores",
 				listarCapa: false,
@@ -457,42 +468,50 @@
 			var o = $.extend({},predeterminadasMarcador,opciones);
 			if(o.mostrarConClick)
 			{
-				var alCerrarCuadro = function(e)
-				{
-					console.log(e)
-					// var f2 = e.object;
-					// if(f2.cuadro)
-					// {
-						// this.map.removePopup(f2.cuadro);
-						// f2.cuadro.destroy();
-						// delete f2.cuadro;
-					// }
-				};
 				o.eventos = {
-					click: function(e){
-						var f = e.object;
-						var cuadro = new OpenLayers.Popup.FramedCloud("cuadro_" + this.nombre,
-							this.lonlat,
-							new OpenLayers.Size(100,100),
-							this.contenido,
-							this.icon, true, function(e){console.log(e)});
-						this.cuadro = cuadro;
-						this.map.addPopup(cuadro,true);
+					click: function (e) {
+						if (this.popup == null) {
+							this.popup = this.createPopup(this.closeBox);
+							e.object.map.addPopup(this.popup);
+							this.popup.show();
+						} else {
+							this.popup.toggle();
+						}
+						// currentPopup = this.popup;
+						OpenLayers.Event.stop(e);
 					}
 				}
 			}
 			var capa = this._traerCapaPorNombre(o.capa);
 			
 			if(!capa) capa = this._agregarCapaDeMarcadores({nombre:o.capa,listarCapa:o.listarCapa});
+			//kludge
+			capa.displayInLayerSwitcher = o.listarCapa;
+			var opcionesFeature = {
+				lonlat: coordenadas,
+				icon:new OpenLayers.Icon(
+					this.opciones.rutaAlScript + "img/PinDown1.png",
+					new OpenLayers.Size(32,39),
+					new OpenLayers.Pixel(-7,-35)
+				),
+				popupSize: new OpenLayers.Size(200,130),
+				popupContentHTML: opciones.contenido,
+				overflow: 'auto'
+			};
+			// capa.setVisibility(false);capa.setVisibility(true);
 			o = traducirObjeto(o);
-			var m = new OpenLayers.Marker(coordenadas,icono);
-			m.$el = $(m.icon.imageDiv);
-			// console.log(o);
-			m = $.extend(m,o);
+			var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
+			// f.$el = $(f.icon.imageDiv);
+			var m = f.createMarker();
+			f.nombre = m.nombre = o.nombre;
+			f.closeBox = true;
+			f.popupClass = OpenLayers.Popup.FramedCloud;
+			// f = $.extend(f,o);
+			t = f;
 			// console.log(m);
 			if(o.eventos)
 			{
-				o.eventos.scope = m;
+				o.eventos.scope = f;
 				m.events.on(o.eventos);
 			}
 			capa.addMarker(m);
@@ -501,7 +520,15 @@
 		centrarMapa: function(lat,lon,zoom)
 		{
 			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
-			if(this.mapa) this.mapa.setCenter(coordenadas,zoom);
+			if(this.mapa)
+			{
+				if(zoom)
+				{
+					this.mapa.setCenter(coordenadas,zoom);
+				}else{
+					this.mapa.panTo(coordenadas);
+				}
+			}
 		},
 		nivelDeZoom: function(zoom)
 		{
