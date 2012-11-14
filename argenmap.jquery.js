@@ -291,7 +291,7 @@
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
 				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
-			
+			// opcionesDeMapa.displayProjection = new OpenLayers.Projection("EPSG:4326");
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
 			this.mapa.addControls([
 				new OpenLayers.Control.LayerSwitcher(),
@@ -368,11 +368,13 @@
 				srs: this.opciones.proyeccion,
 				noMagic: true,
 				esCapaBase: true,
+				mostrarAlCargar:true,
 				proyeccion: this.opciones.proyeccion
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
 			if(this.mapa) this.mapa.addLayer(l);
+			if(l.options.isBaseLayer && o.mostrarAlCargar) this.mapa.setBaseLayer(l);
 		},
 		agregarCapaKML: function(opciones)
 		{
@@ -503,7 +505,7 @@
 			var capa = this._traerCapaPorNombre(o.capa);
 			
 			if(!capa) capa = this._agregarCapaDeMarcadores({nombre:o.capa,listarCapa:o.listarCapa});
-			//kludge
+			//kludge, para cuando la capa existe pero se cambia la visibilidad con el marker
 			capa.displayInLayerSwitcher = o.listarCapa;
 			var opcionesFeature = {
 				lonlat: coordenadas,
@@ -534,7 +536,17 @@
 			}
 			capa.addMarker(m);
 		},
-		
+		centro: function(lat,lon)
+		{
+			//getter ... ? deberia resolverse en el plugin .centro()
+			// if(undefined == lat && undefined == lon)
+			// {
+				// return [this.mapa.getCenter().lat,this.mapa.getCenter().lon];
+			// }
+			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
+			if(!coordenadas) return;
+			if(this.mapa) this.mapa.panTo(coordenadas);
+		},
 		centrarMapa: function(lat,lon,zoom)
 		{
 			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
@@ -915,24 +927,37 @@
 			a.agregarMarcador(opciones);
 		});
 	}
-	$.fn.centrarMapa = function(lat,lon,zoom)
+	$.fn.centro = function(lat,lon)
 	{
-		if(undefined == lat || undefined == lon) return this;
+		//getter
+		//el getter/lector solo devuelve la primer coincidencia de selector
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') ) return [];
+			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
+			return ctro ? [ctro.lat,ctro.lon] : [];
+		}
+		//setter
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
 			
-			a.centrarMapa(lat,lon,zoom);
+			a.centro(lat,lon);
 		});
 	}
-	$.fn.nivelDeZoom = function(zoom)
+	$.fn.zoom = function(zoom)
 	{
-		if(undefined == zoom) return this;
+		if(undefined == zoom)
+		{
+			if( !this.data('argenmap') ) return null;
+			var z = this.data('argenmap').mapa.getZoom();
+			return z ? z : null;
+		}
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
-			if(!a) return;
+			if(!a || !$.isNumeric(zoom)) return;
 			
 			a.nivelDeZoom(zoom);
 		});

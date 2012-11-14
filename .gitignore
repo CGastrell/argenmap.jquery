@@ -6,3 +6,6 @@ OpenLayers-2.12/
 *.tmp
 *.bak
 *.swp
+
+#windows stupid files
+Thumbs.db

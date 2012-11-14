@@ -63,16 +63,25 @@
 								<b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
-									<li><a href="./guias.html#guias-y-tutoriales">Cómo empezar</a></li>
+									<li><a href="./guias.html#guias-y-tutoriales">Guías y tutoriales</a></li>
 									<li><a href="./guias.html#un-mapa">Un mapa</a></li>
 									<li><a href="./guias.html#capas">Capas</a></li>
 								</ul>
               </li>
               <li class="">
-                <a href="#">Documentación</a>
+                <a href="./scaffolding.html">Scaffolding</a>
               </li>
               <li class="">
-                <a href="#">Desarrolladores</a>
+                <a href="./base-css.html">Base CSS</a>
+              </li>
+              <li class="">
+                <a href="./components.html">Components</a>
+              </li>
+              <li class="">
+                <a href="./javascript.html">Javascript</a>
+              </li>
+              <li class="">
+                <a href="./customize.html">Customize</a>
               </li>
             </ul>
           </div>
@@ -97,12 +106,12 @@
     <div class="row">
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
-          <li><a href="#guias-y-tutoriales"><i class="icon-chevron-right"></i> Cómo empezar</a></li>
+          <li><a href="#guias-y-tutoriales"><i class="icon-chevron-right"></i> Guías y tutoriales</a></li>
           <li><a href="#un-mapa"><i class="icon-chevron-right"></i> Un mapa</a></li>
           <li><a href="#capas"><i class="icon-chevron-right"></i> Capas</a></li>
-          <li><a href="#marcadores"><i class="icon-chevron-right"></i> Marcadores</a></li>
-          <li><a href="#ejemplos"><i class="icon-chevron-right"></i> Más ejemplos</a></li>
-          <!-- <li><a href="#what-next"><i class="icon-chevron-right"></i> What next?</a></li> -->
+          <li><a href="#html-template"><i class="icon-chevron-right"></i> Marcadores</a></li>
+          <li><a href="#examples"><i class="icon-chevron-right"></i> Examples</a></li>
+          <li><a href="#what-next"><i class="icon-chevron-right"></i> What next?</a></li>
         </ul>
       </div>
       <div class="span9">
@@ -113,10 +122,10 @@
         ================================================== -->
         <section id="guias-y-tutoriales">
           <div class="page-header">
-            <h1>1. Cómo empezar</h1>
+            <h1>1. Guías y tutoriales</h1>
           </div>
           <p class="lead">
-						Esta guía es un ejemplo práctico del uso de ArgenMap v2. La misma está basada en casos de estudio
+						Estas guías y tutoriales son ejemplos prácticos del uso de ArgenMap v2. Los mismos están basados en casos de estudio
 						en base a los cuales se concibió ArgenMap. Si buscas ayuda específica de algun método u opción, debes remitirte
 						a la sección de desarrolladores, donde podrás hallar un listado detallado de los métodos y funciones de ArgenMap v2.
 					</p>
@@ -219,7 +228,7 @@ $(document).ready(function(){
           <p class="lead">ArgenMap es una librería para mostrar mapas de Argentina. Su función más
 					básica será instanciar un mapa en el/los selector/es indicados con jQuery</p>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).argenmap([opciones])</h2></div>
+					<div class="alert alert-info"><h2>.argenmap([opciones])</h2></div>
           <p>Las opciones del mapa pueden ser incluidas al momento de inicializarlo
 					mediante un objeto de JavaScript, o bien pueden ser modificadas luego
 					a través de llamadas al mismo selector.</p>
@@ -342,7 +351,7 @@ $('#prueba').argenmap({
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).centro(lat, lon)</h2></div>
+					<div class="alert alert-info"><h2>.centro(lat, lon)</h2></div>
 					<p>Luego de instanciar un mapa, puede usarse <code>.centro(lat,lon)</code> para cambiar
 					el centro del mapa</p>
 					<p><code>lat</code> (requerido): número indicando los grados decimales de latitud</p>
@@ -393,7 +402,7 @@ $('#prueba').centro(-41.1217,-71.3095);
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).zoom(zoom)</h2></div>
+					<div class="alert alert-info"><h2>.zoom(zoom)</h2></div>
 					<p>Acerca o aleja la vista del mapa sin cambiar de posición.</p>
 					<p><code>zoom</code> (requerido): 1 - 22 número indicando el nivel de zoom al que se
 					quiere visualizar el mapa.</p>
@@ -458,7 +467,7 @@ $('#prueba').zoom(15);
 					por el nombre (removerCapa, modificarCapa, modificarTransparenciaDeCapa)
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).agregarCapa(capaPredefinida)</h2></div>
+					<div class="alert alert-info"><h2>.agregarCapa(capaPredefinida)</h2></div>
           <h3>Capas predefinidas</h3>
 					<p>Las capas predefinidas son capas que pueden agregarse simplemente por su nombre, sin necesidad
 					de ningún otro parámetro, haciendo la llamada <code>.agregarCapa(<em>"nombre_de_capa"</em>)</code></p>
@@ -519,7 +528,7 @@ $('#prueba').argenmap({tipo:satelital})
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).agregarCapaWMS(opciones)</h2></div>
+					<div class="alert alert-info"><h2>.agregarCapaWMS(opciones)</h2></div>
 					<p>Las opciones que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:
 						<dl class="dl-horizontal">
 							<dt><code>url</code></dt>
@@ -539,92 +548,41 @@ $('#prueba').argenmap({tipo:satelital})
 							Esta opción debe ser coherente con <code>formato</code>: solo "image/png", "image/gif" o
 							"image/png8" pueden ser transparentes.</dd>
 						</dl>
-					</p>
-					<div class="alert alert-warn">
-						Existen más opciones para configurar una capa WMS, si necesitas más detalles, puedes consultar
-						en la sección de desarrolladores:Capas WMS.
-					</div>
-					<div class="row-fluid">
-						<div class="span6">
-							<h4>Ejemplo de capa WMS: capa de datos del IGN</h4>
+						<div class="alert alert-warn">
+							Existen más opciones para configurar una capa WMS, si necesitas más detalles, puedes consultar
+							en la sección de desarrolladores:Capas WMS.
+						</div>
+						<h4>Ejemplo de capa WMS: capa de datos del IGN</h4>
 <pre class="prettyprint">
-//para probar estas capas vamos a instanciar un mapa vacio
-$('#prueba').argenmap({tipo:'blanco'});
-<span class="nocode"><a id="capas-demo2a" class="btn btn-mini btn-primary" href="#capas-demo2">Ejecutar ejemplo</a></span>
-
 var capaBaseIGN = {
   url: 'http://www.ign.gob.ar/wms',
   nombre: 'Capa IGN',
   capas: 'capabasesigign',
   formato: 'image/jpeg',
-  esCapaBase: false,
   transparente: false
 }
+
 //debido a los valores por defecto, estas opciones podr&iacute;an enunciarse as&iacute;:
 capaBaseIGN = {
   url: 'http://www.ign.gob.ar/wms',
   nombre: 'Capa Base IGN',
   capas: 'capabasesigign'
 }
-$('#prueba').agregarCapaWMS(capaBaseIGN);
-<span class="nocode"><a id="capas-demo2b" class="btn btn-mini btn-primary" href="#capas-demo2">Ejecutar ejemplo</a></span>
 
 //y la misma capa, en modo transparente para superposici&oacute;n:
-var capaTransparenteIGN = {
+var capaTransparenteIGN{
   url: 'http://www.ign.gob.ar/wms',
   nombre: 'Capa IGN Transparente',
   capas: 'capabasesigign',
   formato: 'image/png',
   transparente: true
 }
-$('#prueba').agregarCapaWMS(capaTransparenteIGN);
-<span class="nocode"><a id="capas-demo2c" class="btn btn-mini btn-primary" href="#capas-demo2">Ejecutar ejemplo</a></span>
+//para probar estas capas vamos a instanciar un mapa vacio
+<span class="nocode"><a id="capas-demo2a" class="btn btn-mini btn-primary" href="#capas-demo2">Ejecutar ejemplo</a></span>
 </pre>
-<script>
-var capaTransparenteIGN = {
-  url: 'http://www.ign.gob.ar/wms',
-  nombre: 'Capa IGN Transparente',
-  capas: 'capabasesigign',
-  formato: 'image/png',
-  esCapaBase: false,
-  transparente: true
-};
-var capaBaseIGN = {
-  url: 'http://www.ign.gob.ar/wms',
-  nombre: 'Capa IGN',
-  capas: 'capabasesigign',
-  formato: 'image/jpeg',
-  transparente: false
-};
-capaBaseIGN = {
-  url: 'http://www.ign.gob.ar/wms',
-  nombre: 'Capa Base IGN',
-  capas: 'capabasesigign',
-  esCapaBase: true
-};
-	$('#capas-demo2a').click(function(){
-		$('#capas-demo2-resultado').removerArgenmap();
-		$('#capas-demo2-resultado').argenmap({tipo:'blanco'});
-		return false;
-	});
-	$('#capas-demo2b').click(function(){
-		$('#capas-demo2-resultado').removerArgenmap();
-		$('#capas-demo2-resultado').argenmap({tipo:'blanco'}).agregarCapaWMS(capaBaseIGN);
-		return false;
-	});
-	$('#capas-demo2c').click(function(){
-		$('#capas-demo2-resultado').agregarCapaWMS(capaTransparenteIGN);
-		return false;
-	});
-</script>
-						</div>
-						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="capas-demo2-resultado" class="resultado" style="margin-top:100px;height:380px"></div>
-						</div>
-					</div>
+					</p>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).agregarCapaKML(opciones)</h2></div>
+					<h3>tipo: KML</h3>
 					<p>
 						Es una capa que se importa desde un archivo <code>.kml</code>. Sus opciones son:
 						<dl class="dl-horizontal">
@@ -641,38 +599,14 @@ capaBaseIGN = {
 							<a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del
 							mismo origen (Same origin policy)</em></strong></a>.
 						</div>
-						<div class="row-fluid">
-							<div class="span6">
-								<h4>Ejemplo:</h4>
+						<h4>Ejemplo:</h4>
 <pre class="prettyprint">
-var capaKml = {
+{
   tipo: 'kml',
   url: '../demo/prueba.kml',
   nombre: 'Capa KML'
 }
-$('#prueba').argenmap().agregarCapaKML(capaKml);
-<span class="nocode"><a id="capas-demo3a" class="btn btn-mini btn-primary" href="#capas-demo3">Ejecutar ejemplo</a></span>
 </pre>
-<script>
-var capaKml = {
-  tipo: 'kml',
-  url: '../demo/prueba.kml',
-  nombre: 'Capa KML'
-}
-
-	$('#capas-demo3a').click(function(){
-		$('#capas-demo3-resultado').removerArgenmap();
-		$('#capas-demo3-resultado').argenmap().agregarCapaKML(capaKml);
-		return false;
-	});
-
-</script>
-						</div>
-						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="capas-demo3-resultado" class="resultado" style="height:280px"></div>
-						</div>
-					</div>
 				</section>
 
 
@@ -681,7 +615,7 @@ var capaKml = {
         ================================================== -->
         <section id="html-template">
           <div class="page-header">
-            <h1>4. Marcadores</h1>
+            <h1>4. Basic HTML template</h1>
           </div>
           <p class="lead">With a brief intro into the contents out of the way, we can focus putting Bootstrap to use. To do that, we'll utilize a basic HTML template that includes everything we mentioned in the <a href="#file-structure">File structure</a>.</p>
           <p>Now, here's a look at a <strong>typical HTML file</strong>:</p>
