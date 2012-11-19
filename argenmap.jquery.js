@@ -194,6 +194,8 @@
 			r = leerLonLat(mezcla.lonlat);
 		}else if(mezcla.hasOwnProperty("latLng")) {
 			r = leerLonLat(mezcla.latLng);
+		}else if(mezcla.hasOwnProperty("latlon")) {
+			r = leerLonLat(mezcla.latlon);
 		}
 		
 		// MAGIC: se supone que es para aceptar google.maps.latLng también
@@ -464,6 +466,7 @@
 			}else{
 				coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
 			}
+			// alert(this.opciones.proyeccion);
 			//si a esta altura no esta definido coordenadas, cancelamos
 			if(!coordenadas) return;
 			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
@@ -486,11 +489,13 @@
 				mostrarConClick: true
 			};
 			var o = $.extend({},predeterminadasMarcador,opciones);
+			if(!o.contenido) o.mostrarConClick = false;
 			if(o.mostrarConClick)
 			{
 				o.eventos = {
 					click: function (e) {
 						if (this.popup == null) {
+							this.popupClass.prototype.autoSize = true;
 							this.popup = this.createPopup(this.closeBox);
 							e.object.map.addPopup(this.popup);
 							this.popup.show();
@@ -514,7 +519,7 @@
 					new OpenLayers.Size(32,39),
 					new OpenLayers.Pixel(-7,-35)
 				),
-				popupSize: new OpenLayers.Size(200,130),
+				//popupSize: new OpenLayers.Size(200,130),
 				popupContentHTML: opciones.contenido,
 				overflow: 'auto'
 			};

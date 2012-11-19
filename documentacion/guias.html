@@ -63,7 +63,7 @@
 								<b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
-									<li><a href="./guias.html#guias-y-tutoriales">Cómo empezar</a></li>
+									<li><a href="./guias.html#como-empezar">Cómo empezar</a></li>
 									<li><a href="./guias.html#un-mapa">Un mapa</a></li>
 									<li><a href="./guias.html#capas">Capas</a></li>
 								</ul>
@@ -97,7 +97,7 @@
     <div class="row">
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
-          <li><a href="#guias-y-tutoriales"><i class="icon-chevron-right"></i> Cómo empezar</a></li>
+          <li><a href="#como-empezar"><i class="icon-chevron-right"></i> Cómo empezar</a></li>
           <li><a href="#un-mapa"><i class="icon-chevron-right"></i> Un mapa</a></li>
           <li><a href="#capas"><i class="icon-chevron-right"></i> Capas</a></li>
           <li><a href="#marcadores"><i class="icon-chevron-right"></i> Marcadores</a></li>
@@ -111,7 +111,7 @@
 
         <!-- guias
         ================================================== -->
-        <section id="guias-y-tutoriales">
+        <section id="como-empezar">
           <div class="page-header">
             <h1>1. Cómo empezar</h1>
           </div>
@@ -466,7 +466,7 @@ $('#prueba').zoom(15);
           <p><code>baseign</code> Es la capa predeterminada, actúa como capa base, pero si el mapa se inicializó como <code>satelital</code>
 					puede luego agregarse esta capa.</p>
           <h4>Satelital</h4>
-          <p><code>satelital</code>Instancia el mapa con una base de imágenes de satélite y los datos del
+          <p><code>satelital</code> Instancia el mapa con una base de imágenes de satélite y los datos del
 					<abbr title="Instituto Geográfico Nacional" class="initialism">IGN</abbr> superpuestos.</p>
 					<div class="alert">
 					<h4>Advertencia:</h4>
@@ -484,7 +484,7 @@ $('#prueba').argenmap();
 <span class="nocode"><a id="capas-demo1a" class="btn btn-mini btn-primary" href="#capas-demo1">Ejecutar ejemplo</a></span>
 
 //agregar capa satelital al mapa
-$('#prueba').agregarCapa(&quot;satelital&quot;);
+$('#prueba').agregarCapa('satelital');
 <span class="nocode"><a id="capas-demo1b" class="btn btn-mini btn-primary" href="#capas-demo1">Ejecutar ejemplo</a></span>
 
 //mapa satelital, agregar capa baseign
@@ -548,10 +548,11 @@ $('#prueba').argenmap({tipo:satelital})
 						<div class="span6">
 							<h4>Ejemplo de capa WMS: capa de datos del IGN</h4>
 <pre class="prettyprint">
-//para probar estas capas vamos a instanciar un mapa vacio
+//instanciamos un mapa vacio
 $('#prueba').argenmap({tipo:'blanco'});
 <span class="nocode"><a id="capas-demo2a" class="btn btn-mini btn-primary" href="#capas-demo2">Ejecutar ejemplo</a></span>
 
+//creamos las opciones para una capa WMS
 var capaBaseIGN = {
   url: 'http://www.ign.gob.ar/wms',
   nombre: 'Capa IGN',
@@ -560,16 +561,10 @@ var capaBaseIGN = {
   esCapaBase: false,
   transparente: false
 }
-//debido a los valores por defecto, estas opciones podr&iacute;an enunciarse as&iacute;:
-capaBaseIGN = {
-  url: 'http://www.ign.gob.ar/wms',
-  nombre: 'Capa Base IGN',
-  capas: 'capabasesigign'
-}
 $('#prueba').agregarCapaWMS(capaBaseIGN);
 <span class="nocode"><a id="capas-demo2b" class="btn btn-mini btn-primary" href="#capas-demo2">Ejecutar ejemplo</a></span>
 
-//y la misma capa, en modo transparente para superposici&oacute;n:
+//la misma capa, en modo transparente para superposici&oacute;n:
 var capaTransparenteIGN = {
   url: 'http://www.ign.gob.ar/wms',
   nombre: 'Capa IGN Transparente',
@@ -577,6 +572,8 @@ var capaTransparenteIGN = {
   formato: 'image/png',
   transparente: true
 }
+//Atención: debes ejecutar el ejemplo anterior
+//para que esta línea de un resultado
 $('#prueba').agregarCapaWMS(capaTransparenteIGN);
 <span class="nocode"><a id="capas-demo2c" class="btn btn-mini btn-primary" href="#capas-demo2">Ejecutar ejemplo</a></span>
 </pre>
@@ -677,43 +674,83 @@ var capaKml = {
 
 
 
-        <!-- HTML template
+        <!-- marcadores
         ================================================== -->
-        <section id="html-template">
+        <section id="marcadores">
           <div class="page-header">
             <h1>4. Marcadores</h1>
           </div>
-          <p class="lead">With a brief intro into the contents out of the way, we can focus putting Bootstrap to use. To do that, we'll utilize a basic HTML template that includes everything we mentioned in the <a href="#file-structure">File structure</a>.</p>
-          <p>Now, here's a look at a <strong>typical HTML file</strong>:</p>
-<pre class="prettyprint linenums">
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;Bootstrap 101 Template&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;Hello, world!&lt;/h1&gt;
-    &lt;script src="http://code.jquery.com/jquery-latest.js"&gt;&lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
+          <p class="lead">Trabajar con marcadores debería ser simple, esa es la idea con
+					ArgenMap. Para crear un marcador se puede suministrar un objeto con opciones
+					o simplemente hacer la llamada <code>$(<em>selector</em>).agregarMarcador()</code>
+					y por defecto el marcador se agregará en el centro del mapa.
+					</p>
+					<p>Para personalizar el comportamiento del marcador pueden utilizarse estas opciones
+						<dl class="dl-horizontal">
+							<dt><code>lonlat</code></dt>
+							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms</em></dd>
+							<dt><code>nombre</code></dt>
+							<dd>cadena de texto indicando el nombre que tendrá la capa. Recuerda que es importante definir el nombre e
+							intentar que sea único.</dd>
+							<dt><code>capas</code></dt>
+							<dd>cadena de texto de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo:
+							<em>"departamentos, rios, ciudades"</em></dd>
+							<dt>Opcionales</dt><dd>&nbsp;</dd>
+							<dt><code>formato</code></dt>
+							<dd>valor por defecto: <code>"image/jpeg"</code> Cadena de texto indicando un formato MIME de archivo: "image/jpeg",
+							"image/jpg", "image/png", "image/png8", "image/gif".</dd>
+							<dt><code>transparente</code></dt>
+							<dd>valor por defecto: <code>false</code> Boolean indicando si la capa tiene trasparencias.
+							Esta opción debe ser coherente con <code>formato</code>: solo "image/png", "image/gif" o
+							"image/png8" pueden ser transparentes.</dd>
+						</dl>
+					</p>
+					<div class="row-fluid">
+						<div class="span6">
+							<h4>Ejemplo:</h4>
+<pre class="prettyprint">
+$('#prueba').argenmap().agregarMarcador();
+<span class="nocode"><a id="marcadores-demo1a" class="btn btn-mini btn-primary" href="#marcadores-demo1">Ejecutar ejemplo</a></span>
+
+$('#prueba').argenmap().agregarMarcador({
+  lon:-56,
+  lat:-34
+});
+<span class="nocode"><a id="marcadores-demo1b" class="btn btn-mini btn-primary" href="#marcadores-demo1">Ejecutar ejemplo</a></span>
+
+$('#prueba').argenmap().agregarMarcador({
+  lon:-57,
+  lat:-35,
+  contenido: '&lt;h1&gt;Marcador&lt;/h1&gt;&lt;p&gt;Este es el contenido del marcador&lt;/p&gt;',
+  mostrarConClick: true
+});
+<span class="nocode"><a id="marcadores-demo1c" class="btn btn-mini btn-primary" href="#marcadores-demo1">Ejecutar ejemplo</a></span>
 </pre>
-          <p>To make this <strong>a Bootstrapped template</strong>, just include the appropriate CSS and JS files:</p>
-<pre class="prettyprint linenums">
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;Bootstrap 101 Template&lt;/title&gt;
-    &lt;!-- Bootstrap --&gt;
-    &lt;link href="css/bootstrap.min.css" rel="stylesheet"&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;Hello, world!&lt;/h1&gt;
-    &lt;script src="http://code.jquery.com/jquery-latest.js"&gt;&lt;/script&gt;
-    &lt;script src="js/bootstrap.min.js"&gt;&lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</pre>
-          <p><strong>And you're set!</strong> With those two files added, you can begin to develop any site or application with Bootstrap.</p>
+<script>
+	$('#marcadores-demo1a').click(function(){
+		$('#marcadores-demo1-resultado').argenmap().agregarMarcador();
+		return false;
+	});
+	$('#marcadores-demo1b').click(function(){
+		$('#marcadores-demo1-resultado').argenmap().agregarMarcador({lon:-56,lat:-34});
+		return false;
+	});
+	$('#marcadores-demo1c').click(function(){
+		$('#marcadores-demo1-resultado').argenmap().agregarMarcador(
+		{
+			lonlat:[-34,-56],
+			contenido: '<h1>Marcador</h1><p>Este es el contenido del marcador</p>',
+			mostrarConClick: true
+		});
+		return false;
+	});
+</script>
+						</div>
+						<div class="span6">
+							<h4>Resultado</h4>
+							<div id="marcadores-demo1-resultado" class="resultado" style="height:280px"></div>
+						</div>
+					</div>
         </section>
 
 
