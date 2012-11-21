@@ -524,13 +524,14 @@ $('#prueba').argenmap({tipo:satelital})
 						<dl class="dl-horizontal">
 							<dt><code>url</code></dt>
 							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms</em></dd>
-							<dt><code>nombre</code></dt>
-							<dd>cadena de texto indicando el nombre que tendrá la capa. Recuerda que es importante definir el nombre e
-							intentar que sea único.</dd>
 							<dt><code>capas</code></dt>
 							<dd>cadena de texto de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo:
 							<em>"departamentos, rios, ciudades"</em></dd>
+							<br />
 							<dt>Opcionales</dt><dd>&nbsp;</dd>
+							<dt><code>nombre</code></dt>
+							<dd>cadena de texto indicando el nombre que tendrá la capa. Recuerda que es importante definir el nombre e
+							intentar que sea único. Es el nombre que se utilizará en el panel de capas.</dd>
 							<dt><code>formato</code></dt>
 							<dd>valor por defecto: <code>"image/jpeg"</code> Cadena de texto indicando un formato MIME de archivo: "image/jpeg",
 							"image/jpg", "image/png", "image/png8", "image/gif".</dd>
@@ -628,9 +629,11 @@ capaBaseIGN = {
 							<dt><code>url</code></dt>
 							<dd>cadena de texto indicando donde se encuentra, relativo al archivo HTML donde se
 							encuentra el mapa, el archivo KML.</dd>
+							<br />
+							<dt>Opcionales</dt><dd>&nbsp;</dd>
 							<dt><code>nombre</code></dt>
 							<dd>cadena de texto indicando el nombre que tendrá la capa. Recuerda que es importante definir el nombre e
-							intentar que sea único.</dd>
+							intentar que sea único. Es el nombre que aparecerá en el panel de capas.</dd>
 						</dl>
 						<div class="alert alert-error">
 							El archivo KML debe estar en el mismo protocolo, host y dominio que el archivo desde donde
@@ -688,10 +691,21 @@ var capaKml = {
 					<p>Para personalizar el comportamiento del marcador pueden utilizarse estas opciones
 						<dl class="dl-horizontal">
 							<dt><code>lonlat</code></dt>
-							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms</em></dd>
+							<dd><strong>array(lon,lat)</strong> de coordenadas donde se ubicará el marcador.
+							Ejemplo: <em>[-56.32,-35,84]</em></dd>
+							<br />
+							<dt>Opcionales</dt><dd>&nbsp;</dd>
 							<dt><code>nombre</code></dt>
-							<dd>cadena de texto indicando el nombre que tendrá la capa. Recuerda que es importante definir el nombre e
-							intentar que sea único.</dd>
+							<dd>cadena de texto indicando el nombre que tendrá el marcador. Recuerda que
+							si bien es opcional, es importante definir el nombre e intentar que
+							sea único para luego poder accederlo si necesitaras modificarlo.</dd>
+							<dt><code>lon</code></dt>
+							<dd>Las coordenadas pueden proveerse por separado, nombrando cada valor
+							por su eje (lon y lat)</dd>
+							<dt><code>lat</code></dt>
+							<dd>Las coordenadas pueden proveerse por separado, nombrando cada valor
+							por su eje (lon y lat)</dd>
+							<!--
 							<dt><code>capas</code></dt>
 							<dd>cadena de texto de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo:
 							<em>"departamentos, rios, ciudades"</em></dd>
@@ -703,6 +717,7 @@ var capaKml = {
 							<dd>valor por defecto: <code>false</code> Boolean indicando si la capa tiene trasparencias.
 							Esta opción debe ser coherente con <code>formato</code>: solo "image/png", "image/gif" o
 							"image/png8" pueden ser transparentes.</dd>
+							-->
 						</dl>
 					</p>
 					<div class="row-fluid">
@@ -816,14 +831,16 @@ $('#prueba').argenmap().agregarMarcador({
     <footer class="footer">
       <div class="container">
         <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>Designed and built with all the love in the world <a href="http://twitter.com/twitter" target="_blank">@twitter</a> by <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
+        <p>Documentación diseñada con todo el amor del mundo <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a> por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
         <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
         <p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+				<!--
         <ul class="footer-links">
           <li><a href="http://blog.getbootstrap.com">Read the blog</a></li>
           <li><a href="https://github.com/twitter/bootstrap/issues?state=open">Submit issues</a></li>
           <li><a href="https://github.com/twitter/bootstrap/wiki">Roadmap and changelog</a></li>
         </ul>
+				-->
       </div>
     </footer>
 
