@@ -84,7 +84,8 @@
 <div class="jumbotron masthead">
   <div class="container">
     <h1>ArgenMap v2</h1>
-    <p>La manera más fácil, rápida y elegante de tener un mapa de Argentina en tu página.</p>
+    <p>La manera más fácil, rápida y elegante de tener un mapa de Argentina en tu <a href="#" id="ejemploPractico">página</a>.</p>
+    <div class="resultado" style="height:0;border:0;"></div>
     <p><a href="guias.html" class="btn btn-primary btn-large" >Comenzar</a></p>
     <ul class="masthead-links">
       <li><a href="http://www.jquery.com" >jQuery</a></li>
@@ -118,7 +119,7 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
 
-    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-argenmap-closure.js"></script>
+    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers.js"></script>
     <script src="../argenmap.jquery.js"></script>
     <!-- Placed at the end of the document so the pages load faster 
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
@@ -142,6 +143,13 @@
 		<script>
 			$(document).ready(function(){
 				prettyPrint();
+				$('#ejemploPractico').click(function(){
+					$('div.resultado').animate({
+						height: 400
+						},300,function(){$('div.resultado').argenmap();}
+					);
+					return false;
+				});
 			});
 		</script>
 

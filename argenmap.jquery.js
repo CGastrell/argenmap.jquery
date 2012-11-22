@@ -240,6 +240,7 @@
 			centro:[-35,-57],
 			capas:[],
 			zoom:4,
+			numZoomLevels:20,
 			tipo: 'baseign',
 			// agregarCapaIGN: false,
 			// agregarBaseIGN: true,
@@ -727,8 +728,9 @@
 							nombre:"Satélite",
 							type:"satellite",
 							isBaseLayer: true,
-							numZoomLevels:20,
-							companionLayer: ign
+							numZoomLevels:22,
+							companionLayer: ign,
+							tilt:0
 						};
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
 						o = $.extend({},o,extras);
