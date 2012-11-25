@@ -241,9 +241,9 @@
 			capas:[],
 			zoom:4,
 			numZoomLevels:20,
-			tipo: 'baseign',
-			// agregarCapaIGN: false,
-			// agregarBaseIGN: true,
+			tipo: '',
+			agregarBaseSatelite: false,
+			agregarBaseIGN: true,
 			listarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa
 		};
@@ -256,9 +256,6 @@
 		//sea menos flexible el mapa predeterminado
 		switch(this.opciones.tipo.toLowerCase())
 		{
-			case 'baseign':
-				this.opciones.capas.unshift('baseIGN');
-			break;
 			case 'satelital':
 			case 'hibridoign':
 				this.opciones.capas.push('satelital');
@@ -266,8 +263,12 @@
 			case 'vacio':
 			case 'blanco':
 			break;
-			default:
+			case 'baseign':
 				this.opciones.capas.unshift('baseIGN');
+			break;
+			default:
+				this.opciones.capas.push('satelital_base');
+				this.opciones.capas.push('baseIGN');
 		}
 		// if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
 		// if(this.opciones.agregarBaseIGN) this.opciones.capas.unshift("baseIGN");
@@ -306,7 +307,18 @@
 
 			// eventos
 			this.mapa.events.on({
-				addlayer:function(e){this.capas = this.mapa.layers;},
+				addlayer:function(e){
+					//kludge para elevar las capas de marcadores
+					var m = this.mapa;
+					$.each(m.layers,function(i,o)
+					{
+						if(o.CLASS_NAME != undefined && o.CLASS_NAME == "OpenLayers.Layer.Markers")
+						{
+							m.setLayerIndex(o,m.layers.length - 1);
+						}
+					});
+					this.capas = this.mapa.layers;
+				},
 				removelayer:function(e){this.capas = this.mapa.layers;},
 				changelayer:function(e){this.capas = this.mapa.layers;},
 				scope:this
@@ -344,6 +356,7 @@
 				if(c && c.isBaseLayer)
 				{
 					if(!c.hasOwnProperty("noCambiarAutomaticamente")) this.mapa.setBaseLayer(c);
+					if(c.hasOwnProperty("mapObject")) c.mapObject.setTilt(0);
 				}
 				return;
 			}
@@ -534,7 +547,6 @@
 			f.popupClass = OpenLayers.Popup.FramedCloud;
 			// f = $.extend(f,o);
 			t = f;
-			// console.log(m);
 			if(o.eventos)
 			{
 				o.eventos.scope = f;
@@ -685,18 +697,39 @@
 				case "bing":
 					//corte temprano para evitar instancia de capa si el mapa
 					//no esta en spherical mercator
-					if(this.opciones.proyeccion != "EPSG:3857" || this.opciones.proyeccion != "EPSG:900913")
-						return c;
+					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913") return c;
 					if(extras && extras.key)
-					c = new OpenLayers.Layer.Bing({
+					{
+						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
+						c = new OpenLayers.Layer.Bing({
 							name: "Aérea (Bing)",
 							isBaseLayer:true,
 							nombre: "Aérea (Bing)",
 							key: extras.key,//"Ang2jMeTgBWgNdYC_GbPxP37Gs1pYJXN-byoKn8zGW39FsxwZ3o7N2kvcdDbrnb_",
-							type: "Aerial"
+							type: "Aerial",
+							companionLayer: ign
+						});
+					};
+					c.companionLayer = ign;
+					c.events.on({
+						visibilitychanged:function(e){
+							e.object.companionLayer.setVisibility(e.object.getVisibility());
+						},
+						added: function(e)
+						{
+							e.map.addLayer(e.layer.companionLayer);
+						},
+						removed: function(e){
+							var l = this._traerCapaPorReferencia(e.layer.companionLayer);
+							if(l) e.map.removeLayer(l);
+						},
+						scope:this
 					});
 				break;
 				case "satelital_base":
+					//atencion con esta capa, es la satelital pero para instancia inicial
+					//con la opcion de no switchear automaticamente, para que pueda quedar
+					//detras de baseIGN
 					return this._crearCapaPredefinida("satelital",{noCambiarAutomaticamente:true});
 				break;
 				case "hibridoign":
@@ -728,9 +761,8 @@
 							nombre:"Satélite",
 							type:"satellite",
 							isBaseLayer: true,
-							numZoomLevels:22,
-							companionLayer: ign,
-							tilt:0
+							//numZoomLevels:20,
+							companionLayer: ign
 						};
 						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
 						o = $.extend({},o,extras);
