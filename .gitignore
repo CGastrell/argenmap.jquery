@@ -9,3 +9,6 @@ OpenLayers-2.12/
 
 #windows stupid files
 Thumbs.db
+
+#github pages (gh-pages branch)
+docs/
