@@ -622,7 +622,7 @@
 		{
 			if(arguments.length === 0) return this.mapa.baseLayer.nombre;
 			var c = this._traerCapaPorNombre(capa);
-			console.log(c);
+			// console.log(c);
 			if(c) this.mapa.setBaseLayer(c);
 		},
 		/* INTERNAS / PRIVADAS */
