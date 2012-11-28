@@ -580,7 +580,7 @@
 				listarCapa: f.layer.displayInLayerSwitcher,
 				nombre: f.nombre,
 				contenido: f.data.popupContentHTML,
-				mostrarConClick: f.marker.events.listeners.click != undefined
+				mostrarConClick: f.marker.events.listeners.click != undefined || f.data.popupContentHTML != ""
 			};
 			var opcionesNuevas = $.extend({},opcionesPrevias,opciones);
 			this.removerMarcador(nombre);
