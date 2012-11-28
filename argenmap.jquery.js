@@ -263,15 +263,15 @@
 			case 'satelital':
 			case 'hibridoign':
 				this.opciones.capas.push('baseIGN');
-				this.opciones.capas.push('satelital_base');
+				this.opciones.capas.push('satelital');
 			break;
 			case 'vacio':
 			case 'blanco':
 			break;
 			case 'baseign':
 			default:
-				this.opciones.capas.push('satelital_base');
 				this.opciones.capas.push('baseIGN');
+				this.opciones.capas.push('satelital_base');
 		}
 		// if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
 		// if(this.opciones.agregarBaseIGN) this.opciones.capas.unshift("baseIGN");
