@@ -234,6 +234,10 @@
 		 * Se utiliza al momento de instanciar el mapa y para buscar por nombre
 		 */
 		this.capas = [];
+		/**
+		 * Array con los features agregados al mapa, para conveniencia
+		 */
+		this.marcadores = [];
 		//opciones por defecto
 		this.predefinidos = {
 			proyeccion: "EPSG:3857",
@@ -242,8 +246,8 @@
 			zoom:4,
 			numZoomLevels:20,
 			tipo: '',
-			agregarBaseSatelite: false,
-			agregarBaseIGN: true,
+			// agregarBaseSatelite: false,
+			// agregarBaseIGN: true,
 			listarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa
 		};
@@ -258,14 +262,13 @@
 		{
 			case 'satelital':
 			case 'hibridoign':
-				this.opciones.capas.push('satelital');
+				this.opciones.capas.push('baseIGN');
+				this.opciones.capas.push('satelital_base');
 			break;
 			case 'vacio':
 			case 'blanco':
 			break;
 			case 'baseign':
-				this.opciones.capas.unshift('baseIGN');
-			break;
 			default:
 				this.opciones.capas.push('satelital_base');
 				this.opciones.capas.push('baseIGN');
@@ -503,22 +506,22 @@
 				mostrarConClick: true
 			};
 			var o = $.extend({},predeterminadasMarcador,opciones);
-			if(!o.contenido) o.mostrarConClick = false;
+			if(o.contenido == "") o.mostrarConClick = false;
 			if(o.mostrarConClick)
 			{
 				o.eventos = {
-					click: function (e) {
-						if (this.popup == null) {
-							this.popupClass.prototype.autoSize = true;
-							this.popup = this.createPopup(this.closeBox);
-							e.object.map.addPopup(this.popup);
-							this.popup.show();
-						} else {
-							this.popup.toggle();
-						}
-						// currentPopup = this.popup;
-						OpenLayers.Event.stop(e);
-					}
+					click: this._marcadorClickHandler
+					// click: function (e) {
+						// if (this.popup == null) {
+							// this.popupClass.prototype.autoSize = true;
+							// this.popup = this.createPopup(this.closeBox);
+							// e.object.map.addPopup(this.popup);
+							// this.popup.show();
+						// } else {
+							// this.popup.toggle();
+						// }
+						// OpenLayers.Event.stop(e);
+					// }
 				}
 			}
 			var capa = this._traerCapaPorNombre(o.capa);
@@ -542,29 +545,62 @@
 			var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
 			// f.$el = $(f.icon.imageDiv);
 			var m = f.createMarker();
+			// m.owner = f;
 			f.nombre = m.nombre = o.nombre;
 			f.closeBox = true;
 			f.popupClass = OpenLayers.Popup.FramedCloud;
 			// f = $.extend(f,o);
-			t = f;
+			// t = f;
 			if(o.eventos)
 			{
 				o.eventos.scope = f;
 				m.events.on(o.eventos);
 			}
+			this.marcadores.push(f);
 			capa.addMarker(m);
+		},
+		modificarMarcador: function(nombre,opciones)
+		{
+			var f = this._traerMarcadorPorNombre(nombre);
+			if(!f) return;
+			var coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion) || f.lonlat;
+			if(typeof(opciones) == "object"){
+				delete opciones["lonlat"];
+				delete opciones["latlng"];
+				delete opciones["lat"];
+				delete opciones["lon"];
+				delete opciones["lng"];
+			}else if($.isArray(opciones)){
+				//esto es por si se llamo a modificarMarcador("nombre",[lat,lon])
+				opciones = {};
+			}
+			var opcionesPrevias = {
+				lonlat: coordenadas,
+				capa:f.layer.nombre,
+				listarCapa: f.layer.displayInLayerSwitcher,
+				nombre: f.nombre,
+				contenido: f.data.popupContentHTML,
+				mostrarConClick: f.marker.events.listeners.click != undefined
+			};
+			var opcionesNuevas = $.extend({},opcionesPrevias,opciones);
+			this.removerMarcador(nombre);
+			this.agregarMarcador(opcionesNuevas);
+		},
+		removerMarcador: function(nombre)
+		{
+			var f = this._traerMarcadorPorNombre(nombre);
+			if(!f) return;
+			//estoy removiendo el evento a mano, por las dudas, no se si esta bien
+			f.marker.events.un({"click": this._marcadorClickHandler,scope:f});
+			this._removerMarcadorPorReferencia(f);
 		},
 		centro: function(lat,lon)
 		{
-			//getter ... ? deberia resolverse en el plugin .centro()
-			// if(undefined == lat && undefined == lon)
-			// {
-				// return [this.mapa.getCenter().lat,this.mapa.getCenter().lon];
-			// }
 			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
 			if(!coordenadas) return;
 			if(this.mapa) this.mapa.panTo(coordenadas);
 		},
+		//deprecated
 		centrarMapa: function(lat,lon,zoom)
 		{
 			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
@@ -578,11 +614,39 @@
 				}
 			}
 		},
-		nivelDeZoom: function(zoom)
+		zoom: function(zoom)
 		{
 			if(this.mapa) this.mapa.zoomTo(zoom);
 		},
+		capaBase: function(capa)
+		{
+			if(arguments.length === 0) return this.mapa.baseLayer.nombre;
+			var c = this._traerCapaPorNombre(capa);
+			console.log(c);
+			if(c) this.mapa.setBaseLayer(c);
+		},
 		/* INTERNAS / PRIVADAS */
+		_removerMarcadorPorReferencia: function(marcador)
+		{
+			//esta funcion solo termina removiendo el marcador
+			//del array interno de ArgenMap, solo debe ejecutarse
+			//cuando todos los procesos previos estan listos
+			this.marcadores[this.marcadores.indexOf(marcador)].destroy();
+			this.marcadores.splice(this.marcadores.indexOf(marcador),1);
+		},
+		_marcadorClickHandler: function(e)
+		{
+			if (this.popup == null) {
+				this.popupClass.prototype.autoSize = true;
+				this.popup = this.createPopup(this.closeBox);
+				e.object.map.addPopup(this.popup);
+				this.popup.show();
+			} else {
+				this.popup.toggle();
+			}
+			// currentPopup = this.popup;
+			OpenLayers.Event.stop(e);
+		},
 		_agregarCapaDeMarcadores: function(opciones)
 		{
 			var o = {
@@ -591,9 +655,20 @@
 			}
 			o = traducirObjeto($.extend({},o,opciones));
 			var c = new OpenLayers.Layer.Markers(o.nombre,o);
-
 			if(this.mapa) this.mapa.addLayer(c);
 			return c;
+		},
+		_traerMarcadorPorNombre: function(nombre)
+		{
+			for(var i = 0; i < this.marcadores.length; i++)
+			{
+				if(this.marcadores[i].nombre == nombre) return this.marcadores[i];
+			}
+			return null;
+		},
+		_traerMarcadorPorReferencia: function(marcador)
+		{
+			return this.marcadores[this.marcadores.indexOf(marcador)];
 		},
 		_traerCapaPorNombre: function(nombre)
 		{
@@ -601,7 +676,7 @@
 			{
 				if(this.capas[i].nombre == nombre) return this.capas[i];
 			}
-			return false;
+			return null;
 		},
 		_traerCapaPorReferencia: function(capa)
 		{
@@ -966,6 +1041,24 @@
 			a.agregarMarcador(opciones);
 		});
 	}
+	$.fn.modificarMarcador = function(nombre,opciones)
+	{
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			a.modificarMarcador(nombre,opciones);
+		});
+	}
+	$.fn.removerMarcador = function(nombre)
+	{
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			a.removerMarcador(nombre);
+		});
+	}
 	$.fn.centro = function(lat,lon)
 	{
 		//getter
@@ -974,7 +1067,7 @@
 		{
 			if( !this.data('argenmap') ) return [];
 			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
-			return ctro ? [ctro.lat,ctro.lon] : [];
+			return ctro ? [ctro.lat,ctro.lon] : null;
 		}
 		//setter
 		return this.each(function(){
@@ -987,18 +1080,34 @@
 	}
 	$.fn.zoom = function(zoom)
 	{
-		if(undefined == zoom)
+		if(arguments.length === 0)
 		{
 			if( !this.data('argenmap') ) return null;
 			var z = this.data('argenmap').mapa.getZoom();
-			return z ? z : null;
+			return $.isNumeric(z) ? z : null;
 		}
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a || !$.isNumeric(zoom)) return;
 			
-			a.nivelDeZoom(zoom);
+			a.zoom(zoom);
+		});
+	}
+	$.fn.capaBase = function(capa)
+	{
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') ) return null;
+			// var z = this.data('argenmap').mapa.getZoom();
+			return this.data('argenmap').capaBase();
+		}
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a || typeof(capa) != "string") return;
+			
+			a.capaBase(capa);
 		});
 	}
 })(jQuery, window);
