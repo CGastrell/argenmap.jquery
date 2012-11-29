@@ -260,13 +260,13 @@
 		//sea menos flexible el mapa predeterminado
 		switch(this.opciones.tipo.toLowerCase())
 		{
+			case 'vacio':
+			case 'blanco':
+			break;
 			case 'satelital':
 			case 'hibridoign':
 				this.opciones.capas.push('baseIGN');
 				this.opciones.capas.push('satelital');
-			break;
-			case 'vacio':
-			case 'blanco':
 			break;
 			case 'baseign':
 			default:
