@@ -84,9 +84,9 @@
 		escucharEventos: 'eventListeners',
 		listarCapa: 'displayInLayerSwitcher'
 	}
-	console.log(document.referrer);
+	// console.log(document.referrer);
 	//hard coded, modificar para la version final
-	var rutaRelativa = "../"; //"http://mapa.ign.gob.ar/cg/argenmap-v2/";
+	var rutaRelativa = "http://mapa.ign.gob.ar/cg/argenmap-v2/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
 	/**
 	 * Traduce las keys de un objeto a traves del mapa de propiedades
