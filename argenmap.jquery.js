@@ -84,29 +84,10 @@
 		escucharEventos: 'eventListeners',
 		listarCapa: 'displayInLayerSwitcher'
 	}
-
-	var rutaRelativa = "http://mapa.ign.gob.ar/cg/argenmap-v2/";
+	console.log(document.referrer);
+	//hard coded, modificar para la version final
+	var rutaRelativa = "../"; //"http://mapa.ign.gob.ar/cg/argenmap-v2/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
-	// var _getScriptLocation = (function() {
-		// var r = new RegExp("(^|(.*?\\/))(argenmap.jquery.js)(\\?|$)"),
-			// s = document.getElementsByTagName('script'),
-			// src, m, l = "";
-		// for(var i=0, len=s.length; i<len; i++) {
-			// src = s[i].getAttribute('src');
-			// if(src) {
-				// m = src.match(r);
-				// if(m) {
-					// rutaRelativa = m[1];
-					// break;
-				// }
-			// }
-		// }
-		// OpenLayers.ImgPath = rutaRelativa;
-		// return (function() { return rutaRelativa; });
-	// })()
-	// $.getScript(rutaRelativa + 'OpenLayers.argenmap.min.js',function(){
-		// OpenLayers.ImgPath = rutaRelativa + "img/";
-	// });
 	/**
 	 * Traduce las keys de un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
@@ -251,10 +232,13 @@
 			listarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa
 		};
+		
 		this.depuracion = opciones.depuracion || false;
 		
 		//merge predefinidos con opciones de usuario
 		this.opciones = $.extend({}, this.predefinidos, opciones);
+		//si se setea un nuevo path, hay que re-setear img path
+		OpenLayers.ImgPath = rutaRelativa + "img/";
 		
 		//esto es para que en la version 1.0 de argenmap.jquery
 		//sea menos flexible el mapa predeterminado
@@ -265,8 +249,8 @@
 			break;
 			case 'satelital':
 			case 'hibridoign':
-				this.opciones.capas.push('baseIGN');
 				this.opciones.capas.push('satelital');
+				this.opciones.capas.push('baseIGN');
 			break;
 			case 'baseign':
 			default:
@@ -337,6 +321,9 @@
 			-limpiar el dom element
 			-nulificar la clase para que el gc(?) se encargue
 			-nulificar el data('argenmap') del dom element
+			... por ahora me resulta mas facil destruir el objeto
+			... desde afuera, si lo hago desde aca queda una referencia perdida
+			... creo. $(selector).removerArgenmap() por ahora es lo mas efectivo
 			*/
 		},
 		actualizar: function()
@@ -380,14 +367,14 @@
 		{
 			var predeterminadasWms = {
 				singleTile: false,
-				transparente: false,
-				formato: "image/jpeg",
+				transparente: true,
+				formato: "image/png",
 				version: "1.1.1",
 				servicio: "wms",
 				srs: this.opciones.proyeccion,
 				noMagic: true,
-				esCapaBase: true,
-				mostrarAlCargar:true,
+				esCapaBase: false,
+				mostrarAlCargar: true,
 				proyeccion: this.opciones.proyeccion
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
@@ -758,7 +745,6 @@
 						servicio: "wms",
 						srs: this.opciones.proyeccion
 					});
-
 					o = traducirObjeto({
 						nombre: "IGN",
 						noMagic: true,
@@ -814,10 +800,10 @@
 					//no esta en spherical mercator
 					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913")
 						return c;
-						
+					
 					if(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'))//este OR no esta bien
 					{
-						// console.log('tierra llamando a google');
+						console.log('tierra llamando a google');
 						//async load de api de google segun guias
 						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
 						window["argenmapGoogleAPICallback"] = $.proxy(function()
@@ -831,6 +817,7 @@
 						script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback";
 						document.body.appendChild(script);
 					}else{
+						console.log('google on');
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
 						var o = {
 							nombre:"Satélite",
