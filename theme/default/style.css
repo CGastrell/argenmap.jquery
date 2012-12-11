@@ -496,5 +496,5 @@ a.olControlZoomOut {
  * ArgenMap: kludge to make it work with bootstrap
  */
 img.olTileImage {
-	max-width: auto;
+	max-width: none;
 }
