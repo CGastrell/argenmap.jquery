@@ -86,7 +86,7 @@
 	}
 	// console.log(document.referrer);
 	//hard coded, modificar para la version final
-	var rutaRelativa = "http://mapa.ign.gob.ar/cg/argenmap-v2/";
+	var rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
 	/**
 	 * Traduce las keys de un objeto a traves del mapa de propiedades
