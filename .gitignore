@@ -12,3 +12,6 @@ Thumbs.db
 
 #github pages (gh-pages branch)
 docs/
+
+#cosas viejas
+*.old
