@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <title>ArgenMap · Guía</title>
@@ -131,12 +131,12 @@
 &lt;html&gt;
   &lt;head&gt;
   &lt;!-- jQuery, vinculado directo a cdn de google --&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
   &lt;!-- ArgenMap v2, vinculado directo desde el Instituto Geogr&#225;fico Nacional --&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://mapa.ign.gob.ar/cg/argenmap-v2/build&quot;&gt;&lt;/script&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js&quot;&gt;&lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;div id=&quot;prueba&quot; style=&quot;height:450px;&quot;&gt;&lt;/div&gt;
+    &lt;div id=&quot;mapa&quot; style=&quot;height:450px;&quot;&gt;&lt;/div&gt;
   &lt;/body&gt;
 &lt;/html&gt;</pre>
 					<p>Tal vez tu página no se ve así, pero lo importante es que incluyas
@@ -145,9 +145,9 @@
 &lt;head&gt;
 ...
 &lt;!-- jQuery, vinculado directo a cdn de google --&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
 &lt;!-- ArgenMap v2, vinculado directo desde el Instituto Geogr&#225;fico Nacional --&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;http://mapa.ign.gob.ar/cg/argenmap-v2/build&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js&quot;&gt;&lt;/script&gt;
 ...
 &lt;/head&gt;</pre>
 					<p>...luego colocas un DIV donde quieres mostrar un mapa. Es importante
@@ -220,7 +220,7 @@ $(document).ready(function(){
 					básica será instanciar un mapa en el/los selector/es indicados con jQuery</p>
 					
 					<div class="alert alert-info"><h2>$(<em>selector</em>).argenmap([opciones])</h2></div>
-          <p>Las opciones del mapa pueden ser incluidas al momento de inicializarlo
+          <p>Las opciones del mapa pueden ser incluídas al momento de inicializarlo
 					mediante un objeto de JavaScript, o bien pueden ser modificadas luego
 					a través de llamadas al mismo selector.</p>
           <div class="row-fluid">
@@ -523,7 +523,7 @@ $('#prueba').argenmap({tipo:satelital})
 					<p>Las opciones que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:
 						<dl class="dl-horizontal">
 							<dt><code>url</code></dt>
-							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms</em></dd>
+							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://wms.ign.gob.ar/geoserver/wms?</em></dd>
 							<dt><code>capas</code></dt>
 							<dd>cadena de texto de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo:
 							<em>"departamentos, rios, ciudades"</em></dd>
@@ -851,8 +851,7 @@ $('#prueba').argenmap().agregarMarcador({
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
 
-    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-argenmap-closure.js"></script>
-    <script src="../argenmap.jquery.js"></script>
+    <script src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
     <!-- Placed at the end of the document so the pages load faster 
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
     <script src="bootstrap/js/bootstrap-alert.js"></script>
