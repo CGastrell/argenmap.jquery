@@ -498,3 +498,7 @@ a.olControlZoomOut {
 img.olTileImage {
 	max-width: none !important;
 }
+.labelSpan {
+display:inline;
+font-size:inherit;
+}
