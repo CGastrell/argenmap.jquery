@@ -328,10 +328,10 @@
 		},
 		actualizar: function()
 		{
-			var h = this.$el.children('div.argenmapMapHeader');
+
 			var f = this.$el.children('div.argenmapMapFooter');
 			var c = this.$el.children('div.argenmapMapCanvas');
-			c.css('height',(this.$el.innerHeight() - f.outerHeight() - h.outerHeight()) + 'px');
+			c.css('height',(this.$el.innerHeight() - f.outerHeight() ) + 'px');
 			if(this.mapa) this.mapa.updateSize();
 		},
 		agregarCapa: function(opciones,extras)
@@ -803,7 +803,6 @@
 					
 					if(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'))//este OR no esta bien
 					{
-						console.log('tierra llamando a google');
 						//async load de api de google segun guias
 						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
 						window["argenmapGoogleAPICallback"] = $.proxy(function()
@@ -817,7 +816,6 @@
 						script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback";
 						document.body.appendChild(script);
 					}else{
-						console.log('google on');
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
 						var o = {
 							nombre:"Satélite",
@@ -866,31 +864,24 @@
 			this.$el.html("");//vaciar el contenedor
 			this.$el.css('padding',0);//reset el padding, por si las flies
 			var alto = this.$el.innerHeight();
-			var a = $('<a target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs" />')
-				.append('<img src="http://www.ign.gob.ar/argenmap/argenmap.jquery/img/ign-logo-255x45.png" />');
-			var h = $('<div class="argenmapMapHeader" />')
-				.css({
-					'background-color': 'rgb(0, 54, 79)',
-					height: '50px',
-					color: 'white',
-					'text-align': 'left',
-					padding: 0,
-					border:0,
-					margin:0
-				})
-				.append(a);
+			var a = $('<a style="float:left;" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs" />')
+				.append('<img src="http://www.ign.gob.ar/argenmap/argenmap.jquery/img/logoignsintexto-25px.png" />');
+
 			var f = $('<div class="argenmapMapFooter" />')
 				.css({
 					'font-family': 'Arial',
-					color: 'white',
-					'background-color': 'rgb(0, 54, 79)',
+					'color': 'white',
+					'background-color': '#003964',
 					'font-size': '10px',
 					'text-align': 'right',
-					height: '20px',
-					padding: '2px 5px',
-					margin:0,
-					border:0})
-				.append('<a style="color:white;text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/datosvectoriales.html">Topónimos, datos vectoriales - 2012 IGN Argentina, Calles - OpenStreetMap</a>');
+					'height': '30px',
+					'line-height': '30px',
+					'vertical-align':'middle',
+					'padding': '2px 5px',
+					'margin':0,
+					'border':0
+				}).append('<a style="color:white;text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/datosvectoriales.html">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>')
+				.append(a);
 			var c = $('<div class="argenmapMapCanvas" />')
 				.css({
 					padding:0,//reset de padding, de nuevo, por si las flies
@@ -898,7 +889,7 @@
 					border:0,//idem
 					width: '100%',
 					'min-height': '150px',
-					height:(alto - f.outerHeight() - h.outerHeight()) + 'px',
+					height:(alto - f.outerHeight() ) + 'px',
 					position: 'relative',
 					'background-color': 'rgb(229, 227, 223)',
 					overflow: 'hidden'
@@ -909,7 +900,7 @@
 						this.actualizar();
 					},this)
 				);
-				this.$el.append(h).append(c).append(f);
+				this.$el.append(c).append(f);
 		}
 	}
 	$.isNumeric = function( obj ) {
