@@ -239,6 +239,7 @@
 		this.opciones = $.extend({}, this.predefinidos, opciones);
 		//si se setea un nuevo path, hay que re-setear img path
 		OpenLayers.ImgPath = rutaRelativa + "img/";
+		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
 		
 		//esto es para que en la version 1.0 de argenmap.jquery
 		//sea menos flexible el mapa predeterminado
