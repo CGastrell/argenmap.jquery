@@ -721,7 +721,7 @@
 			{
 				case "baseign":
 					p = traducirObjeto({
-						capas: "capabasesigign",
+						capas: "capabaseargenmap",
 						formato: "image/png",
 						singleTile: false,
 						transparente: false,
