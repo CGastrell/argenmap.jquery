@@ -881,7 +881,7 @@
 					'padding': '2px 5px',
 					'margin':0,
 					'border':0
-				}).append('<a style="color:white;text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/datosvectoriales.html">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>')
+				}).append('<a style="color:white;text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>')
 				.append(a);
 			var c = $('<div class="argenmapMapCanvas" />')
 				.css({
