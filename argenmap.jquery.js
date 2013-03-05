@@ -735,7 +735,7 @@
 						noMagic: true,
 						proyeccion: this.opciones.proyeccion
 					});
-					c = new OpenLayers.Layer.WMS("Base IGN","http://www.ign.gob.ar/wms",p,o);
+					c = new OpenLayers.Layer.WMS("Base IGN",["http://www.ign.gob.ar/wms","http://190.220.8.198/wms"]  ,p,o);
 				break;
 				case "ign":
 					p = traducirObjeto({
@@ -754,7 +754,7 @@
 						proyeccion: this.opciones.proyeccion
 					});
 					o = $.extend({},o,extras);
-					c = new OpenLayers.Layer.WMS("IGN","http://www.ign.gob.ar/wms",p,o);
+					c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
 				break;
 				case "bing":
 					//corte temprano para evitar instancia de capa si el mapa
