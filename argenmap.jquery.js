@@ -1,40 +1,3 @@
-/*
- *  OpenLayers Plugin for JQuery 
- *  Version   : 0.1
- *  Date      : 2012-08-13
- *  Licence   : GPL v3 : http://www.gnu.org/licenses/gpl.html  
- *  Author    : IGN
- *  Contact   : cgastrell@gmail.com
- *  Web site  : http://www.ign.gob.ar
- *   
- *  Copyright (c) -2012 IGN
- *  All rights reserved.
- *   
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are met:
- * 
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   - Redistributions in binary form must reproduce the above 
- *     copyright notice, this list of conditions and the following 
- *     disclaimer in the documentation and/or other materials provided 
- *     with the distribution.
- *   - Neither the name of the author nor the names of its contributors 
- *     may be used to endorse or promote products derived from this 
- *     software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
- * POSSIBILITY OF SUCH DAMAGE.
- */
 (function ($, window, undefined) {
 	//-----------------------------------------------------------------------//
 	// jQuery event
@@ -230,7 +193,8 @@
 			// agregarBaseSatelite: false,
 			// agregarBaseIGN: true,
 			listarCapaDeMarcadores: false,
-			rutaAlScript: rutaRelativa
+			rutaAlScript: rutaRelativa,
+			mapaFijo: false //...una opcion para sacar controles de navegacion?
 		};
 		
 		this.depuracion = opciones.depuracion || false;
@@ -248,6 +212,7 @@
 			case 'vacio':
 			case 'blanco':
 			break;
+			case 'satelite':
 			case 'satelital':
 			case 'hibridoign':
 				this.opciones.capas.push('satelital');
@@ -460,6 +425,28 @@
 			});
 			if(this.mapa) this.mapa.addLayer(l);
 		},
+		agregarCapaBaseWMS: function(opciones)
+		{
+			var predeterminadasWms = {
+				singleTile: false,
+				transparente: false,
+				formato: "image/jpeg",
+				version: "1.1.1",
+				servicio: "wms",
+				srs: this.opciones.proyeccion,
+				noMagic: true,
+				esCapaBase: true,
+				mostrarAlCargar: true,
+				proyeccion: this.opciones.proyeccion
+			};
+			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
+			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
+			if(this.mapa) this.mapa.addLayer(l);
+			if(l.options.isBaseLayer && o.mostrarAlCargar) this.mapa.setBaseLayer(l);
+		},
+		agregarCapaBing: function(opciones)
+		{
+		},
 		agregarMarcador: function(opciones)
 		{
 			var coordenadas;
@@ -499,17 +486,6 @@
 			{
 				o.eventos = {
 					click: this._marcadorClickHandler
-					// click: function (e) {
-						// if (this.popup == null) {
-							// this.popupClass.prototype.autoSize = true;
-							// this.popup = this.createPopup(this.closeBox);
-							// e.object.map.addPopup(this.popup);
-							// this.popup.show();
-						// } else {
-							// this.popup.toggle();
-						// }
-						// OpenLayers.Event.stop(e);
-					// }
 				}
 			}
 			var capa = this._traerCapaPorNombre(o.capa);
@@ -584,6 +560,11 @@
 		},
 		centro: function(lat,lon)
 		{
+			if(lat == undefined && lon == undefined)
+			{
+				var a = this.mapa.center.transform(this.opciones.proyeccion,"EPSG:4326");
+				return [a.lat,a.lon];
+			}
 			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
 			if(!coordenadas) return;
 			if(this.mapa) this.mapa.panTo(coordenadas);
@@ -604,6 +585,7 @@
 		},
 		zoom: function(zoom)
 		{
+			if(arguments.length === 0) return this.mapa.zoom;
 			if(this.mapa) this.mapa.zoomTo(zoom);
 		},
 		capaBase: function(capa)
@@ -957,6 +939,22 @@
 			a.agregarCapaWMS(opciones);
 		});
 	}
+	$.fn.agregarCapaBaseWMS = function(opciones)
+	{
+		//chainability
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			// var capa = null;
+			// capa = a._crearCapaWMS(opciones);
+			// if(capa) a._agregarCapa(capa);
+			a.agregarCapaWMS(opciones);
+		});
+	}
+	$.fn.agregarCapaBing = function(opciones)
+	{
+	}
 	$.fn.agregarCapaKML = function(opciones)
 	{
 		//chainability
@@ -1044,7 +1042,7 @@
 		//el getter/lector solo devuelve la primer coincidencia de selector
 		if(arguments.length === 0)
 		{
-			if( !this.data('argenmap') ) return [];
+			if( !this.data('argenmap') ) return null;
 			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
 			return ctro ? [ctro.lat,ctro.lon] : null;
 		}

@@ -22,24 +22,154 @@
         <script>
 				var t;
 				$(function(){
-					console.log(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'));
-					//inicializamos el mapa indicando donde esta el script relativo a este archivo
-					//esto es necesario solo si vamos a usar marcadores, ya que el marcador
-					//necesita acceder a una imagen y esta se encuentra en el directorio img/
-					//que se descarga por defecto junto al script
-					$('#prueba').argenmap({tipo:'satelital'});
+					//console.log(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'));
+					//$('#prueba').argenmap();
 					
-					//sin ningun parametro el marcador se ubica en el centro del mapa
-					//$('#prueba').agregarMarcador();
+					// $('#prueba').agregarMarcador({
+						// nombre: "test",
+						// lonlat:[-34,-58],
+						// contenido:"<h1>hola</h1><p>este es un parrafo y tiene cierto largo</p>",
+						// mostrarConClick:true
+					// });
+					/* metodo alternativo de poner un marker... problematico, pero es para
+					sacarse de encima el Layer.Markers*/
+					/*
+					var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
 					
-					//$('#prueba').agregarMarcador([-35,-57]);
-					$('#prueba').agregarMarcador({
-						nombre: "test",
-						lonlat:[-34,-58],
-						contenido:"<h1>hola</h1><p>este es un parrafo y tiene cierto largo</p>",
-						mostrarConClick:true
+					var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+					style_mark.fillOpacity = 1;
+					style_mark.graphicOpacity = 1;
+					style_mark.graphicWidth = 32;
+					style_mark.graphicHeight = 39;
+					style_mark.graphicXOffset = -7;
+					style_mark.graphicYOffset = -35;
+					style_mark.externalGraphic = $('#prueba').data('argenmap').opciones.rutaAlScript + "img/PinDown1.png";
+					// title only works in Firefox and Internet Explorer
+					style_mark.title = "this is a test tooltip";
+
+					var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
+							style: layer_style,
+							renderers: OpenLayers.Layer.Vector.prototype.renderers,
+							displayInLayerSwitcher: false
 					});
+					var point3 = new OpenLayers.Geometry.Point(-57, -36).transform('EPSG:4326','EPSG:3857');
+					//console.log(point3);
+					var pointFeature3 = new OpenLayers.Feature.Vector(point3,null,style_mark);
+					
+					$('#prueba').data('argenmap').mapa.addLayer(vectorLayer);
+					vectorLayer.addFeatures([pointFeature3]);
+					*/
+					var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+					layer_style.fillOpacity = 0.1;
+					layer_style.graphicOpacity = 1;
+					layer_style.fillColor = "blue",
+					layer_style.strokeColor = "blue",
+					layer_style.strokeWidth = 2,
+					//layer_style.strokeDashstyle = "dashdot",
+					layer_style.pointRadius = 2,
+					layer_style.pointerEvents = "visiblePainted",
+
+					t = new OpenLayers.Layer.Vector("Simple Geometry", {
+							style: layer_style,
+							renderers: OpenLayers.Layer.Vector.prototype.renderers,
+							displayInLayerSwitcher: true
+					});
+					//$('#prueba').data('argenmap').mapa.addLayer(t);
 				});
+				function marcarCarta(carta,escala)
+				{
+					t.removeAllFeatures();
+					carta = carta.toString();
+					escala = parseInt(escala);
+					var lat,lon,ne,nw,sw,se;
+					lat = -parseFloat(carta[0] + carta[1]);
+					lon = -parseFloat(carta[2] + carta[3]);
+					switch(escala)
+					{
+						case 500:
+							nw = new OpenLayers.LonLat(lon - 1.5, lat - 1).transform('EPSG:4326','EPSG:3857');
+							ne = new OpenLayers.LonLat(lon + 1.5, lat - 1).transform('EPSG:4326','EPSG:3857');
+							se = new OpenLayers.LonLat(lon + 1.5, lat + 1).transform('EPSG:4326','EPSG:3857');
+							sw = new OpenLayers.LonLat(lon - 1.5, lat + 1).transform('EPSG:4326','EPSG:3857');
+							break;
+						case 250:
+							var cuadrante250 = carta.split("-")[1];
+							switch(cuadrante250)
+							{
+								case "I":
+									nw = new OpenLayers.LonLat(lon - 1.5, lat + 1).transform('EPSG:4326','EPSG:3857');
+									ne = new OpenLayers.LonLat(lon, lat + 1).transform('EPSG:4326','EPSG:3857');
+									se = new OpenLayers.LonLat(lon, lat).transform('EPSG:4326','EPSG:3857');
+									sw = new OpenLayers.LonLat(lon - 1.5, lat).transform('EPSG:4326','EPSG:3857');
+									break;
+								case "II":
+									nw = new OpenLayers.LonLat(lon, lat + 1).transform('EPSG:4326','EPSG:3857');
+									ne = new OpenLayers.LonLat(lon + 1.5, lat + 1).transform('EPSG:4326','EPSG:3857');
+									se = new OpenLayers.LonLat(lon + 1.5, lat).transform('EPSG:4326','EPSG:3857');
+									sw = new OpenLayers.LonLat(lon, lat).transform('EPSG:4326','EPSG:3857');
+									break;
+								case "III":
+									nw = new OpenLayers.LonLat(lon - 1.5, lat).transform('EPSG:4326','EPSG:3857');
+									ne = new OpenLayers.LonLat(lon, lat).transform('EPSG:4326','EPSG:3857');
+									se = new OpenLayers.LonLat(lon, lat - 1).transform('EPSG:4326','EPSG:3857');
+									sw = new OpenLayers.LonLat(lon - 1.5, lat - 1).transform('EPSG:4326','EPSG:3857');
+									break;
+								case "IV":
+									nw = new OpenLayers.LonLat(lon, lat).transform('EPSG:4326','EPSG:3857');
+									ne = new OpenLayers.LonLat(lon + 1.5, lat).transform('EPSG:4326','EPSG:3857');
+									se = new OpenLayers.LonLat(lon + 1.5, lat - 1).transform('EPSG:4326','EPSG:3857');
+									sw = new OpenLayers.LonLat(lon, lat - 1).transform('EPSG:4326','EPSG:3857');
+									break;
+							}
+							break;
+						case 100:
+							var cuadrante100 = parseInt(carta.split("-")[1]) - 1;//base cero
+							var ancho = 3 / 6;
+							var alto = 2 / 6;
+							var columna = cuadrante100 % 6;
+							var fila = cuadrante100 / 6 << 0;
+							lon = lon - 1.5 + columna * ancho; // lon Oeste
+							lat = lat - 1 + fila * alto; // lat Norte
+							nw = new OpenLayers.LonLat(lon, lat).transform('EPSG:4326','EPSG:3857');
+							ne = new OpenLayers.LonLat(lon + ancho, lat).transform('EPSG:4326','EPSG:3857');
+							se = new OpenLayers.LonLat(lon + ancho, lat - alto).transform('EPSG:4326','EPSG:3857');
+							sw = new OpenLayers.LonLat(lon, lat - alto).transform('EPSG:4326','EPSG:3857');
+							break;
+						case 50:
+							var cuadrante100 = parseInt(carta.split("-")[1]) - 1;//base cero
+							var ancho100 = 3 / 6;
+							var alto100 = 2 / 6;
+							var columna = cuadrante100 % 6;
+							var fila = cuadrante100 / 6 << 0;
+							lon = lon - 1.5 + columna * ancho100;
+							lat = lat - 1 + fila * alto100;
+							var ancho50 = ancho100 / 2;
+							var alto50 = alto100 / 2;
+							columna = cuadrante50 % 2;
+							fila = cuadrante50 / 2 << 0;
+							lon = lon + ancho50 * columna;
+							lat = lat + alto50 * fila;
+							var cuadrante50 = parseInt(carta.split("-")[2]) - 1;//base cero
+							nw = new OpenLayers.LonLat(lon, lat).transform('EPSG:4326','EPSG:3857');
+							ne = new OpenLayers.LonLat(lon + ancho50, lat).transform('EPSG:4326','EPSG:3857');
+							se = new OpenLayers.LonLat(lon + ancho50, lat - alto50).transform('EPSG:4326','EPSG:3857');
+							sw = new OpenLayers.LonLat(lon, lat - alto50).transform('EPSG:4326','EPSG:3857');
+							break;
+					}
+					var points = [
+						new OpenLayers.Geometry.Point(nw.lon,nw.lat),
+						new OpenLayers.Geometry.Point(ne.lon,ne.lat),
+						new OpenLayers.Geometry.Point(se.lon,se.lat),
+						new OpenLayers.Geometry.Point(sw.lon,sw.lat),
+						new OpenLayers.Geometry.Point(nw.lon,nw.lat)
+					];
+					console.log(points);
+					var lr = new OpenLayers.Geometry.LinearRing(points);
+					var polyFeature = new OpenLayers.Feature.Vector(
+						new OpenLayers.Geometry.Polygon([lr])
+					);
+					t.addFeatures([polyFeature]);
+				}
 				</script>
     </body>
 </html>
