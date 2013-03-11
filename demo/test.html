@@ -23,14 +23,15 @@
 				var t;
 				$(function(){
 					//console.log(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'));
-					//$('#prueba').argenmap();
+					$('#prueba').argenmap();
 					
-					// $('#prueba').agregarMarcador({
-						// nombre: "test",
-						// lonlat:[-34,-58],
-						// contenido:"<h1>hola</h1><p>este es un parrafo y tiene cierto largo</p>",
-						// mostrarConClick:true
-					// });
+					$('#prueba').agregarMarcador({
+						nombre: "test",
+						lonlat:[-34,-58],
+						contenido:"<h1>hola</h1><p>este es un parrafo y tiene cierto largo</p>",
+						mostrarConClick:true,
+						icono:"hueco"
+					});
 					/* metodo alternativo de poner un marker... problematico, pero es para
 					sacarse de encima el Layer.Markers*/
 					/*

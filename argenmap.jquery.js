@@ -478,7 +478,8 @@
 				listarCapa: false,
 				nombre: "Marcador",
 				contenido: "",
-				mostrarConClick: true
+				mostrarConClick: true,
+				icono: ''
 			};
 			var o = $.extend({},predeterminadasMarcador,opciones);
 			if(o.contenido == "") o.mostrarConClick = false;
@@ -495,11 +496,7 @@
 			capa.displayInLayerSwitcher = o.listarCapa;
 			var opcionesFeature = {
 				lonlat: coordenadas,
-				icon:new OpenLayers.Icon(
-					this.opciones.rutaAlScript + "img/PinDown1.png",
-					new OpenLayers.Size(32,39),
-					new OpenLayers.Pixel(-7,-35)
-				),
+				icon:this._crearIconoPredeterminado(o.icono),
 				//popupSize: new OpenLayers.Size(200,130),
 				popupContentHTML: opciones.contenido,
 				overflow: 'auto'
@@ -596,6 +593,27 @@
 			if(c) this.mapa.setBaseLayer(c);
 		},
 		/* INTERNAS / PRIVADAS */
+		_crearIconoPredeterminado: function(icono)
+		{
+			var a = null;
+			switch(icono)
+			{
+				case "hueco":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "marcadorHueco.png",
+						new OpenLayers.Size(29,29),
+						new OpenLayers.Pixel(-15,-15)
+					);
+				break;
+				default:
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "PinDown1.png",
+						new OpenLayers.Size(32,39),
+						new OpenLayers.Pixel(-7,-35)
+					);
+			}
+			return a;
+		},
 		_removerMarcadorPorReferencia: function(marcador)
 		{
 			//esta funcion solo termina removiendo el marcador
