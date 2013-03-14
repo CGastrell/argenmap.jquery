@@ -502,3 +502,11 @@ img.olTileImage {
 display:inline;
 font-size:inherit;
 }
+
+/*
+ * Evito que un max-width mate el popucito
+ * (Bootstrap por ej, setea el max-width de img)
+ */
+.olPopup img {
+	max-width:none;
+}
