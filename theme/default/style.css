@@ -508,5 +508,5 @@ font-size:inherit;
  * (Bootstrap por ej, setea el max-width de img)
  */
 .olPopup img {
-	max-width:none;
+	max-width:none !important;
 }
