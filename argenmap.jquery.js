@@ -405,7 +405,9 @@
 					f.geometry.getBounds().getCenterLonLat(),
 					new OpenLayers.Size(100,100),
 					"<h2>"+f.attributes.name + "</h2>" + f.attributes.description,
-					null, true, alCerrarCuadro);
+					null, true, alCerrarCuadro
+				);
+				cuadro.autoSize=true;
 				f.cuadro = cuadro;
 				this.map.addPopup(cuadro);
 			};
