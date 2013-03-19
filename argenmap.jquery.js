@@ -721,12 +721,14 @@
 			{
 				case "baseign":
 					p = traducirObjeto({
-						capas: "capabaseargenmap",
+						layername: "capabaseargenmap",
 						formato: "image/png",
 						singleTile: false,
 						transparente: false,
 						version: "1.1.1",
 						servicio: "wms",
+						serviceVersion:"",
+						type:'png',
 						srs: this.opciones.proyeccion
 					});
 					o = traducirObjeto({
@@ -735,26 +737,29 @@
 						noMagic: true,
 						proyeccion: this.opciones.proyeccion
 					});
-					c = new OpenLayers.Layer.WMS("Base IGN",["http://www.ign.gob.ar/wms","http://190.220.8.198/wms"]  ,p,o);
+
+					c = new OpenLayers.Layer.TMS("Base IGN",["http://www.ign.gob.ar/tms/","http://190.220.8.198/tms/"]  ,p);					
 				break;
 				case "ign":
 					p = traducirObjeto({
-						capas: "capabasesigign",
-						formato: "image/png",
+						layername: "capabasesigign",
 						transparente: true,
-						version: "1.1.1",
-						servicio: "wms",
-						srs: this.opciones.proyeccion
-					});
-					o = traducirObjeto({
+						type:'png',
+						serviceVersion: "",
+						esCapaBase: false,						
 						nombre: "IGN",
 						noMagic: true,
 						singleTile: false,
-						esCapaBase: false,
-						proyeccion: this.opciones.proyeccion
+						proyeccion: this.opciones.proyeccion						
 					});
-					o = $.extend({},o,extras);
-					c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
+					
+					//c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
+					c = new OpenLayers.Layer.TMS("IGN",["http://www.ign.gob.ar/tms/","http://190.220.8.198/tms/"] ,p);					
+					/*
+					 * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
+					 * así que la agrego a manopla.
+					 */
+					c.displayInLayerSwitcher = false;					
 				break;
 				case "bing":
 					//corte temprano para evitar instancia de capa si el mapa
