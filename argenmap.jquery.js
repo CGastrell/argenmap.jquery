@@ -899,7 +899,7 @@
 					'min-height': '150px',
 					height:(alto - f.outerHeight() ) + 'px',
 					position: 'relative',
-					'background-color': 'rgb(229, 227, 223)',
+					'background-color': '#94D0D2',
 					overflow: 'hidden'
 				});
 				this.divMapa = c.get(0);
