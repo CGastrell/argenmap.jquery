@@ -1,4 +1,9 @@
 (function ($, window, undefined) {
+	IGN_CACHES = [
+		'http://190.220.8.216/tms/',
+		'http://sig.ign.gob.ar/tms/',
+		'http://www.ign.gob.ar/tms/'
+	];	
 	//-----------------------------------------------------------------------//
 	// jQuery event
 	//-----------------------------------------------------------------------//
@@ -740,7 +745,7 @@
 						proyeccion: this.opciones.proyeccion
 					});
 
-					c = new OpenLayers.Layer.TMS("Base IGN",["http://www.ign.gob.ar/tms/","http://190.220.8.198/tms/"]  ,p);					
+					c = new OpenLayers.Layer.TMS("Base IGN",IGN_CACHES  ,p);					
 				break;
 				case "ign":
 					p = traducirObjeto({
@@ -756,7 +761,7 @@
 					});
 					
 					//c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
-					c = new OpenLayers.Layer.TMS("IGN",["http://www.ign.gob.ar/tms/","http://190.220.8.198/tms/"] ,p);					
+					c = new OpenLayers.Layer.TMS("IGN",IGN_CACHES ,p);					
 					/*
 					 * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
 					 * así que la agrego a manopla.
