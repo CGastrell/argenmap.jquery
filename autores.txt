@@ -1,0 +1,14 @@
+Contribuyen al código, documentación y facha de argenmap.jquery v2:
+
+Christian Gastrell
+Oscar López
+
+
+Argenmap.jQuery v2 y su documentación se distribuyen bajo la licencia explicitada en el archivo LICENCIA.
+
+La documentación está estilizada en base a Bootstrap, de Twitter
+(http://twitter.github.com/bootstrap/). Bootstrap se distribuye bajo la
+licencia Apache License v2.0.
+
+Happy Hacking!
+
