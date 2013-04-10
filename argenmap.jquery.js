@@ -629,6 +629,9 @@
 			this.marcadores[this.marcadores.indexOf(marcador)].destroy();
 			this.marcadores.splice(this.marcadores.indexOf(marcador),1);
 		},
+		/**
+		 * Handler para el click de los marcadores
+		 */
 		_marcadorClickHandler: function(e)
 		{
 			if (this.popup == null) {
@@ -642,6 +645,10 @@
 			// currentPopup = this.popup;
 			OpenLayers.Event.stop(e);
 		},
+		/**
+		 * Agrega una capa OpenLayers.Layer.Markers
+		 * @return OpenLayers.Layer.Markers
+		 */
 		_agregarCapaDeMarcadores: function(opciones)
 		{
 			var o = {
@@ -703,7 +710,7 @@
 		/*
 		 * Crea capas predefinidas y las adosa al array this.capas
 		 * Esta funcion NO agrega las capa al mapa, solo las crea y las deja en el array
-		 * @param array Las capa predefinidas a crear (IGN, baseIGN, Google, Bing, KML)
+		 * @param array Las capas predefinidas a crear (IGN, baseIGN, Google, Bing, KML)
 		 */
 		_crearCapasPredefinidas: function(capasArray)
 		{
@@ -744,6 +751,7 @@
 						noMagic: true,
 						proyeccion: this.opciones.proyeccion
 					});
+					$.extend(p,o);
 
 					c = new OpenLayers.Layer.TMS("Base IGN",IGN_CACHES  ,p);					
 				break;
