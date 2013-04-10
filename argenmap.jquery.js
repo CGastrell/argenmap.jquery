@@ -2,7 +2,8 @@
 	IGN_CACHES = [
 		'http://190.220.8.216/tms/',
 		'http://sig.ign.gob.ar/tms/',
-		'http://www.ign.gob.ar/tms/'
+		'http://www.ign.gob.ar/tms/',
+		'http://mapaabierto.aws.af.cm/tms/'
 	];	
 	//-----------------------------------------------------------------------//
 	// jQuery event
@@ -912,7 +913,7 @@
 					'min-height': '150px',
 					height:(alto - f.outerHeight() ) + 'px',
 					position: 'relative',
-					'background-color': '#94D0D2',
+					'background-color': 'rgb(229, 227, 223)',
 					overflow: 'hidden'
 				});
 				this.divMapa = c.get(0);
