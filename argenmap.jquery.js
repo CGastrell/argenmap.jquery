@@ -281,9 +281,9 @@
 					//el canvas del mapa
 					documentDrag:true,
 					mouseWheelOptions: {
-						interval: 400,
+						interval: 100,
 						cumulative:false,
-						maxDelta:1
+						maxDelta:6
 					}
 				}),
 				new OpenLayers.Control.PinchZoom()
