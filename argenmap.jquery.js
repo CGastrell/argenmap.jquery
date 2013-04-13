@@ -744,6 +744,7 @@
 						servicio: "wms",
 						serviceVersion:"",
 						type:'png',
+						transitionEffect: 'resize',
 						srs: this.opciones.proyeccion
 					});
 					o = traducirObjeto({
@@ -766,6 +767,7 @@
 						nombre: "IGN",
 						noMagic: true,
 						singleTile: false,
+						transitionEffect: 'resize',
 						proyeccion: this.opciones.proyeccion						
 					});
 					
