@@ -259,13 +259,40 @@
 			this.mapa.addControls([
 				new OpenLayers.Control.LayerSwitcher(),
 				new OpenLayers.Control.Navigation({
+					//Esto no causa efecto
+					//creo que porque el Map
+					//ya tiene un control Navigation
 					dragPanOptions: {
-						enableKinetic: true
+						enableKinetic: true,
+						kineticInterval: 400
 					},
-					documentDrag:true
+					//permito que el mapa se mueve 
+					//aunque el mouse haya dejado 
+					//el canvas del mapa
+					documentDrag:true,
+					//Esto no causa efecto
+					//creo que porque el Map
+					//ya tiene un control Navigation
+					mouseWheelOptions: {
+						interval: 100,
+						cumulative:false,
+						maxDelta:1
+					}
 				}),
 				new OpenLayers.Control.PinchZoom()
 			]);
+			/*
+			 * KLUDGE!
+			Busco el control Navigation y modifico lo necesario
+			para aminorar la velocidad del zoom del mousewheel.
+			No anda bien hacer esto pasándole los parámetros 
+			a OpenLayers.Control.Navigation en el constructor.
+			Quizás esto se solucione pasando estos controles a Map
+			en las options así no crear el Navigation por default.
+			*/
+			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
+			nav.handlers.wheel.interval=400;
+			nav.handlers.wheel.cumulative=false;
 
 			// eventos
 			this.mapa.events.on({
