@@ -258,9 +258,12 @@
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
 			this.mapa.addControls([
 				new OpenLayers.Control.LayerSwitcher(),
-				new OpenLayers.Control.Navigation(
-            {dragPanOptions: {enableKinetic: true}}
-        ),
+				new OpenLayers.Control.Navigation({
+					dragPanOptions: {
+						enableKinetic: true
+					},
+					documentDrag:true
+				}),
 				new OpenLayers.Control.PinchZoom()
 			]);
 
