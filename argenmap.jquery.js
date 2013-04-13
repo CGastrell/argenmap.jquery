@@ -288,6 +288,12 @@
 				}),
 				new OpenLayers.Control.PinchZoom()
 			]);
+			/*
+			 * Aumento la desaceleración del kinetic.
+			 * El valor predeterminado es muy bajo
+			 */
+			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
+			nav.dragPan.kinetic.deceleration=0.007
 
 			// eventos
 			this.mapa.events.on({
