@@ -256,6 +256,16 @@
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			// opcionesDeMapa.displayProjection = new OpenLayers.Projection("EPSG:4326");
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
+			/*
+			 * KLUDGE!
+			Saco el control Navigation predeterminado
+			porque si no no le importan las opciones
+			del control Navigation agregado a travéz
+			de addControls()
+			*/
+			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
+			this.mapa.removeControl(nav);
+
 			this.mapa.addControls([
 				new OpenLayers.Control.LayerSwitcher(),
 				new OpenLayers.Control.Navigation({
@@ -270,29 +280,14 @@
 					//aunque el mouse haya dejado 
 					//el canvas del mapa
 					documentDrag:true,
-					//Esto no causa efecto
-					//creo que porque el Map
-					//ya tiene un control Navigation
 					mouseWheelOptions: {
-						interval: 100,
+						interval: 400,
 						cumulative:false,
 						maxDelta:1
 					}
 				}),
 				new OpenLayers.Control.PinchZoom()
 			]);
-			/*
-			 * KLUDGE!
-			Busco el control Navigation y modifico lo necesario
-			para aminorar la velocidad del zoom del mousewheel.
-			No anda bien hacer esto pasándole los parámetros 
-			a OpenLayers.Control.Navigation en el constructor.
-			Quizás esto se solucione pasando estos controles a Map
-			en las options así no crear el Navigation por default.
-			*/
-			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
-			nav.handlers.wheel.interval=400;
-			nav.handlers.wheel.cumulative=false;
 
 			// eventos
 			this.mapa.events.on({
