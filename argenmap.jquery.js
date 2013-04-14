@@ -286,7 +286,16 @@
 						maxDelta:6
 					}
 				}),
-				new OpenLayers.Control.PinchZoom()
+				new OpenLayers.Control.PinchZoom({
+					handlerOptions: {
+						//Esto evita que se propaguen
+						//los eventos. creo que
+						//esto en false es lo que hacía
+						//que en mobile el pinch se
+						//destronctrolara
+						stopDown:true
+					}
+				})
 			]);
 			/*
 			 * Aumento la desaceleración del kinetic.
