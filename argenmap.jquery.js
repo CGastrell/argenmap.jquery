@@ -3,7 +3,7 @@
 		'http://190.220.8.216/tms/',
 		'http://sig.ign.gob.ar/tms/',
 		'http://www.ign.gob.ar/tms/',
-		'http://mapaabierto.aws.af.cm/tms/'
+		'http://cg.aws.af.cm/tms/'//temp mientras vemos que pasa con mapaabierto
 	];	
 	//-----------------------------------------------------------------------//
 	// jQuery event
