@@ -568,6 +568,14 @@
 			this.marcadores.push(f);
 			capa.addMarker(m);
 		},
+		agregarMarcadores: function(arrayMarcadores)
+		{
+			if(!$.isArray(arrayMarcadores)) return;
+			$.each(arrayMarcadores, $.proxy( function(i,e){
+					this.agregarMarcador(e);
+				}, this)
+			);
+		},
 		modificarMarcador: function(nombre,opciones)
 		{
 			var f = this._traerMarcadorPorNombre(nombre);
@@ -1115,6 +1123,16 @@
 			var a = $this.data('argenmap');
 			if(!a) return;
 			a.removerMarcador(nombre);
+		});
+	}
+	$.fn.agregarMarcadores = function(arrayMarcadores)
+	{
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			if(!$.isArray(arrayMarcadores)) return;
+			a.agregarMarcadores(arrayMarcadores);
 		});
 	}
 	$.fn.centro = function(lat,lon)
