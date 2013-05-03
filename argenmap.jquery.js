@@ -1,9 +1,10 @@
 (function ($, window, undefined) {
 	IGN_CACHES = [
-		'http://190.220.8.216/tms/',
-		'http://sig.ign.gob.ar/tms/',
-		'http://www.ign.gob.ar/tms/',
-		'http://cg.aws.af.cm/tms/'//temp mientras vemos que pasa con mapaabierto
+		'http://190.220.8.216/tms',
+		'http://sig.ign.gob.ar/tms',
+		'http://robomap2.herokuapp.com/tms',
+		'http://cg.aws.af.cm/tms',
+		'http://mapaabierto.aws.af.cm/tms'
 	];	
 	//-----------------------------------------------------------------------//
 	// jQuery event
