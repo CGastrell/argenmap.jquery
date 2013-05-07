@@ -58,6 +58,8 @@
 	//hard coded, modificar para la version final
 	var rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
+
+	/* FUNCIONES DE AYUDA */
 	/**
 	 * Traduce las keys de un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
@@ -154,7 +156,11 @@
 		//estes en una configuracion cruzada con gmaps
 		if (mezcla.hasOwnProperty("lat") && typeof(mezcla.lat) === 'function') {
 			r = new OpenLayers.LonLat(mezcla.lng(),mezcla.lat());
-		} 
+		}
+		//catch para cuando viene con lng/long en vez de lon
+		if(mezcla.hasOwnProperty("lng")) mezcla.lon = mezcla.lng;
+		if(mezcla.hasOwnProperty("long")) mezcla.lon = mezcla.long;
+
 		// {lat:X, lon:Y} object, el argument es un OL.LonLat o similar!!! 
 		else if ( $.isNumeric(mezcla.lat) && $.isNumeric(mezcla.lon) ) {
 			r = new OpenLayers.LonLat(mezcla.lon,mezcla.lat);
@@ -976,10 +982,11 @@
 				this.$el.append(c).append(f);
 		}
 	}
+	/* COPIA DE FUNCION isNumeric de jQuery 1.7+ para compatibilidad */
 	$.isNumeric = function( obj ) {
 		return !isNaN( parseFloat(obj) ) && isFinite( obj );
 	}
-	
+	/* PLUGINS ARGENMAP */
 	$.fn.argenmap = function(opciones)
 	{
 		return this.each(function(){
@@ -993,16 +1000,6 @@
 			}
 		});
 	}
-	/*
-	mi idea es que al final haya un agregarCapa(opts), en las opts tiene que ir un "tipo"
-	que luego sea el switch para mandar a funciones de conveniencia: agregarCapaWMS, agregarCapaKML
-	Cuando el parametro de agregarCapa sea solo un string, intentar agregarCapaPredefinida(string)
-	Aun asi, los convenience tienen que existir: $(o).agregarCapaWMS, etc etc
-	Con esto, y con tiempo, podemos armar un diccionario de capas predefinidas,
-	hoy existen solo base IGN, IGN, Bing y Google, pero bien podriamos ir incrementando
-	este diccionario con cosas como "Idera Chaco" o "Satelital 500k" donde cada una ya
-	tiene todas las opciones predefinidas.
-	*/
 	$.fn.agregarCapa = function(opciones, extras)
 	{
 		//chainability
