@@ -2,7 +2,6 @@
 	IGN_CACHES = [
 		'http://190.220.8.216/tms',
 		'http://sig.ign.gob.ar/tms',
-		'http://robomap2.herokuapp.com/tms',
 		'http://cg.aws.af.cm/tms',
 		'http://mapaabierto.aws.af.cm/tms'
 	];	
