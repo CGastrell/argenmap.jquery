@@ -953,14 +953,14 @@
 					'background-color': '#003964',
 					'font-size': '10px',
 					'text-align': 'right',
-					'height': '30px',
-					'line-height': '30px',
+					'min-height': '25px',
+					'line-height': '13px',
 					'vertical-align':'middle',
-					'padding': '2px 5px',
+					'padding': '5px',
 					'margin':0,
 					'border':0
-				}).append('<a style="color:white;text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>')
-				.append(a);
+				}).append(a)
+				.append('<a style="color:white;text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>');
 			var c = $('<div class="argenmapMapCanvas" />')
 				.css({
 					padding:0,//reset de padding, de nuevo, por si las flies
