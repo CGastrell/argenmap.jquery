@@ -159,7 +159,7 @@
 		}
 		//catch para cuando viene con lng/long en vez de lon
 		if(mezcla.hasOwnProperty("lng")) mezcla.lon = mezcla.lng;
-		if(mezcla.hasOwnProperty("long")) mezcla.lon = mezcla.long;
+		if(mezcla.hasOwnProperty("long")) mezcla.lon = mezcla["long"];
 
 		// {lat:X, lon:Y} object, el argument es un OL.LonLat o similar!!! 
 		else if ( $.isNumeric(mezcla.lat) && $.isNumeric(mezcla.lon) ) {
