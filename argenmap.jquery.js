@@ -3,7 +3,8 @@
 		'http://190.220.8.216/tms',
 		'http://sig.ign.gob.ar/tms',
 		'http://cg.aws.af.cm/tms',
-		'http://mapaabierto.aws.af.cm/tms'
+		'http://mapaabierto.aws.af.cm/tms',
+		'http://robomap-cgastrell.rhcloud.com/tms'
 	];	
 	//-----------------------------------------------------------------------//
 	// jQuery event
@@ -27,6 +28,46 @@
 				clearInterval(interval);
 		}
 	};
+	/* CLASE CACHE DE CLIENTE */
+	function CacheDeCliente()
+	{
+		this.MAX_TILES = 150;
+		this.cache = [];
+		this.cacheRef = {};
+	}
+	CacheDeCliente.prototype = {
+		/**
+		 * Recupera un tile de la cache.
+		 * Si no existe, devuelve false
+		 */
+		recuperar: function(paramString)
+		{
+			var tilecode = paramString;
+
+			if(this.cache.indexOf(tilecode) != -1) 
+			{
+				return this.cacheRef[tilecode];
+			}
+
+			return false;
+		},
+		/**
+		 * Guarda una entrada en la cache interna
+		 * Si detecta baseURL como un string, anula el proceso,
+		 * no hace falta cachear si es un solo servidor de tiles
+		 */
+		guardar: function(paramString, url)
+		{
+			this.cache.push(paramString);
+			this.cacheRef[paramString] = url;
+			var sale;
+			if(this.cache.length > this.MAX_TILES)
+			{
+				 sale = this.cache.shift();
+				 delete this.cacheRef[sale];
+			}
+		}
+	}
 	//set de OL
 	OpenLayers.Popup.FramedCloud.prototype.autoSize = false;
 	AutoSizeFramedCloudMinSize = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
@@ -36,6 +77,28 @@
 	AutoSizeFramedCloud = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
 		'autoSize': true
 	});
+	//
+	OpenLayers.Layer.ArgenmapTMS = OpenLayers.Class(OpenLayers.Layer.TMS, {
+		'cache': new CacheDeCliente()
+	});
+	OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
+	{
+		// console.log(urls[0] + paramString);
+		var cached = this.cache.recuperar(paramString);
+		if(cached)
+		{
+			return cached;
+		}
+
+
+		var product = 1;
+		for (var i=0, len=paramString.length; i<len; i++) { 
+			product *= paramString.charCodeAt(i) * this.URL_HASH_FACTOR; 
+			product -= Math.floor(product); 
+		}
+		this.cache.guardar(paramString, urls[Math.floor(product * urls.length)]);
+		return urls[Math.floor(product * urls.length)];
+	}
 	/**
 	 * Mapa de propiedades traducidas
 	 */
@@ -53,7 +116,6 @@
 		escucharEventos: 'eventListeners',
 		listarCapa: 'displayInLayerSwitcher'
 	}
-	// console.log(document.referrer);
 	//hard coded, modificar para la version final
 	var rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
@@ -181,6 +243,7 @@
 	/* CLASE ARGENMAP */
 	function ArgenMap($this,opciones)
 	{
+		this.miniCache = new CacheDeCliente();
 		this.$el = $this;//referencia al objeto jQuery desde el que se inicializó el plugin
 		this.divMapa = null//elemento DOM donde estará el mapa. NO JQUERY
 		this.mapa = null//referencia al objeto mapa de openlayers
@@ -242,7 +305,6 @@
 	ArgenMap.prototype = {
 		inicializar: function()
 		{
-			// if(this.mapa) return;
 			this._prepararDiv();
 			//al inicializar no necesito agregar las capas, las paso como array en las opciones
 			//este es el unico momento en el que this.mapa.layers = this.capas,
@@ -809,7 +871,7 @@
 					});
 					$.extend(p,o);
 
-					c = new OpenLayers.Layer.TMS("Base IGN",IGN_CACHES  ,p);					
+					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);					
 				break;
 				case "ign":
 					p = traducirObjeto({
@@ -826,7 +888,7 @@
 					});
 					
 					//c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
-					c = new OpenLayers.Layer.TMS("IGN",IGN_CACHES ,p);					
+					c = new OpenLayers.Layer.ArgenmapTMS("IGN",IGN_CACHES ,p);					
 					/*
 					 * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
 					 * así que la agrego a manopla.
