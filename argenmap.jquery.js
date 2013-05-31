@@ -1,7 +1,5 @@
 (function ($, window, undefined) {
 	IGN_CACHES = [
-		'http://190.220.8.216/tms',
-		'http://sig.ign.gob.ar/tms',
 		'http://cg.aws.af.cm/tms',
 		'http://mapaabierto.aws.af.cm/tms',
 		'http://robomap-cgastrell.rhcloud.com/tms'
@@ -22,7 +20,7 @@
 							$h = $this.height();
 							jQuery.event.handle.call(self, {type:'resized'});
 						}
-				},50);
+				},20);
 		},
 		teardown: function(){
 				clearInterval(interval);
