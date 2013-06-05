@@ -927,6 +927,36 @@
 						scope:this
 					});
 				break;
+				case "mapnik-osm-ar":
+					//corte temprano para evitar instancia de capa si el mapa
+					//no esta en spherical mercator
+					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913") return c;
+					
+					//var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
+					var o = {
+						name: "OpenStreetMap Argentina",
+						isBaseLayer:true,
+						nombre: "OpenStreetMap Argentina",
+						type: "Mapnik"
+					};
+					c = new OpenLayers.Layer.OSM("OSM-Ar",'http://tile.openstreetmap.org.ar/nolabels/${z}/${x}/${y}.png',o);
+					
+					/*c.companionLayer = ign;
+					c.events.on({
+						visibilitychanged:function(e){
+							e.object.companionLayer.setVisibility(e.object.getVisibility());
+						},
+						added: function(e)
+						{
+							e.map.addLayer(e.layer.companionLayer);
+						},
+						removed: function(e){
+							var l = this._traerCapaPorReferencia(e.layer.companionLayer);
+							if(l) e.map.removeLayer(l);
+						},
+						scope:this
+					});*/
+				break;
 				case "satelital_base":
 					//atencion con esta capa, es la satelital pero para instancia inicial
 					//con la opcion de no switchear automaticamente, para que pueda quedar
