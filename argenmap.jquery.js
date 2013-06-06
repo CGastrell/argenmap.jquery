@@ -572,7 +572,6 @@
 			}else{
 				coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
 			}
-			// alert(this.opciones.proyeccion);
 			//si a esta altura no esta definido coordenadas, cancelamos
 			if(!coordenadas) return;
 			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
@@ -596,7 +595,45 @@
 				icono: ''
 			};
 			var o = $.extend({},predeterminadasMarcador,opciones);
-			if(o.contenido == "") o.mostrarConClick = false;
+			var icono = o.icono;
+			//para detectar el tamanio de imagen voy a tener que hacer un preload
+			//y en el callback volver a llamar esta funcion nuevamente
+			if(typeof(icono) === "string")
+			{
+				var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+				var esUrl;
+				var esArchivoImagen;
+				esUrl = urlPattern.test(icono);
+				esArchivoImagen = (/\.(gif|jpg|jpeg|png)$/i).test(icono);
+				if(!esArchivoImagen && !esUrl)
+				{
+					o.icono = this._crearIconoPredeterminado(icono);
+				}else{
+					var img = $('<img src="'+icono+'" />')
+						.load($.proxy(
+							function(e){
+								var w = img[0].naturalWidth;
+								var h = img[0].naturalHeight;
+								var oi = new OpenLayers.Icon(icono,
+									new OpenLayers.Size(w,h),
+									new OpenLayers.Pixel(-(w / 2 << 0),-h));
+								o.lonlat = coordenadas;
+								o.icono = oi;
+								this.agregarMarcador(o);
+							},
+							this)
+						);
+					return;
+				}
+			}else{
+				//si no es string debe ser objeto, "siga siga" dice el arbitro
+			}
+			// !preload
+
+			if(o.contenido == "")
+			{
+				o.mostrarConClick = false;
+			}
 			if(o.mostrarConClick)
 			{
 				o.eventos = {
@@ -610,22 +647,18 @@
 			capa.displayInLayerSwitcher = o.listarCapa;
 			var opcionesFeature = {
 				lonlat: coordenadas,
-				icon:this._crearIconoPredeterminado(o.icono),
+				icon:o.icono,
 				//popupSize: new OpenLayers.Size(200,130),
 				popupContentHTML: opciones.contenido,
 				overflow: 'auto'
 			};
-			// capa.setVisibility(false);capa.setVisibility(true);
 			o = traducirObjeto(o);
 			var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
-			// f.$el = $(f.icon.imageDiv);
 			var m = f.createMarker();
-			// m.owner = f;
+			console.log(m);
 			f.nombre = m.nombre = o.nombre;
 			f.closeBox = true;
 			f.popupClass = OpenLayers.Popup.FramedCloud;
-			// f = $.extend(f,o);
-			// t = f;
 			if(o.eventos)
 			{
 				o.eventos.scope = f;
@@ -659,6 +692,7 @@
 			}
 			var opcionesPrevias = {
 				lonlat: coordenadas,
+				icono: f.marker.icon,//<----?!?!?!?!hay que reproducir lo que hice en agregarMarcador?
 				capa:f.layer.nombre,
 				listarCapa: f.layer.displayInLayerSwitcher,
 				nombre: f.nombre,
@@ -715,6 +749,27 @@
 			if(c) this.mapa.setBaseLayer(c);
 		},
 		/* INTERNAS / PRIVADAS */
+		_crearIcono: function(opciones)
+		{
+			var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+			var esUrl;
+			var esArchivoImagen;
+			if(typeof(opciones) == "string")
+			{
+				esUrl = urlPattern.test(opciones);
+				esArchivoImagen = (/\.(gif|jpg|jpeg|png)$/i).test(opciones);
+				if(!esArchivoImagen && !esUrl)
+				{
+					return this._crearIconoPredeterminado(opciones);
+				}
+				var img = $('<img src="'+opciones+'" />').load(function(e){
+					console.log(this.naturalWidth);
+				});
+			}else{
+				//sin implementar todavia
+			}
+
+		},
 		_crearIconoPredeterminado: function(icono)
 		{
 			var a = null;
