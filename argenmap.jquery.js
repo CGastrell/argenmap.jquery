@@ -81,7 +81,6 @@
 	});
 	OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
 	{
-		// console.log(urls[0] + paramString);
 		var cached = this.cache.recuperar(paramString);
 		if(cached)
 		{
@@ -598,7 +597,7 @@
 			var icono = o.icono;
 			//para detectar el tamanio de imagen voy a tener que hacer un preload
 			//y en el callback volver a llamar esta funcion nuevamente
-			if(typeof(icono) === "string")
+			if(typeof(icono) === "string" || icono === null)
 			{
 				var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
 				var esUrl;
@@ -627,6 +626,7 @@
 				}
 			}else{
 				//si no es string debe ser objeto, "siga siga" dice el arbitro
+				// console.log('icono != string')
 			}
 			// !preload
 
@@ -641,7 +641,6 @@
 				}
 			}
 			var capa = this._traerCapaPorNombre(o.capa);
-			
 			if(!capa) capa = this._agregarCapaDeMarcadores({nombre:o.capa,listarCapa:o.listarCapa});
 			//kludge, para cuando la capa existe pero se cambia la visibilidad con el marker
 			capa.displayInLayerSwitcher = o.listarCapa;
@@ -655,7 +654,7 @@
 			o = traducirObjeto(o);
 			var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
 			var m = f.createMarker();
-			console.log(m);
+			// console.log(opcionesFeature);
 			f.nombre = m.nombre = o.nombre;
 			f.closeBox = true;
 			f.popupClass = OpenLayers.Popup.FramedCloud;
@@ -690,9 +689,11 @@
 				//esto es por si se llamo a modificarMarcador("nombre",[lat,lon])
 				opciones = {};
 			}
+			// console.log(f.marker.icon);
+			// return;
 			var opcionesPrevias = {
 				lonlat: coordenadas,
-				icono: f.marker.icon,//<----?!?!?!?!hay que reproducir lo que hice en agregarMarcador?
+				icono: f.marker.icon.clone(),//<----?!?!?!?!hay que reproducir lo que hice en agregarMarcador?
 				capa:f.layer.nombre,
 				listarCapa: f.layer.displayInLayerSwitcher,
 				nombre: f.nombre,
@@ -745,31 +746,9 @@
 		{
 			if(arguments.length === 0) return this.mapa.baseLayer.nombre;
 			var c = this._traerCapaPorNombre(capa);
-			// console.log(c);
 			if(c) this.mapa.setBaseLayer(c);
 		},
 		/* INTERNAS / PRIVADAS */
-		_crearIcono: function(opciones)
-		{
-			var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
-			var esUrl;
-			var esArchivoImagen;
-			if(typeof(opciones) == "string")
-			{
-				esUrl = urlPattern.test(opciones);
-				esArchivoImagen = (/\.(gif|jpg|jpeg|png)$/i).test(opciones);
-				if(!esArchivoImagen && !esUrl)
-				{
-					return this._crearIconoPredeterminado(opciones);
-				}
-				var img = $('<img src="'+opciones+'" />').load(function(e){
-					console.log(this.naturalWidth);
-				});
-			}else{
-				//sin implementar todavia
-			}
-
-		},
 		_crearIconoPredeterminado: function(icono)
 		{
 			var a = null;
