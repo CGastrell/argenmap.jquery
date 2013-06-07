@@ -1,7 +1,5 @@
 (function ($, window, undefined) {
 	IGN_CACHES = [
-		'http://190.220.8.216/tms',
-		'http://sig.ign.gob.ar/tms',
 		'http://cg.aws.af.cm/tms',
 		'http://mapaabierto.aws.af.cm/tms',
 		'http://robomap-cgastrell.rhcloud.com/tms'
@@ -22,7 +20,7 @@
 							$h = $this.height();
 							jQuery.event.handle.call(self, {type:'resized'});
 						}
-				},50);
+				},20);
 		},
 		teardown: function(){
 				clearInterval(interval);
@@ -83,7 +81,6 @@
 	});
 	OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
 	{
-		// console.log(urls[0] + paramString);
 		var cached = this.cache.recuperar(paramString);
 		if(cached)
 		{
@@ -574,7 +571,6 @@
 			}else{
 				coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
 			}
-			// alert(this.opciones.proyeccion);
 			//si a esta altura no esta definido coordenadas, cancelamos
 			if(!coordenadas) return;
 			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
@@ -598,7 +594,46 @@
 				icono: ''
 			};
 			var o = $.extend({},predeterminadasMarcador,opciones);
-			if(o.contenido == "") o.mostrarConClick = false;
+			var icono = o.icono;
+			//para detectar el tamanio de imagen voy a tener que hacer un preload
+			//y en el callback volver a llamar esta funcion nuevamente
+			if(typeof(icono) === "string" || icono === null)
+			{
+				var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+				var esUrl;
+				var esArchivoImagen;
+				esUrl = urlPattern.test(icono);
+				esArchivoImagen = (/\.(gif|jpg|jpeg|png)$/i).test(icono);
+				if(!esArchivoImagen && !esUrl)
+				{
+					o.icono = this._crearIconoPredeterminado(icono);
+				}else{
+					var img = $('<img src="'+icono+'" />')
+						.load($.proxy(
+							function(e){
+								var w = img[0].naturalWidth;
+								var h = img[0].naturalHeight;
+								var oi = new OpenLayers.Icon(icono,
+									new OpenLayers.Size(w,h),
+									new OpenLayers.Pixel(-(w / 2 << 0),-h));
+								o.lonlat = coordenadas;
+								o.icono = oi;
+								this.agregarMarcador(o);
+							},
+							this)
+						);
+					return;
+				}
+			}else{
+				//si no es string debe ser objeto, "siga siga" dice el arbitro
+				// console.log('icono != string')
+			}
+			// !preload
+
+			if(o.contenido == "")
+			{
+				o.mostrarConClick = false;
+			}
 			if(o.mostrarConClick)
 			{
 				o.eventos = {
@@ -606,28 +641,23 @@
 				}
 			}
 			var capa = this._traerCapaPorNombre(o.capa);
-			
 			if(!capa) capa = this._agregarCapaDeMarcadores({nombre:o.capa,listarCapa:o.listarCapa});
 			//kludge, para cuando la capa existe pero se cambia la visibilidad con el marker
 			capa.displayInLayerSwitcher = o.listarCapa;
 			var opcionesFeature = {
 				lonlat: coordenadas,
-				icon:this._crearIconoPredeterminado(o.icono),
+				icon:o.icono,
 				//popupSize: new OpenLayers.Size(200,130),
 				popupContentHTML: opciones.contenido,
 				overflow: 'auto'
 			};
-			// capa.setVisibility(false);capa.setVisibility(true);
 			o = traducirObjeto(o);
 			var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
-			// f.$el = $(f.icon.imageDiv);
 			var m = f.createMarker();
-			// m.owner = f;
+			// console.log(opcionesFeature);
 			f.nombre = m.nombre = o.nombre;
 			f.closeBox = true;
 			f.popupClass = OpenLayers.Popup.FramedCloud;
-			// f = $.extend(f,o);
-			// t = f;
 			if(o.eventos)
 			{
 				o.eventos.scope = f;
@@ -659,8 +689,11 @@
 				//esto es por si se llamo a modificarMarcador("nombre",[lat,lon])
 				opciones = {};
 			}
+			// console.log(f.marker.icon);
+			// return;
 			var opcionesPrevias = {
 				lonlat: coordenadas,
+				icono: f.marker.icon.clone(),//<----?!?!?!?!hay que reproducir lo que hice en agregarMarcador?
 				capa:f.layer.nombre,
 				listarCapa: f.layer.displayInLayerSwitcher,
 				nombre: f.nombre,
@@ -713,7 +746,6 @@
 		{
 			if(arguments.length === 0) return this.mapa.baseLayer.nombre;
 			var c = this._traerCapaPorNombre(capa);
-			// console.log(c);
 			if(c) this.mapa.setBaseLayer(c);
 		},
 		/* INTERNAS / PRIVADAS */
@@ -926,6 +958,36 @@
 						},
 						scope:this
 					});
+				break;
+				case "mapnik-osm-ar":
+					//corte temprano para evitar instancia de capa si el mapa
+					//no esta en spherical mercator
+					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913") return c;
+					
+					//var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
+					var o = {
+						name: "OpenStreetMap Argentina",
+						isBaseLayer:true,
+						nombre: "OpenStreetMap Argentina",
+						type: "Mapnik"
+					};
+					c = new OpenLayers.Layer.OSM("OSM-Ar",'http://tile.openstreetmap.org.ar/nolabels/${z}/${x}/${y}.png',o);
+					
+					/*c.companionLayer = ign;
+					c.events.on({
+						visibilitychanged:function(e){
+							e.object.companionLayer.setVisibility(e.object.getVisibility());
+						},
+						added: function(e)
+						{
+							e.map.addLayer(e.layer.companionLayer);
+						},
+						removed: function(e){
+							var l = this._traerCapaPorReferencia(e.layer.companionLayer);
+							if(l) e.map.removeLayer(l);
+						},
+						scope:this
+					});*/
 				break;
 				case "satelital_base":
 					//atencion con esta capa, es la satelital pero para instancia inicial
