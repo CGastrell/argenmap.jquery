@@ -26,6 +26,29 @@
 				clearInterval(interval);
 		}
 	};
+	/* COMPATIBILIDAD CON IE < 9; implementacion de indexOf para arrays */
+	if (!Array.prototype.indexOf)
+	{
+	  Array.prototype.indexOf = function(elt /*, from*/)
+	  {
+	    var len = this.length >>> 0;
+
+	    var from = Number(arguments[1]) || 0;
+	    from = (from < 0)
+	         ? Math.ceil(from)
+	         : Math.floor(from);
+	    if (from < 0)
+	      from += len;
+
+	    for (; from < len; from++)
+	    {
+	      if (from in this &&
+	          this[from] === elt)
+	        return from;
+	    }
+	    return -1;
+	  };
+	}
 	/* CLASE CACHE DE CLIENTE */
 	function CacheDeCliente()
 	{
@@ -240,6 +263,8 @@
 	/* CLASE ARGENMAP */
 	function ArgenMap($this,opciones)
 	{
+		this.colorFondoPie = opciones.colorFondoPie || '#003964';
+		this.colorLetraPie = opciones.colorLetraPie || 'white';
 		this.miniCache = new CacheDeCliente();
 		this.$el = $this;//referencia al objeto jQuery desde el que se inicializó el plugin
 		this.divMapa = null//elemento DOM donde estará el mapa. NO JQUERY
@@ -1072,8 +1097,8 @@
 			var f = $('<div class="argenmapMapFooter" />')
 				.css({
 					'font-family': 'Arial',
-					'color': 'white',
-					'background-color': '#003964',
+					'color': this.colorLetraPie,
+					'background-color': this.colorFondoPie,
 					'font-size': '10px',
 					'text-align': 'right',
 					'min-height': '25px',
@@ -1083,7 +1108,7 @@
 					'margin':0,
 					'border':0
 				}).append(a)
-				.append('<a style="color:white;text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>');
+				.append('<a style="color:'+this.colorLetraPie+';text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>');
 			var c = $('<div class="argenmapMapCanvas" />')
 				.css({
 					padding:0,//reset de padding, de nuevo, por si las flies
