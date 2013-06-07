@@ -266,11 +266,11 @@
 
 		this.colorFondoPie = '#003964';
 		this.colorLetraPie = 'white';
-		if(opciones !== undefined && opcioneshasOwnProperty("colorFondoPie"))
+		if(opciones !== undefined && opciones.hasOwnProperty("colorFondoPie"))
 		{
 			this.colorFondoPie = opciones.colorFondoPie;
 		}
-		if(opciones !== undefined && opcioneshasOwnProperty("colorLetraPie"))
+		if(opciones !== undefined && opciones.hasOwnProperty("colorLetraPie"))
 		{
 			this.colorLetraPie = opciones.colorLetraPie;
 		}
