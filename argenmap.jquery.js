@@ -263,8 +263,17 @@
 	/* CLASE ARGENMAP */
 	function ArgenMap($this,opciones)
 	{
-		this.colorFondoPie = opciones.colorFondoPie || '#003964';
-		this.colorLetraPie = opciones.colorLetraPie || 'white';
+
+		this.colorFondoPie = '#003964';
+		this.colorLetraPie = 'white';
+		if(opciones !== undefined && opcioneshasOwnProperty("colorFondoPie"))
+		{
+			this.colorFondoPie = opciones.colorFondoPie;
+		}
+		if(opciones !== undefined && opcioneshasOwnProperty("colorLetraPie"))
+		{
+			this.colorLetraPie = opciones.colorLetraPie;
+		}
 		this.miniCache = new CacheDeCliente();
 		this.$el = $this;//referencia al objeto jQuery desde el que se inicializó el plugin
 		this.divMapa = null//elemento DOM donde estará el mapa. NO JQUERY
