@@ -85,7 +85,11 @@
 			if(this.cache.length > this.MAX_TILES)
 			{
 				 sale = this.cache.shift();
-				 delete this.cacheRef[sale];
+				 try{
+					 delete this.cacheRef[sale];
+				 }catch(e){
+				 	this.cacheRef[sale] = undefined;
+				 }
 			}
 		}
 	}
@@ -159,7 +163,11 @@
 			for(var i in mapa)
 			{
 				mapa[mapa[i]] = i;
-				delete mapa[i];
+				try{
+					delete mapa[i];
+				}catch(e){
+					mapa[i] = undefined;
+				}
 			}
 		}
 		for(var k in objeto)
@@ -563,7 +571,11 @@
 				{
 					this.map.removePopup(f2.cuadro);
 					f2.cuadro.destroy();
-					delete f2.cuadro;
+					try{
+						delete f2.cuadro;
+					}catch(e){
+						f2.cuadro = undefined;
+					}
 				}
 			};
 			l.events.on({
@@ -609,11 +621,21 @@
 			if(!coordenadas) return;
 			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
 			if(typeof(opciones) == "object"){
-				delete opciones["lonlat"];
-				delete opciones["latlng"];
-				delete opciones["lat"];
-				delete opciones["lon"];
-				delete opciones["lng"];
+				try{
+					delete opciones["lonlat"];
+					delete opciones["latlng"];
+					delete opciones["lat"];
+					delete opciones["lon"];
+					delete opciones["lng"];
+					delete opciones["long"];
+				}catch(e){//IE8 no soporta "delete"
+					opciones["lonlat"] = undefined;
+					opciones["latlng"] = undefined;
+					opciones["lat"] = undefined;
+					opciones["lon"] = undefined;
+					opciones["long"] = undefined;
+					opciones["lng"] = undefined;
+				}
 			}else if($.isArray(opciones)){
 				//esto es por si se llamo a agregarMarcador([lat,lon])
 				opciones = {};
@@ -714,11 +736,21 @@
 			if(!f) return;
 			var coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion) || f.lonlat;
 			if(typeof(opciones) == "object"){
-				delete opciones["lonlat"];
-				delete opciones["latlng"];
-				delete opciones["lat"];
-				delete opciones["lon"];
-				delete opciones["lng"];
+				try{
+					delete opciones["lonlat"];
+					delete opciones["latlng"];
+					delete opciones["lat"];
+					delete opciones["lon"];
+					delete opciones["lng"];
+					delete opciones["long"];
+				}catch(e){//IE8 no soporta "delete"
+					opciones["lonlat"] = undefined;
+					opciones["latlng"] = undefined;
+					opciones["lat"] = undefined;
+					opciones["lon"] = undefined;
+					opciones["long"] = undefined;
+					opciones["lng"] = undefined;
+				}
 			}else if($.isArray(opciones)){
 				//esto es por si se llamo a modificarMarcador("nombre",[lat,lon])
 				opciones = {};
@@ -1044,7 +1076,11 @@
 						window["argenmapGoogleAPICallback"] = $.proxy(function()
 						{
 							window["argenmapGoogleAPICallback"] = null;
-							delete window["argenmapGoogleAPICallback"];
+							try{
+								delete window["argenmapGoogleAPICallback"];
+							}catch(e){
+								window["argenmapGoogleAPICallback"] = undefined;
+							}
 							this.agregarCapa("satelital",extras);
 						},this);
 						var script = document.createElement("script");
