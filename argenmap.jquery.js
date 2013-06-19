@@ -363,11 +363,12 @@
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
 			// opcionesDeMapa.displayProjection = new OpenLayers.Projection("EPSG:4326");
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
+			this.actualizar();
 			/*
 			 * KLUDGE!
 			Saco el control Navigation predeterminado
 			porque si no no le importan las opciones
-			del control Navigation agregado a travéz
+			del control Navigation agregado a través
 			de addControls()
 			*/
 			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
