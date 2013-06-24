@@ -1072,21 +1072,22 @@
 					
 					if(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'))//este OR no esta bien
 					{
+						var m = String(Math.random() * 1000);
 						//async load de api de google segun guias
 						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
-						window["argenmapGoogleAPICallback"] = $.proxy(function()
+						window["argenmapGoogleAPICallback"+m] = $.proxy(function()
 						{
-							window["argenmapGoogleAPICallback"] = null;
+							window["argenmapGoogleAPICallback"+m] = null;
 							try{
-								delete window["argenmapGoogleAPICallback"];
+								delete window["argenmapGoogleAPICallback"+m];
 							}catch(e){
-								window["argenmapGoogleAPICallback"] = undefined;
+								window["argenmapGoogleAPICallback"+m] = undefined;
 							}
 							this.agregarCapa("satelital",extras);
 						},this);
 						var script = document.createElement("script");
 						script.type = "text/javascript";
-						script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback";
+						script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback"+m;
 						document.body.appendChild(script);
 					}else{
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
