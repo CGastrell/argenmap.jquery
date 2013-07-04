@@ -144,7 +144,23 @@
 	var rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
 
+	/**
+	 * Variable para almacenar cuando google este haciendo async load
+	 */
+	var googleEstaCargando = false;
+	/**
+	 * Evento custom de jQuery
+	 */
+	$.event.trigger('googleCargado');
+	$(window).on('googleCargado',function(e){googleEstaCargando = false;});
 	/* FUNCIONES DE AYUDA */
+	/**
+	 * Indica si el script de google maps esta cargado
+	 */
+	function googleEstaCargado()
+	{
+		return (typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object')) === false;
+	}
 	/**
 	 * Traduce las keys de un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
@@ -1068,27 +1084,37 @@
 					//corte temprano para evitar instancia de capa si el mapa
 					//no esta en spherical mercator
 					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913")
-						return c;
-					
-					if(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'))//este OR no esta bien
 					{
-						var m = String(Math.random() * 1000);
-						//async load de api de google segun guias
-						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
-						window["argenmapGoogleAPICallback"+m] = $.proxy(function()
+						return c;
+					}
+
+					if( !googleEstaCargado() )
+					{
+						if(!googleEstaCargando)
 						{
-							window["argenmapGoogleAPICallback"+m] = null;
-							try{
-								delete window["argenmapGoogleAPICallback"+m];
-							}catch(e){
-								window["argenmapGoogleAPICallback"+m] = undefined;
-							}
-							this.agregarCapa("satelital",extras);
-						},this);
-						var script = document.createElement("script");
-						script.type = "text/javascript";
-						script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback"+m;
-						document.body.appendChild(script);
+							var m = String(Math.random() * 1000 << 0);
+							//async load de api de google segun guias
+							//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
+							window["argenmapGoogleAPICallback"+m] = function()
+							{
+								window["argenmapGoogleAPICallback"+m] = null;
+								try{
+									delete window["argenmapGoogleAPICallback"+m];
+								}catch(e){
+									window["argenmapGoogleAPICallback"+m] = undefined;
+								}
+								// this.agregarCapa("satelital",extras);
+								$(window).trigger({type:'googleCargado'});
+							};
+							var script = document.createElement("script");
+							script.type = "text/javascript";
+							script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback"+m;
+							document.body.appendChild(script);
+							googleEstaCargando = true;
+							$(window).one('googleCargado',$.proxy(function(){this.agregarCapa("satelital",extras)},this));
+						}else{
+							$(window).one('googleCargado',$.proxy(function(){this.agregarCapa("satelital",extras)},this));
+						}
 					}else{
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
 						var o = {
