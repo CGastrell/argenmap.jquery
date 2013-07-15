@@ -292,7 +292,7 @@
 	function ArgenMap($this,opciones)
 	{
 
-		this.colorFondoPie = '#003964';
+		this.colorFondoPie = 'rgb(28,116,165)';
 		this.colorLetraPie = 'white';
 		if(opciones !== undefined && opciones.hasOwnProperty("colorFondoPie"))
 		{
