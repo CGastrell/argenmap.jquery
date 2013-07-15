@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>ArgenMap · Documentación</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- Le styles -->
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="bootstrap/css/docs.css" rel="stylesheet">
+	<link href="bootstrap/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Le fav and touch icons -->
+	<link rel="shortcut icon" href="bootstrap/ico/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
+		
+		<!-- este js va aca para poder ejecutar codigo inline -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head>
+
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+	<!-- Navbar
+	================================================== -->
+	<div class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="navbar-inner">
+		<div class="container-fluid">
+		  <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="brand" href="./index.html">ArgenMap</a>
+		  <div class="nav-collapse collapse">
+			<ul class="nav">
+			  <li class="">
+				<a href="./index.html">Inicio</a>
+			  </li>
+			  <li class="">
+				<a href="./guias.html">Guías</a>
+			  </li>
+			  <li class="active">
+				<a href="./documentacion.html">API</a>
+			  </li>
+			  <li class="">
+				<a href="./ejemplos.html">Ejemplos</a>
+			  </li>
+			  <li class="">
+				<a href="./casos.html">Casos</a>
+			  </li>
+			  <li class="">
+				<a href="./crearMapa.html">Crea un mapa para tu sitio</a>
+			  </li>
+			  <li class="">
+				<a href="http://github.com/CGastrell/argenmap.jquery">Ver en Github</a>
+			  </li>
+			</ul>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	<!-- Subhead
+	================================================== -->
+	<header class="jumbotron subhead" id="overview">
+		<div class="container-fluid">
+			<h1 class="">ArgenMap v2 :: API</h1>
+			<p class="lead">ArgenMap + jQuery + OpenLayers</p>
+		</div>
+	</header>
+
+
+	<div class="container-fluid">
+
+	<!-- Docs nav -->
+	<div class="row-fluid">
+		
+		<div class="span3 bs-docs-sidebar">
+			<ul class="nav nav-list bs-docs-sidenav">
+				
+				<li><a href="#argenmap"><i class="icon-chevron-right"></i> .argenmap()</a></li>
+				<li class="list-divider">Manipulación</li>
+				<li><a href="#centro"><i class="icon-chevron-right"></i> .centro()</a></li>
+				<li><a href="#zoom"><i class="icon-chevron-right"></i> .zoom()</a></li>
+				<li><a href="#capaBase"><i class="icon-chevron-right"></i> .capaBase()</a></li>
+				<li class="list-divider">Capas</li>
+				<li><a href="#agregarCapa"><i class="icon-chevron-right"></i> .agregarCapa()</a></li>
+				<li><a href="#agregarCapaWMS"><i class="icon-chevron-right"></i> .agregarCapaWMS()</a></li>
+				<li><a href="#agregarCapaKML"><i class="icon-chevron-right"></i> .agregarCapaKML()</a></li>
+				<li><a href="#agregarCapaBaseWMS"><i class="icon-chevron-right"></i> .agregarCapaBaseWMS()</a></li>
+				<li><a href="#quitarCapa"><i class="icon-chevron-right"></i> .quitarCapa()</a></li>
+				<li class="list-divider">Marcadores</li>
+				<li><a href="#agregarMarcador"><i class="icon-chevron-right"></i> .agregarMarcador()</a></li>
+				<li><a href="#agregarMarcador"><i class="icon-chevron-right"></i> .modificarMarcador()</a></li>
+				<li><a href="#agregarMarcador"><i class="icon-chevron-right"></i> .quitarMarcador()</a></li>
+			</ul>
+		</div>
+			
+		<div class="span9">
+
+		<!-- documentacion -->
+		<section id="argenmap">
+			<div class="page-header">
+				<h2>Inicialización</h2>
+			</div>
+			<h3>$().argenmap()</h3>
+			<p class="lead">
+				.argenmap() inicializa el plugin principal de ArgenMap. Crea un mapa y prepara el objeto para recibir cualquier otro método (sub-plugins).
+			</p>
+			<p>Cuando se instancie un mapa con .argenmap(), se creará una instancia de clase
+				ArgenMap y esta quedará almacenada en el objeto jQuery, pudiendo accederse llamando al objeto con el método <code>.data('argenmap')</code>.</p>
+			<p>Para configurar el mapa puede pasarse un objeto como parámetro.</p>
+			<h5>Opciones disponibles</h5>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>centro</td>
+						<td>array(lat:float,lon:float)</td>
+						<td>[-35.00,-57.00]</td>
+						<td>Establece el centro inicial del mapa</td>
+					</tr>
+					<tr>
+						<td>zoom</td>
+						<td>int</td>
+						<td>4</td>
+						<td>Establece el zoom inicial del mapa. Los valores van desde 1 a 19</td>
+					</tr>
+					<tr>
+						<td>tipo</td>
+						<td>string</td>
+						<td>"baseign"</td>
+						<td>Indica qué capa base debe mostrarse inicialmente. Los tipos disponibles son "baseign", 
+						"satelital" y "blanco"</td>
+					</tr>
+					<tr>
+						<td>proyeccion</td>
+						<td>string</td>
+						<td>"EPSG:3857"</td>
+						<td>Determina la proyección que se usará para el mapa.<br />
+							<span class="label label-warning">NOTA:</span> la capa satelital sólo puede visualizarse usando
+							la proyección por defecto. Cuando no se use EPSG:3857 se desactivará la capa satelital.
+						</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;mapa2&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;mapa3&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  //mapa con todas las opciones por defecto
+  $('#mapa').argenmap();
+  //satelital
+  $('#mapa2').argenmap({tipo:'satelital'});
+  //...
+  $('#mapa3').argenmap({
+	centro:[-33.54,-61.28],
+	zoom:9
+  });
+});
+&lt;/script&gt;</pre>
+		</section>
+
+		<section id="centro">
+			<h2>Vista y manipulación</h2>
+			<h3>$().centro(lat,lon)</h3>
+			<p>Centra el mapa en las coordenadas indicadas. Si se llama este método
+			sin parámetros, el método devolverá el centro actual del mapa</p>
+			<div class="alert alert-info">Este método rompe la encadenabilidad de jQuery cuando
+			se ejecute para obtener el centro actual del mapa</div>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>lat</td>
+						<td>float</td>
+						<td>-</td>
+						<td>Latitud</td>
+					</tr>
+					<tr>
+						<td>lon</td>
+						<td>float</td>
+						<td>-</td>
+						<td>Longitud</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  //inicializar el mapa
+  $('#mapa').argenmap();
+
+  //establecer nuevo centro
+  $('#mapa').centro(-25.57,-60.32);
+  
+  //pedido del centro actual del mapa, devuelve [-25.57,-60.32]
+  $('#mapa').centro();
+});
+&lt;/script&gt;</pre>
+		</section><!-- centro -->
+				
+		<section id="zoom">
+			<h3>$().zoom(nivelDeZoom)</h3>
+			<p>Acerca o aleja el mapa al nivel indicado. Si se llama este método
+			sin parámetros, el método devolverá el zoom actual del mapa</p>
+			<div class="alert alert-info">Este método rompe la encadenabilidad de jQuery cuando
+			se ejecute para obtener el zoom actual del mapa</div>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>nivel de zoom</td>
+						<td>int</td>
+						<td>-</td>
+						<td>Nivel de zoom al que se desea visualizar el mapa. Los valores posibles son entre
+						1 y 19</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  //inicializar el mapa
+  $('#mapa').argenmap();
+
+  //establecer nuevo nivel de zoom
+  $('#mapa').zoom(12);
+  
+  //pedido del nivel de zoom actual del mapa, devuelve 12
+  $('#mapa').zoom();
+});
+&lt;/script&gt;</pre>
+		</section><!-- zoom -->
+		<section id="capaBase">
+			<h3>$().capaBase([capa])</h3>
+			<p>Define que capa base utilizar. Si se llama sin parámetros, devuelve la capa base
+				actual del mapa.
+			</p>
+			<div class="alert alert-info">Este método rompe la encadenabilidad de jQuery cuando
+			se ejecute para obtener la capa base actual del mapa</div>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>parámetro</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>capa base</td>
+						<td>string</td>
+						<td>-</td>
+						<td>Nombre de la capa a la que se quiere cambiar. Por defecto estas son
+							<code>Base IGN</code> y <code>Satélite</code>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  //inicializar el mapa
+  $('#mapa').argenmap();
+
+  //pedir capa base actual, devuelve 'Base IGN'
+  $('#mapa').capaBase();
+  
+  //cambiar a capa satelital
+  $('#mapa').capaBase('Satélite');
+});
+&lt;/script&gt;</pre>
+		</section><!-- capaBase -->
+				
+		<section id="agregarCapa">
+			<h3>$().agregarCapa(opciones)</h3>
+			<p>Agrega una capa al mapa. ArgenMap puede aceptar varios tipos de capas, este método
+			es el más genérico y acepta opciones acorde al tipo de capa a agregar. Para ver las opciones
+			específicas a cada tipo, vea los métodos de conveniencia para cada capa (agregarCapaWMS,
+			agregarCapaKML, etc).</p>
+			<p>A su vez, este método se utiliza para insertar capas predefinidas. Al momento sólo existen
+			2: satelital y baseign, pero está previsto agregar otros tipos de capas predefinidas.</p>
+			<h5>Capas predefinidas</h5>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>capa</td>
+						<td>string</td>
+						<td>-</td>
+						<td>Nombre de la capa predefinida a agregar. Al momento las opciones posibles son "satelital"
+						y "baseign"</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Capas genéricas</h5>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>tipo</td>
+						<td>string</td>
+						<td>-</td>
+						<td>Tipo de capa, "wms" o "kml". Vea <a href="#agregarCapaWMS">agregarCapaWMS()</a> o 
+						<a href="#agregarCapaKML">agregarCapaKML()</a> para entender las opciones de cada una.</td>
+					</tr>
+					<tr>
+						<td>...</td>
+						<td>objeto</td>
+						<td>-</td>
+						<td>Vea <a href="#agregarCapaWMS">$().agregarCapaWMS()</a> o 
+						<a href="#agregarCapaKML">$().agregarCapaKML()</a> para entender las opciones de cada una.</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  //inicialización con mapa vacío
+  $('#mapa').argenmap({tipo:"blanco"});
+
+  //agregado de capa base IGN
+  $('#mapa').agregarCapa('baseIGN');
+  
+  //agregado de capa satelital IGN
+  $('#mapa').agregarCapa('satelital');
+});
+&lt;/script&gt;</pre>
+
+		</section><!-- agregarCapa -->
+				
+		<section id="agregarCapaWMS">
+			<h3>$().agregarCapaWMS(opciones)</h3>
+			<p>Agrega una capa desde un servidor WMS al mapa.</p>
+			<p></p>
+			<h5>Opciones WMS</h5>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>url</td>
+						<td>string</td>
+						<td>-</td>
+						<td>La URL del servidor WMS donde se pide la capa. Puede ser una dirección IP.</td>
+					</tr>
+					<tr>
+						<td>nombre</td>
+						<td>string</td>
+						<td>-</td>
+						<td>Nombre de la capa a agregar. Este es el nombre que
+						aparecerá en el selector de capas. También será la referencia
+						para identificarla con llamadas a $.removerCapa()</td>
+					</tr>
+					<tr>
+						<td>formato</td>
+						<td>string</td>
+						<td>image/png</td>
+						<td>Formato MIME de archivo de imagen: "image/jpeg",
+						"image/jpg", "image/png", "image/png8", "image/gif".</td>
+					</tr>
+					<tr>
+						<td>transparente</td>
+						<td>boolean</td>
+						<td>true</td>
+						<td>Indica si la capa será transparente o no donde no haya datos para representar.</td>
+					</tr>
+					<tr>
+						<td>version</td>
+						<td>string</td>
+						<td>1.1.1</td>
+						<td>Versión del servidor WMS para el que se hará el pedido.</td>
+					</tr>
+					<tr>
+						<td>esCapaBase</td>
+						<td>boolean</td>
+						<td>false</td>
+						<td>Indica si la capa será tratada como una capa base (las capas base no pueden
+						apagarse, sólo cambiarse por otra capa base).</td>
+					</tr>
+					<tr>
+						<td>mostrarAlCargar</td>
+						<td>boolean</td>
+						<td>true</td>
+						<td>Indica si la capa debe ser mostrada una vez que se cargue.</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  //inicializar el mapa
+  $('#mapa').argenmap();
+
+  //capa de ríos del IGN
+  $('#mapa').agregarCapaWMS({
+	url: 'http://www.ign.gob.ar/wms',
+	nombre: 'Ríos IGN',
+	capas: 'afl',
+	formato: 'image/png',
+	transparente: true
+  });
+});
+&lt;/script&gt;</pre>
+
+		</section><!-- agregarCapaWMS -->
+				
+		<section id="agregarCapaKML">
+			<h3>$().agregarCapaKML(opciones)</h3>
+			<p>Agrega una capa en formato KML al mapa.</p>
+			<p><span class="label label-warning">Atención:</span> El archivo KML debe estar en el mismo
+			dominio, de lo contrario recibirá un error de
+			<a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del
+			mismo origen (Same origin policy)</em></strong></a>.</p>
+			<p></p>
+			<h5>Opciones WMS</h5>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>url</td>
+						<td>string</td>
+						<td>-</td>
+						<td>La URL del archivo KML a agregar.</td>
+					</tr>
+					<tr>
+						<td>nombre</td>
+						<td>string</td>
+						<td>-</td>
+						<td>Nombre de la capa a agregar. Este es el nombre que
+						aparecerá en el selector de capas. También será la referencia
+						para identificarla con llamadas a $.removerCapa()</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+	//inicializar el mapa
+  $('#mapa').argenmap();
+
+  //código para agregar capa KML
+  $('#mapa').agregarCapaKML({
+	url: 'http://dominio.com.ar/puntos.kml',
+	nombre: 'Capa de puntos KML'
+  });
+
+});
+&lt;/script&gt;</pre>
+
+		</section><!-- agregarCapaBaseWMS -->
+				
+		<section id="agregarCapaBaseWMS">
+			<h3>$().agregarCapaBaseWMS(opciones)</h3>
+			<p>Agrega una capa base desde un servidor WMS al mapa.</p>
+			<p></p>
+			<h5>Opciones WMS</h5>
+			<div class="well">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>opción</th>
+							<th>tipo</th>
+							<th>valor x defecto</th>
+							<th>descripción</th>
+						</tr>
+					</thead>
+					<tr>
+						<td>url</td>
+						<td>string</td>
+						<td>-</td>
+						<td>La URL del servidor WMS donde se pide la capa. Puede ser una dirección IP.</td>
+					</tr>
+					<tr>
+						<td>nombre</td>
+						<td>string</td>
+						<td>-</td>
+						<td>Nombre de la capa a agregar. Este es el nombre que
+						aparecerá en el selector de capas. También será la referencia
+						para identificarla con llamadas a $.removerCapa()</td>
+					</tr>
+					<tr>
+						<td>formato</td>
+						<td>string</td>
+						<td>image/jpeg</td>
+						<td>"image/jpeg", "image/jpg", "image/png", "image/png8", "image/gif"</td>
+					</tr>
+					<tr>
+						<td>version</td>
+						<td>string</td>
+						<td>1.1.1</td>
+						<td>Versión del servidor WMS para el que se hará el pedido.</td>
+					</tr>
+					<tr>
+						<td>mostrarAlCargar</td>
+						<td>boolean</td>
+						<td>true</td>
+						<td>Indica si debe cambiarse a esta capa base una vez que se cargue.</td>
+					</tr>
+				</table>
+			</div>
+			<h5>Código</h5>
+			<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:400px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  $('#mapa').argenmap().zoom(7);
+
+  $('#mapa').zoom(12);
+  
+  $('#mapa').zoom();//devuelve 12
+});
+&lt;/script&gt;</pre>
+
+		</section><!-- agregarCapaBaseWMS -->
+	</div><!-- span9 -->
+	</div><!-- row-fluid -->
+
+	</div><!-- container-fluid -->
+
+
+
+	<!-- Footer
+	================================================== -->
+	<footer class="footer">
+	  <div class="container">
+		<p class="pull-right"><a href="#">Volver arriba</a></p>
+		<p>Documentación diseñada con todo el amor del mundo en base a <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a>, diseñado por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a> bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<p>Iconos de <a href="http://glyphicons.com">Glyphicons Free</a>, bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+				<!--
+		<ul class="footer-links">
+		  <li><a href="http://blog.getbootstrap.com">Read the blog</a></li>
+		  <li><a href="https://github.com/twitter/bootstrap/issues?state=open">Submit issues</a></li>
+		  <li><a href="https://github.com/twitter/bootstrap/wiki">Roadmap and changelog</a></li>
+		</ul>
+				-->
+	  </div>
+	</footer>
+
+
+
+	<!-- Le javascript
+	================================================== -->
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="bootstrap/js/google-code-prettify/prettify.js"></script>
+
+	<script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-argenmap-closure.js"></script>
+	<script src="https://raw.github.com/CGastrell/argenmap.jquery/master/argenmap.jquery.js"></script>
+	<!-- Placed at the end of the document so the pages load faster 
+	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	<script src="bootstrap/js/bootstrap-alert.js"></script>
+	<script src="bootstrap/js/bootstrap-modal.js"></script>
+	<script src="bootstrap/js/bootstrap-dropdown.js"></script>
+	<script src="bootstrap/js/bootstrap-scrollspy.js"></script>
+	<script src="bootstrap/js/bootstrap-tab.js"></script>
+	<script src="bootstrap/js/bootstrap-tooltip.js"></script>
+	<script src="bootstrap/js/bootstrap-popover.js"></script>
+	<script src="bootstrap/js/bootstrap-button.js"></script>
+	<script src="bootstrap/js/bootstrap-collapse.js"></script>
+	<script src="bootstrap/js/bootstrap-carousel.js"></script>
+	<script src="bootstrap/js/bootstrap-typeahead.js"></script>
+	<script src="bootstrap/js/bootstrap-affix.js"></script>
+	<script src="bootstrap/js/application.js"></script>
+		-->
+		
+	<!-- Codigo para la pagina
+	================================================== -->
+		<script>
+			$(document).ready(function(){
+				var $window = $(window);
+				// side bar
+				$('.bs-docs-sidenav').affix({
+					offset: {
+						top: function () { return $window.width() <= 980 ? 290 : 210 }
+					, bottom: 270
+					}
+				})
+
+				// make code pretty
+				window.prettyPrint && prettyPrint()
+		});
+		</script>
+
+	<!-- Analytics
+	================================================== -->
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-689568-24']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+
+  </body>
+</html>

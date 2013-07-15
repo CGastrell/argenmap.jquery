@@ -1,0 +1,348 @@
+{
+	"metodos":{
+		"argenmap": {
+			"descripcion": [
+				"Crea una instancia de mapa sobre un elemento HTML <em>preferentemente divs con un alto definido en píxels</em>, pero cualquier elemento de tipo <em>block<em> con un alto definido puede usarse.",
+				"Argenmap puede instanciarse pasando un objeto como argumento. El objeto puede tener opciones de inicialización. A continuación puedes ver el detalle de las opciones con las que puede inicializarse Argenmap"
+			],
+			"argumentos":[
+				{
+					"nombre":"opciones",
+					"tipo": "objeto",
+					"valorPorDefecto": null,
+					"requerido": false,
+					"descripcion": "objeto con opciones de inicialización"
+				}
+			],
+			"opciones": [
+				{
+					"nombre": "zoom",
+					"tipo": "int",
+					"valorPorDefecto": 4,
+					"requerido": false,
+					"descripcion": "Establece el nivel de zoom inicial para el mapa"
+				}
+			],
+			"alertas": []
+		},
+		"centro": {
+			"descripcion": [
+				"Luego de instanciar un mapa, puede usarse <code>.centro(lat,lng)</code> para cambiar el centro del mapa.",
+				"Si llamás a centro() sin parámetros, devuelve el centro actual del mapa, un <code>array</code> del tipo [lat,lng]."
+			],
+			"argumentos": [
+				{
+					"nombre":"lat",
+					"tipo":"float",
+					"requerido":true,
+					"descripcion": "número indicando los grados decimales de latitud"
+				},
+				{
+					"nombre":"lng",
+					"tipo":"float",
+					"requerido":true,
+					"descripcion": "número indicando los grados decimales de longitud"
+				}
+			],
+			"opciones": [
+			],
+			"alertas": [
+				{
+					"tipo":"info",
+					"texto": "Cuando se usa <code>.centro()</code> para pedir las coordenadas del centro del mapa se rompe la <em>encadenabilidad</em> de jQuery y la función devuelve un <code>array</code>"
+				}
+			]
+		},
+		"zoom": {
+			"descripcion": [
+				"Aumenta, disminuye o devuelve la escala del mapa.",
+				"Si llamás a zoom() sin parámetros, devuelve un <code>int</code> que representa el nivel de escala del mapa."
+			],
+			"argumentos": [
+				{
+					"nombre":"zoom",
+					"tipo":"int",
+					"requerido":true,
+					"descripcion": "un entero de 1 a 22 indicando el nivel de zoom al que se quiere visualizar el mapa."
+				}
+			],
+			"opciones": [
+			],
+			"alertas": [
+				{
+					"tipo":"info",
+					"texto": "Cuando se usa <code>.zoom()</code> para pedir el nivel de zoom del mapa se rompe la <em>encadenabilidad</em> de jQuery y la llamada devuelve un <code>int</code>."
+				}
+			]
+		},
+		"agregarCapaWMS": {
+			"descripcion": [
+				"Superpone una capa desde un servicio WMS al mapa"
+			],
+			"argumentos":[
+				{
+					"nombre":"opciones",
+					"tipo": "objeto",
+					"valorPorDefecto": "null",
+					"requerido": true,
+					"descripcion": "un set de pares de key/valor que configura el pedido a la capa WMS. Las keys que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:"
+				}
+			],
+			"opciones": [
+				{
+					"nombre": "url",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": true,
+					"descripcion": "La URL del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms?</em>. <b>La URL debe finalizar con el signo ? o con el signo &</b>"
+				},
+				{
+					"nombre": "capas",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": true,
+					"descripcion": "Los nombres de las capas separados por comas. (corresponde al formato del parámetro LAYERS de WMS) de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo: <em>departamentos,rios,ciudades</em>"
+				},
+				{
+					"nombre": "formato",
+					"tipo": "string",
+					"valorPorDefecto": "<em>image/png</em>",
+					"requerido": false,
+					"descripcion": "el formato MIME de archivo: <em>image/jpeg</em>, <em>image/jpg</em>, <em>image/png</em>, <em>image/png8</em>, <em>image/gif</em>"
+				},
+				{
+					"nombre": "nombre",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": false,
+					"descripcion": "Nombre que tendrá la capa a agregar. Este es el nombre que se mostrará en el administrador de capas."
+				}
+			],
+			"alertas": [
+				{
+					"tipo":"info",
+					"texto": "El nombre que uses para la capa también será el que uses para hacer referencia a la capa en otros métodos como <code>quitarCapa</code> o <code>modificarCapa</code>. Podés dejarlo vacío, pero si vas a necesitar modificar o quitar la capa es buena práctica que le asignes un nombre"
+				},
+				{
+					"tipo":"info",
+					"texto": "El servicio WMS tiene que estar configurado para poder generar las imágenes con el sistema de referencia <code>EPSG:3857</code> que es el código que define la proyección de OpenStreetMap, Google Maps, Bing Maps, ESRI WEB Maps y demás mapas web populares."
+				}
+			]
+		},
+		"agregarCapaBaseWMS": {
+			"descripcion": [
+				"Superpone una capa desde un servicio WMS al mapa"
+			],
+			"argumentos":[
+				{
+					"nombre":"opciones",
+					"tipo": "objeto",
+					"valorPorDefecto": "null",
+					"requerido": true,
+					"descripcion": "un set de pares de key/valor que configura el pedido a la capa WMS. Las keys que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:"
+				}
+			],
+			"opciones": [
+				{
+					"nombre": "url",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": true,
+					"descripcion": "La URL del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms?</em>. <b>La URL debe finalizar con el signo ? o con el signo &</b>"
+				},
+				{
+					"nombre": "capas",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": true,
+					"descripcion": "Los nombres de las capas separados por comas. (corresponde al formato del parámetro LAYERS de WMS) de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo: <em>departamentos,rios,ciudades</em>"
+				},
+				{
+					"nombre": "formato",
+					"tipo": "string",
+					"valorPorDefecto": "<em>image/png</em>",
+					"requerido": false,
+					"descripcion": "el formato MIME de archivo: <em>image/jpeg</em>, <em>image/jpg</em>, <em>image/png</em>, <em>image/png8</em>, <em>image/gif</em>"
+				},
+				{
+					"nombre": "nombre",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": false,
+					"descripcion": "Nombre que tendrá la capa a agregar. Este es el nombre que se mostrará en el administrador de capas."
+				}
+			],
+			"alertas": [
+				{
+					"tipo":"info",
+					"texto": "El nombre que uses para la capa también será el que uses para hacer referencia a la capa en otros métodos como <code>quitarCapa</code> o <code>modificarCapa</code>. Podés dejarlo vacío, pero si vas a necesitar modificar o quitar la capa es buena práctica que le asignes un nombre"
+				},
+				{
+					"tipo":"info",
+					"texto": "El servicio WMS tiene que estar configurado para poder generar las imágenes con el sistema de referencia <code>EPSG:3857</code> que es el código que define la proyección de OpenStreetMap, Google Maps, Bing Maps, ESRI WEB Maps y demás mapas web populares."
+				}
+			]
+		},
+		"capaBase": {
+			"descripcion": [
+				"Cambia a la capa base suministrada como parámetro.",
+				"Si no se provee ningún nombre de capa, devuelve el nombre de la capa base actual."
+			],
+			"argumentos": [
+				{
+					"nombre":"capaBase",
+					"tipo":"string",
+					"requerido":true,
+					"descripcion": "El nombre de una de las capas estándar (<code>satellite</code> o <code>IGN</code>) o el nombre de una capa superpuesta previamente con <a href='#agregarCapaBaseWMS'>agregarCapaBaseWMS()</a>"
+				}
+			],
+			"opciones": [
+			],
+			"alertas": [
+				{
+					"tipo":"info",
+					"texto": "Cuando se usa <code>.capaBase()</code> para pedir la capa base actual del mapa se rompe la <em>encadenabilidad</em> de jQuery y la llamada devuelve un <code>string</code> indicando el nombre de la capa base actual del mapa."
+				}
+			]
+		},
+		"agregarCapaKML": {
+			"descripcion": [
+				"Superpone una capa KML en el mapa"
+			],
+			"argumentos":[
+				{
+					"nombre":"opciones",
+					"tipo": "objeto",
+					"valorPorDefecto": "null",
+					"requerido": true,
+					"descripcion": "un set de pares de key/valor que configura la capa KML."
+				}
+			],
+			"opciones": [
+				{
+					"nombre": "url",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": true,
+					"descripcion": "La URL del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms?</em>. <b>La URL debe finalizar con el signo ? o con el signo &</b>"
+				},
+				{
+					"nombre": "nombre",
+					"tipo": "string",
+					"valorPorDefecto": "<em>string vacío</em>",
+					"requerido": false,
+					"descripcion": "Nombre que tendrá la capa a agregar. Este es el nombre que se mostrará en el administrador de capas."
+				}
+			],
+			"alertas": [
+				{
+					"tipo":"info",
+					"texto": "El archivo KML tiene que estar accesible públicamente. Este requerimiento de argenmap.jquery va a cambiar en la versión 2.0"
+				}
+			]
+		},
+		"agregarMarcador": {
+			"descripcion": [
+				"Para crear un marcador se puede suministrar un objeto con opciones o simplemente hacer la llamada <code>$(selector).agregarMarcador()</code> y por defecto el marcador se agregará en el centro del mapa.",
+				"Para personalizar el comportamiento del marcador pueden utilizarse estas opciones"
+			],
+			"argumentos": [
+				{
+					"nombre":"opciones",
+					"tipo": "objeto",
+					"valorPorDefecto": "null",
+					"requerido": true,
+					"descripcion": "un set de pares de key/valor que configura opciones extra para el marcador que va a ser creado:"
+				}
+			],
+			"opciones": [
+				{
+					"nombre": "lat",
+					"tipo": "float",
+					"requerido": true,
+					"descripcion": "La latitud para el marcador (coordenadas geográficas)"
+				},
+				{
+					"nombre": "lng",
+					"tipo": "float",
+					"requerido": true,
+					"descripcion": "La longitud para el marcador (coordenadas geográficas)"
+				},
+				{
+					"nombre": "nombre",
+					"tipo": "string",
+					"requerido": false,
+					"descripcion": "El nombre que tendrá el marcador. Recordá que si bien es opcional, es importante definir el nombre e intentar que sea único para luego poder accederlo si necesitaras modificarlo o quitarlo."
+				},
+				{
+					"nombre": "icono",
+					"tipo": "string",
+					"requerido": false,
+					"descripcion": "La URL de la imagen PNG a utilizar como ícono.<p class='alert alert-info'>El marcador utiliza como punto de anclaje el centro horizontal y el borde inferior de la imagen. Ver <a href='http://mapicons.nicolasmollet.com/'' target='_blank'>Map Icons Collection</a>.</p>"
+				},
+				{
+					"nombre": "contenido",
+					"tipo": "string",
+					"requerido": false,
+					"descripcion": "Contenido HTML que se mostrará al hacer click sobre el marcador. Si no se provee esta opción, el marcador ignorará el click del mouse."
+				}
+			],
+			"alertas": []
+		},
+		"modificarMardador": {
+			"descripcion":[
+				"Modifica un marcador previamente creado. Las opciones para modificar el marcador son las mismas que al momento de <a href='#agregarMarcador'>crear uno</a>",
+				"La referencia del marcador a modificar es el <code>nombre</code> asignado al marcador y es el primer parámetro de este método."
+			],
+			"argumentos": [
+				{
+					"nombre": "nombre",
+					"tipo": "string",
+					"requerido": true,
+					"descripcion": "El nombre asignado al marcador cuando fue creado."
+				},
+				{
+					"nombre": "opciones",
+					"tipo": "objeto",
+					"requerido": true,
+					"descripcion": "set de pares key/valor con las mismas opciones que se usan para <a href='#agregarMarcador'>crear un marcador</a>"
+				}
+			],
+			"opciones": [],
+			"alertas": [
+			]
+		},
+		"quitarMarcador": {
+			"descripcion": [
+				"Quita un marcador del mapa.",
+				"La referencia al marcador a quitar es a través del <code>nombre</code> asignado al marcador."
+			],
+			"argumentos": [
+				{
+					"nombre": "nombre",
+					"tipo": "string",
+					"requerido": true,
+					"descripcion": "El nombre asignado al marcador cuando fue creado."
+				}
+			],
+			"opciones": [],
+			"alertas": []
+		},
+		"agregarMarcadores": {
+			"descripcion": [
+				"Crea varios marcadores sobre el mapa a partir de un array de objetos que definen las opciones de cada marcador.",
+				"Cada objeto es igual al que recibe <a href='#agregarMarcador'>agregarMarcador()</a>"
+			],
+			"argumentos": [
+				{
+					"nombre": "[marcador1, marcador2,..., marcadorN]",
+					"tipo": "array",
+					"requerido": true,
+					"descripcion": "Array de objetos simples. Cada objeto debe ser un objeto de opciones válido como se usaría con <a href='#agregarMarcador'>agregarMarcador()</a>."
+				}
+			],
+			"opciones": [],
+			"alertas": []
+		}
+	}
+}

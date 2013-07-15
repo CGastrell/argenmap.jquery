@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ArgenMap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="bootstrap/css/docs.css" rel="stylesheet">
+    <link href="bootstrap/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="bootstrap/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
+		
+		<!-- este js va aca para poder ejecutar codigo inline -->
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./index.html">ArgenMap</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active">
+                <a href="./index.html">Inicio</a>
+              </li>
+              <li class="">
+                <a href="./guias.html">Guías</a>
+              </li>
+              <li class="">
+                <a href="./documentacion.html">API</a>
+              </li>
+              <li class="">
+                <a href="./ejemplos.html">Ejemplos</a>
+              </li>
+              <li class="">
+                <a href="./casos.html">Casos</a>
+              </li>
+              <li class="">
+                <a href="./crearMapa.html">Crea un mapa para tu sitio</a>
+              </li>
+              <li class="">
+                <a href="http://github.com/CGastrell/argenmap.jquery">Ver en Github</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="jumbotron masthead">
+  <div class="container">
+    <h1>ArgenMap v2</h1>
+    <p>La manera más fácil, rápida y elegante de tener un mapa de Argentina en tu <a href="#" id="ejemploPractico">página</a>.</p>
+    <div class="resultado" style="height:0;border:0;"></div>
+    <p><a href="guias.html" class="btn btn-primary btn-large" >Comenzar</a></p>
+    <ul class="masthead-links">
+      <li><a href="http://www.jquery.com" >jQuery</a></li>
+      <li><a href="http://www.openlayers.org">OpenLayers</a></li>
+      <li>Beta</li>
+    </ul>
+  </div>
+</div>
+
+
+    <!-- Footer
+    ================================================== -->
+    <footer class="footer">
+      <div class="container-fluid">
+        <p class="pull-right"><a href="#">Volver arriba</a></p>
+        <p>Documentación diseñada con todo el amor del mundo en base a <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a>, diseñado por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a> bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p>Iconos de <a href="http://glyphicons.com">Glyphicons Free</a>, bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+				<!--
+        <ul class="footer-links">
+          <li><a href="http://blog.getbootstrap.com">Read the blog</a></li>
+          <li><a href="https://github.com/twitter/bootstrap/issues?state=open">Submit issues</a></li>
+          <li><a href="https://github.com/twitter/bootstrap/wiki">Roadmap and changelog</a></li>
+        </ul>
+				-->
+      </div>
+    </footer>
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
+
+    <!--
+    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-argenmap-closure.js"></script>
+    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/lib/OpenLayers/Control/KeyboardDefaults.js"></script>
+    -->
+    <script src="http://ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
+    <!-- Placed at the end of the document so the pages load faster 
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="bootstrap/js/bootstrap-alert.js"></script>
+    <script src="bootstrap/js/bootstrap-modal.js"></script>
+    <script src="bootstrap/js/bootstrap-dropdown.js"></script>
+    <script src="bootstrap/js/bootstrap-scrollspy.js"></script>
+    <script src="bootstrap/js/bootstrap-tab.js"></script>
+    <script src="bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="bootstrap/js/bootstrap-popover.js"></script>
+    <script src="bootstrap/js/bootstrap-button.js"></script>
+    <script src="bootstrap/js/bootstrap-collapse.js"></script>
+    <script src="bootstrap/js/bootstrap-carousel.js"></script>
+    <script src="bootstrap/js/bootstrap-typeahead.js"></script>
+    <script src="bootstrap/js/bootstrap-affix.js"></script>
+    <script src="bootstrap/js/application.js"></script>
+		-->
+		
+    <!-- Codigo para la pagina
+    ================================================== -->
+		<script>
+			$(document).ready(function(){
+				prettyPrint();
+				$('#ejemploPractico').click(function(){
+					$('div.resultado').animate({
+						height: 400
+						},300,function(){$('div.resultado').argenmap();}
+					);
+					return false;
+				});
+			});
+		</script>
+
+    <!-- Analytics
+    ================================================== -->
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-689568-24']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+
+  </body>
+</html>

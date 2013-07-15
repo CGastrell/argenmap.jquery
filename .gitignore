@@ -11,7 +11,7 @@ lib/OpenLayers-2.12/
 Thumbs.db
 
 #github pages (gh-pages branch)
-docs/
+#docs/
 
 #cosas viejas
 *.old
