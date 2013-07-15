@@ -316,6 +316,10 @@
 		 * Array con los features agregados al mapa, para conveniencia
 		 */
 		this.marcadores = [];
+		/**
+		 * Array con nombres restringidos
+		 */
+		this.privados = [];
 		//opciones por defecto
 		this.predefinidos = {
 			proyeccion: "EPSG:3857",
@@ -455,17 +459,6 @@
 			this.$el.find('div.baseLbl').text("Capas base");
 			this.$el.find('div.dataLbl').text("Superpuestas");
 		},
-		destruir: function()
-		{
-			/* cosas que tendria que hacer el destruir:
-			-limpiar el dom element
-			-nulificar la clase para que el gc(?) se encargue
-			-nulificar el data('argenmap') del dom element
-			... por ahora me resulta mas facil destruir el objeto
-			... desde afuera, si lo hago desde aca queda una referencia perdida
-			... creo. $(selector).removerArgenmap() por ahora es lo mas efectivo
-			*/
-		},
 		actualizar: function()
 		{
 
@@ -496,16 +489,17 @@
 			switch(t)
 			{
 				case "wms":
-					agregarCapaWMS(opciones);
+					this.agregarCapaWMS(opciones);
 				break;
 				case "kml":
-					agregarCapaKML(opciones);
+					this.agregarCapaKML(opciones);
 				break;
 			}
 		},
 		agregarCapaWMS: function(opciones)
 		{
 			var predeterminadasWms = {
+				nombre: 'Capa WMS',
 				singleTile: false,
 				transparente: true,
 				formato: "image/png",
@@ -518,6 +512,8 @@
 				proyeccion: this.opciones.proyeccion
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
+			if(this._esCapaPrivada(o.nombre)) return;
+			this.quitarCapa(o.nombre);
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
 			if(this.mapa) this.mapa.addLayer(l);
 			if(l.options.isBaseLayer && o.mostrarAlCargar) this.mapa.setBaseLayer(l);
@@ -544,6 +540,7 @@
 				
 			};
 			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
+			this.quitarCapa(o.nombre);
 			var l = new OpenLayers.Layer.Vector(o.nombre,o);
 			//al crearse el layer no tiene aun los features, delay al event loadend
 			l.events.register('loadend',l,function(e){
@@ -608,6 +605,7 @@
 		agregarCapaBaseWMS: function(opciones)
 		{
 			var predeterminadasWms = {
+				nombre: 'Capa Base WMS',
 				singleTile: false,
 				transparente: false,
 				formato: "image/jpeg",
@@ -620,6 +618,8 @@
 				proyeccion: this.opciones.proyeccion
 			};
 			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
+			if(this._esCapaPrivada(o.nombre)) return;
+			this.quitarCapa(o.nombre);
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
 			if(this.mapa) this.mapa.addLayer(l);
 			if(l.options.isBaseLayer && o.mostrarAlCargar) this.mapa.setBaseLayer(l);
@@ -671,6 +671,7 @@
 				icono: ''
 			};
 			var o = $.extend({},predeterminadasMarcador,opciones);
+			this.quitarMarcador(o.nombre);
 			var icono = o.icono;
 			//para detectar el tamanio de imagen voy a tener que hacer un preload
 			//y en el callback volver a llamar esta funcion nuevamente
@@ -799,6 +800,14 @@
 			f.marker.events.un({"click": this._marcadorClickHandler,scope:f});
 			this._quitarMarcadorPorReferencia(f);
 		},
+		quitarCapa: function(nombre)
+		{
+			if(this.privados.indexOf(nombre) > -1) return;
+			var c = this._traerCapaPorNombre(nombre);
+			if(!c) return;
+			//el mapa tiene eventos addlayer y removelayer que se encargan del this.capas
+			this.mapa.removeLayer(c);
+		},
 		centro: function(lat,lon)
 		{
 			if(lat == undefined && lon == undefined)
@@ -836,6 +845,10 @@
 			if(c) this.mapa.setBaseLayer(c);
 		},
 		/* INTERNAS / PRIVADAS */
+		_esCapaPrivada: function(nombre)
+		{
+			return this.privados.indexOf(nombre) > -1;
+		},
 		_crearIconoPredeterminado: function(icono)
 		{
 			var a = null;
@@ -918,11 +931,7 @@
 		},
 		_traerCapaPorReferencia: function(capa)
 		{
-			for(var i = 0; i < this.capas.length; i++)
-			{
-				if(this.capas[i] == capa) return this.capas[i];
-			}
-			return false;
+			return this.capas[this.capas.indexOf(capa)];
 		},
 		/**
 		 * Busca en el array de capas proporcionado y devuelve si alguna capa.isBaseLayer == true
@@ -993,6 +1002,7 @@
 					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);					
 				break;
 				case "ign":
+					o = traducirObjeto(extras);
 					p = traducirObjeto({
 						layername: "capabasesigign",
 						transparente: true,
@@ -1005,14 +1015,23 @@
 						transitionEffect: 'resize',
 						proyeccion: this.opciones.proyeccion						
 					});
-					
+					$.extend(p,o);
 					//c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
-					c = new OpenLayers.Layer.ArgenmapTMS("IGN",IGN_CACHES ,p);					
+					c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);					
 					/*
 					 * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
 					 * así que la agrego a manopla.
 					 */
-					c.displayInLayerSwitcher = false;					
+					if(o.hasOwnProperty("displayInLayerSwitcher"))
+					{
+						c.displayInLayerSwitcher = o.displayInLayerSwitcher;
+						//si no se muestra en layerswitcher agrego la
+						//capa a privados para que no pueda removerse a mano
+						if(!o.displayInLayerSwitcher)
+						{
+							this.privados.push(p.nombre);
+						}
+					}
 				break;
 				case "bing":
 					//corte temprano para evitar instancia de capa si el mapa
@@ -1020,7 +1039,7 @@
 					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913") return c;
 					if(extras && extras.key)
 					{
-						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
+						var ign = this._crearCapaPredefinida("ign",{nombre:'ign_bing',listarCapa:false});
 						c = new OpenLayers.Layer.Bing({
 							name: "Aérea (Bing)",
 							isBaseLayer:true,
@@ -1084,6 +1103,7 @@
 				break;
 				case "hibridoign":
 				case "satelital":
+				case "satelite":
 				case "google":
 					//corte temprano para evitar instancia de capa si el mapa
 					//no esta en spherical mercator
@@ -1120,7 +1140,7 @@
 							$(window).one('googleCargado',$.proxy(function(){this.agregarCapa("satelital",extras)},this));
 						}
 					}else{
-						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
+						var ign = this._crearCapaPredefinida("ign",{nombre:'ign_sobre_satelite',listarCapa:false});
 						var o = {
 							nombre:"Satélite",
 							type:"satellite",
@@ -1176,6 +1196,7 @@
 					'font-family': 'Arial',
 					'color': this.colorLetraPie,
 					'background-color': this.colorFondoPie,
+					'box-shadow': '0 0 11px rgb(5, 66, 100) inset',
 					'font-size': '10px',
 					'text-align': 'right',
 					'min-height': '25px',
@@ -1346,6 +1367,15 @@
 			var a = $this.data('argenmap');
 			if(!a) return;
 			a.quitarMarcador(nombre);
+		});
+	}
+	$.fn.quitarCapa = function(nombre)
+	{
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			a.quitarCapa(nombre);
 		});
 	}
 	$.fn.agregarMarcadores = function(arrayMarcadores)
