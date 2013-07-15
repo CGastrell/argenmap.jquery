@@ -1,3 +1,7 @@
+/**
+ * argenmap.jquery v2.4
+ * @author Christian Gastrell
+ */
 (function ($, window, undefined) {
 	IGN_CACHES = [
 		'http://cg.aws.af.cm/tms',
@@ -784,16 +788,16 @@
 				mostrarConClick: f.marker.events.listeners.click != undefined || f.data.popupContentHTML != ""
 			};
 			var opcionesNuevas = $.extend({},opcionesPrevias,opciones);
-			this.removerMarcador(nombre);
+			this.quitarMarcador(nombre);
 			this.agregarMarcador(opcionesNuevas);
 		},
-		removerMarcador: function(nombre)
+		quitarMarcador: function(nombre)
 		{
 			var f = this._traerMarcadorPorNombre(nombre);
 			if(!f) return;
 			//estoy removiendo el evento a mano, por las dudas, no se si esta bien
 			f.marker.events.un({"click": this._marcadorClickHandler,scope:f});
-			this._removerMarcadorPorReferencia(f);
+			this._quitarMarcadorPorReferencia(f);
 		},
 		centro: function(lat,lon)
 		{
@@ -853,7 +857,7 @@
 			}
 			return a;
 		},
-		_removerMarcadorPorReferencia: function(marcador)
+		_quitarMarcadorPorReferencia: function(marcador)
 		{
 			//esta funcion solo termina removiendo el marcador
 			//del array interno de ArgenMap, solo debe ejecutarse
@@ -1276,7 +1280,7 @@
 			a.agregarCapaKML(opciones);
 		});
 	}
-	$.fn.removerArgenmap = function()
+	$.fn.quitarArgenmap = function()
 	{
 		return this.each(function(){
 			var $this = $(this);
@@ -1335,13 +1339,13 @@
 			a.modificarMarcador(nombre,opciones);
 		});
 	}
-	$.fn.removerMarcador = function(nombre)
+	$.fn.quitarMarcador = function(nombre)
 	{
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			a.removerMarcador(nombre);
+			a.quitarMarcador(nombre);
 		});
 	}
 	$.fn.agregarMarcadores = function(arrayMarcadores)
