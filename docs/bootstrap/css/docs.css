@@ -490,6 +490,7 @@ div.resultado label {
 div.resultado input[type="radio"], div.resultado input[type="checkbox"] {
 	margin:0;
 }
+.shadowed {box-shadow: 0px -10px 30px #555;}
 /* Make tables spaced out a bit more */
 h2 + table,
 h3 + table,
@@ -561,11 +562,70 @@ h2 + .row {
 /* Bootstrap code examples
 -------------------------------------------------- */
 
+/* Base class, ajustada para los resultados */
+.bs-docs-resultado {
+  position: relative;
+  margin: 15px 0;
+  padding: 39px 2px 14px;
+  *padding-top: 19px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+/* Echo out a label for the example */
+.bs-docs-resultado:after {
+  content: "Resultado";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #9da0a4;
+  -webkit-border-radius: 4px 0 4px 0;
+     -moz-border-radius: 4px 0 4px 0;
+          border-radius: 4px 0 4px 0;
+}
+/* Echo out a label for the example */
+.metodo {
+  position: relative;
+  padding: 18px 16px 14px;
+	color: #5C5C5C;
+	/*
+  margin: 15px 0;
+  *padding-top: 19px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+	*/
+}
+.metodo:after {
+  content: "Método";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+background-color: rgba(255, 255, 255, 0.3);
+border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #9da0a4;
+  -webkit-border-radius: 4px 0 4px 0;
+     -moz-border-radius: 4px 0 4px 0;
+          border-radius: 4px 0 4px 0;
+}
 /* Base class */
 .bs-docs-example {
   position: relative;
   margin: 15px 0;
-  padding: 39px 19px 14px;
+  padding: 39px 2px 14px;
   *padding-top: 19px;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -576,7 +636,7 @@ h2 + .row {
 
 /* Echo out a label for the example */
 .bs-docs-example:after {
-  content: "Example";
+  content: "Ejemplo";
   position: absolute;
   top: -1px;
   left: -1px;
@@ -595,6 +655,8 @@ h2 + .row {
 .bs-docs-example + .prettyprint {
   margin-top: -20px;
   padding-top: 15px;
+	/*tweak*/
+	line-height:14px;
 }
 
 /* Tweak examples
@@ -768,6 +830,32 @@ form.bs-docs-example {
      -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
           box-shadow: 0 1px 4px rgba(0,0,0,.065);
 }
+.bs-docs-sidenav > li {
+  line-height: 15px;font-size: 12px;
+}
+.bs-docs-sidenav > li.list-header {
+  display: block;
+  *width: 190px;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #111;
+  background-color: #333;
+  color: #EEE;
+  -webkit-border-radius: 6px 6px 0 0;
+     -moz-border-radius: 6px 6px 0 0;
+          border-radius: 6px 6px 0 0;
+  /*background: linear-gradient(45deg, #020031 0%,#6d3353 100%);*/
+}
+.bs-docs-sidenav > li.list-divider {
+  display: block;
+  *width: 190px;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #111;
+  background-color: #333;
+  color: #EEE;
+  /*background: linear-gradient(45deg, #020031 0%,#6d3353 100%);*/
+}
 .bs-docs-sidenav > li > a {
   display: block;
   *width: 190px;
@@ -822,7 +910,7 @@ form.bs-docs-example {
   bottom: 270px;
 }
 
-
+.table {margin-bottom: 5px;}
 
 
 /* Responsive

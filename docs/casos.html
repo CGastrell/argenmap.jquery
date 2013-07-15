@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ArgenMap · Guía</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="bootstrap/css/docs.css" rel="stylesheet">
+    <link href="bootstrap/js/google-code-prettify/prettify-default.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="bootstrap/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
+    
+    <!-- este js va aca para poder ejecutar codigo inline -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./index.html">ArgenMap</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="">
+                <a href="./index.html">Inicio</a>
+              </li>
+              <li class="">
+                <a href="./guias.html">Guías</a>
+              </li>
+              <li class="">
+                <a href="./documentacion.html">API</a>
+              </li>
+              <li class="">
+                <a href="./ejemplos.html">Ejemplos</a>
+              </li>
+              <li class="active">
+                <a href="./casos.html">Casos</a>
+              </li>
+              <li class="">
+                <a href="./crearMapa.html">Crea un mapa para tu sitio</a>
+              </li>
+              <li class="">
+                <a href="http://github.com/CGastrell/argenmap.jquery">Ver en Github</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container-fluid">
+    <h1>ArgenMap v2 :: Ejemplos</h1>
+    <p class="lead">ArgenMap + jQuery + OpenLayers</p>
+  </div>
+</header>
+
+
+
+
+<div class="container-fluid">
+  <div class="page-header">
+    <h1>Páginas usando mapas con ArgenMap</h1>
+  </div>
+
+  <p class="lead">ArgenMap es abierto y está disponible para descargar, vincular online e incluso para extender su funcionalidad. Estos son algunos ejemplos.</p>
+  <div class="row-fluid">
+    <ul class="thumbnails">
+      <li class="span4">
+        <div class="thumbnail">
+          <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;"
+          src="images/sample-desarrollosocial.jpg">
+          <div class="caption">
+            <h3>Desarrollo Social</h3>
+            <p>Mapa de locaciones de centros y organizaciones de todo el pais. Migrado
+              de google maps a ArgenMap.</p>
+            <p>
+              <a href="http://www.desarrollosoial.gob.ar/mapa.aspx" class="btn btn-primary">Visitar</a> 
+            </p>
+          </div>
+        </div>
+      </li>
+      <li class="span4">
+        <div class="thumbnail">
+          <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;"
+          src="images/sample-laplata.jpg">
+          <div class="caption">
+            <h3>Mapa de inundaciones</h3>
+            <p>Imagen de CoNAE correspondientes al 2 de Abril de 2013, superpuesta sobre
+              ArgenMap</p>
+            <p>
+              <a href="#" class="btn btn-primary">Visitar</a> 
+            </p>
+          </div>
+        </div>
+      </li>
+      <li class="span4">
+        <div class="thumbnail">
+          <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;"
+          src="images/sample-anac.jpg">
+          <div class="caption">
+            <h3>ANAC</h3>
+            <p>Ubicación de oficina de ventas de la ANAC con ArgenMap</p>
+            <p>
+              <a href="#" class="btn btn-primary">Visitar</a> 
+            </p>
+          </div>
+        </div>
+      </li>
+  </ul>
+</div>
+<div class="row-fluid">
+	<ul class="thumbnails">
+      <li class="span4">
+        <div class="thumbnail">
+          <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;"
+          src="images/sample-ara.jpg">
+          <div class="caption">
+            <h3>Campaña sanitaria - ARA</h3>
+            <p>Mapa de localizaciones para la campaña sanitaria 2013 - ARA.mil.ar</p>
+            <p>
+              <a href="http://www.ara.mil.ar/CAMP_SANITARIA/index.php" class="btn btn-primary">Visitar</a> 
+            </p>
+          </div>
+        </div>
+      </li>
+      <li class="span4">
+        <div class="thumbnail">
+          <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;"
+          src="images/sample-conae.jpg">
+          <div class="caption">
+            <h3>CoNAE</h3>
+            <p>Aplicación en CoNAE para la visualización de imágenes SPOT.</p>
+            <p>
+              <a href="http://catalogos.conae.gov.ar/spot/find.aspx?id=9938" class="btn btn-primary">Visitar</a> 
+            </p>
+          </div>
+        </div>
+      </li>
+      <li class="span4">
+        <div class="thumbnail">
+          <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;"
+          src="images/sample-jornadas.jpg">
+          <div class="caption">
+            <h3>Jornadas SIG Tucumán</h3>
+            <p>Mapa con localización del evento.</p>
+            <p>
+              <a href="http://www.jornadastucumansig.com.ar" class="btn btn-primary">Visitar</a> 
+            </p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+    <!-- Footer
+    ================================================== -->
+    <footer class="footer">
+      <div class="container">
+        <p class="pull-right"><a href="#">Volver arriba</a></p>
+        <p>Documentación diseñada con todo el amor del mundo en base a <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a>, diseñado por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a> bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p>Iconos de <a href="http://glyphicons.com">Glyphicons Free</a>, bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <!--
+        <ul class="footer-links">
+          <li><a href="http://blog.getbootstrap.com">Read the blog</a></li>
+          <li><a href="https://github.com/twitter/bootstrap/issues?state=open">Submit issues</a></li>
+          <li><a href="https://github.com/twitter/bootstrap/wiki">Roadmap and changelog</a></li>
+        </ul>
+        -->
+      </div>
+    </footer>
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
+
+    <script src="http://ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
+    <!-- Placed at the end of the document so the pages load faster 
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="bootstrap/js/bootstrap-alert.js"></script>
+    <script src="bootstrap/js/bootstrap-modal.js"></script>
+    <script src="bootstrap/js/bootstrap-dropdown.js"></script>
+    <script src="bootstrap/js/bootstrap-scrollspy.js"></script>
+    <script src="bootstrap/js/bootstrap-tab.js"></script>
+    <script src="bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="bootstrap/js/bootstrap-popover.js"></script>
+    <script src="bootstrap/js/bootstrap-button.js"></script>
+    <script src="bootstrap/js/bootstrap-collapse.js"></script>
+    <script src="bootstrap/js/bootstrap-carousel.js"></script>
+    <script src="bootstrap/js/bootstrap-typeahead.js"></script>
+    <script src="bootstrap/js/bootstrap-affix.js"></script>
+    <script src="bootstrap/js/application.js"></script>
+    -->
+    
+    <!-- Codigo para la pagina
+    ================================================== -->
+    <script>
+      $(document).ready(function(){
+        var $window = $(window);
+        // side bar
+        $('.bs-docs-sidenav').affix({
+          offset: {
+            top: function () { return $window.width() <= 980 ? 290 : 210 }
+          , bottom: 270
+          }
+        })
+
+        // make code pretty
+        window.prettyPrint && prettyPrint()
+    });
+    </script>
+
+    <!-- Analytics
+    ================================================== -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-689568-24']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+
+  </body>
+</html>

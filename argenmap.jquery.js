@@ -1,3 +1,7 @@
+/**
+ * argenmap.jquery v2.4
+ * @author Christian Gastrell
+ */
 (function ($, window, undefined) {
 	IGN_CACHES = [
 		'http://cg.aws.af.cm/tms',
@@ -144,7 +148,23 @@
 	var rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
 
+	/**
+	 * Variable para almacenar cuando google este haciendo async load
+	 */
+	var googleEstaCargando = false;
+	/**
+	 * Evento custom de jQuery
+	 */
+	$.event.trigger('googleCargado');
+	$(window).on('googleCargado',function(e){googleEstaCargando = false;});
 	/* FUNCIONES DE AYUDA */
+	/**
+	 * Indica si el script de google maps esta cargado
+	 */
+	function googleEstaCargado()
+	{
+		return (typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object')) === false;
+	}
 	/**
 	 * Traduce las keys de un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
@@ -272,7 +292,7 @@
 	function ArgenMap($this,opciones)
 	{
 
-		this.colorFondoPie = '#003964';
+		this.colorFondoPie = 'rgb(28,116,165)';
 		this.colorLetraPie = 'white';
 		if(opciones !== undefined && opciones.hasOwnProperty("colorFondoPie"))
 		{
@@ -768,16 +788,16 @@
 				mostrarConClick: f.marker.events.listeners.click != undefined || f.data.popupContentHTML != ""
 			};
 			var opcionesNuevas = $.extend({},opcionesPrevias,opciones);
-			this.removerMarcador(nombre);
+			this.quitarMarcador(nombre);
 			this.agregarMarcador(opcionesNuevas);
 		},
-		removerMarcador: function(nombre)
+		quitarMarcador: function(nombre)
 		{
 			var f = this._traerMarcadorPorNombre(nombre);
 			if(!f) return;
 			//estoy removiendo el evento a mano, por las dudas, no se si esta bien
 			f.marker.events.un({"click": this._marcadorClickHandler,scope:f});
-			this._removerMarcadorPorReferencia(f);
+			this._quitarMarcadorPorReferencia(f);
 		},
 		centro: function(lat,lon)
 		{
@@ -837,7 +857,7 @@
 			}
 			return a;
 		},
-		_removerMarcadorPorReferencia: function(marcador)
+		_quitarMarcadorPorReferencia: function(marcador)
 		{
 			//esta funcion solo termina removiendo el marcador
 			//del array interno de ArgenMap, solo debe ejecutarse
@@ -1068,27 +1088,37 @@
 					//corte temprano para evitar instancia de capa si el mapa
 					//no esta en spherical mercator
 					if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913")
-						return c;
-					
-					if(typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object'))//este OR no esta bien
 					{
-						var m = String(Math.random() * 1000);
-						//async load de api de google segun guias
-						//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
-						window["argenmapGoogleAPICallback"+m] = $.proxy(function()
+						return c;
+					}
+
+					if( !googleEstaCargado() )
+					{
+						if(!googleEstaCargando)
 						{
-							window["argenmapGoogleAPICallback"+m] = null;
-							try{
-								delete window["argenmapGoogleAPICallback"+m];
-							}catch(e){
-								window["argenmapGoogleAPICallback"+m] = undefined;
-							}
-							this.agregarCapa("satelital",extras);
-						},this);
-						var script = document.createElement("script");
-						script.type = "text/javascript";
-						script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback"+m;
-						document.body.appendChild(script);
+							var m = String(Math.random() * 1000 << 0);
+							//async load de api de google segun guias
+							//https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
+							window["argenmapGoogleAPICallback"+m] = function()
+							{
+								window["argenmapGoogleAPICallback"+m] = null;
+								try{
+									delete window["argenmapGoogleAPICallback"+m];
+								}catch(e){
+									window["argenmapGoogleAPICallback"+m] = undefined;
+								}
+								// this.agregarCapa("satelital",extras);
+								$(window).trigger({type:'googleCargado'});
+							};
+							var script = document.createElement("script");
+							script.type = "text/javascript";
+							script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback"+m;
+							document.body.appendChild(script);
+							googleEstaCargando = true;
+							$(window).one('googleCargado',$.proxy(function(){this.agregarCapa("satelital",extras)},this));
+						}else{
+							$(window).one('googleCargado',$.proxy(function(){this.agregarCapa("satelital",extras)},this));
+						}
 					}else{
 						var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
 						var o = {
@@ -1250,7 +1280,7 @@
 			a.agregarCapaKML(opciones);
 		});
 	}
-	$.fn.removerArgenmap = function()
+	$.fn.quitarArgenmap = function()
 	{
 		return this.each(function(){
 			var $this = $(this);
@@ -1309,13 +1339,13 @@
 			a.modificarMarcador(nombre,opciones);
 		});
 	}
-	$.fn.removerMarcador = function(nombre)
+	$.fn.quitarMarcador = function(nombre)
 	{
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			a.removerMarcador(nombre);
+			a.quitarMarcador(nombre);
 		});
 	}
 	$.fn.agregarMarcadores = function(arrayMarcadores)

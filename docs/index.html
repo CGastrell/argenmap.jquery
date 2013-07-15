@@ -18,26 +18,16 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!-- Le fav and touch icons 
+    <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="bootstrap/ico/favicon.ico">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
-		-->
+		
 		<!-- este js va aca para poder ejecutar codigo inline -->
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
-    <script type="text/javascript">
-      var _gaq = _gaq || [];
-      //_gaq.push(['_setAccount', 'UA-146052-10']);
-      //_gaq.push(['_trackPageview']);
-      //(function() {
-      //  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      //  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      //  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      //})();
-    </script>
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -46,7 +36,7 @@
     ================================================== -->
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container">
+        <div class="container-fluid">
           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -58,22 +48,23 @@
               <li class="active">
                 <a href="./index.html">Inicio</a>
               </li>
-              <li class="dropdown">
-                <a href="./guias.html" class="dropdown-toggle" data-toggle="dropdown">Guía
-								<b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="./guias.html#como-empezar">Cómo empezar</a></li>
-									<li><a href="./guias.html#un-mapa">Un mapa</a></li>
-									<li><a href="./guias.html#capas">Capas</a></li>
-									<li><a href="./guias.html#marcadores">Marcadores</a></li>
-								</ul>
+              <li class="">
+                <a href="./guias.html">Guías</a>
               </li>
               <li class="">
-                <a href="#">Documentación</a>
+                <a href="./documentacion.html">API</a>
               </li>
               <li class="">
-                <a href="#">Desarrolladores</a>
+                <a href="./ejemplos.html">Ejemplos</a>
+              </li>
+              <li class="">
+                <a href="./casos.html">Casos</a>
+              </li>
+              <li class="">
+                <a href="./crearMapa.html">Crea un mapa para tu sitio</a>
+              </li>
+              <li class="">
+                <a href="http://github.com/CGastrell/argenmap.jquery">Ver en Github</a>
               </li>
             </ul>
           </div>
@@ -99,11 +90,10 @@
     <!-- Footer
     ================================================== -->
     <footer class="footer">
-      <div class="container">
-        <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>Documentación diseñada con todo el amor del mundo <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a> por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
-        <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-        <p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+      <div class="container-fluid">
+        <p class="pull-right"><a href="#">Volver arriba</a></p>
+        <p>Documentación diseñada con todo el amor del mundo en base a <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a>, diseñado por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a> bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p>Iconos de <a href="http://glyphicons.com">Glyphicons Free</a>, bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
 				<!--
         <ul class="footer-links">
           <li><a href="http://blog.getbootstrap.com">Read the blog</a></li>
@@ -121,8 +111,11 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
 
-    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers.js"></script>
-    <script src="../argenmap.jquery.js"></script>
+    <!--
+    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-argenmap-closure.js"></script>
+    <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/lib/OpenLayers/Control/KeyboardDefaults.js"></script>
+    -->
+    <script src="http://ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
     <!-- Placed at the end of the document so the pages load faster 
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
     <script src="bootstrap/js/bootstrap-alert.js"></script>
@@ -157,19 +150,19 @@
 
     <!-- Analytics
     ================================================== -->
-    <script>
-      var _gauges = _gauges || [];
-      //(function() {
-      //  var t   = document.createElement('script');
-      //  t.type  = 'text/javascript';
-      //  t.async = true;
-      //  t.id    = 'gauges-tracker';
-      //  t.setAttribute('data-site-id', '4f0dc9fef5a1f55508000013');
-      //  t.src = '//secure.gaug.es/track.js';
-      //  var s = document.getElementsByTagName('script')[0];
-      //  s.parentNode.insertBefore(t, s);
-      //})();
-    </script>
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-689568-24']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
 
   </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>ArgenMap · Guía</title>
@@ -11,33 +11,22 @@
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="bootstrap/css/docs.css" rel="stylesheet">
-    <link href="bootstrap/js/google-code-prettify/prettify.css" rel="stylesheet">
+    <link href="bootstrap/js/google-code-prettify/prettify-default.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!-- Le fav and touch icons 
+    <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="bootstrap/ico/favicon.ico">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
-		-->
+		
 		<!-- este js va aca para poder ejecutar codigo inline -->
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-
-    <script type="text/javascript">
-      var _gaq = _gaq || [];
-      //_gaq.push(['_setAccount', 'UA-146052-10']);
-      //_gaq.push(['_trackPageview']);
-      //(function() {
-      //  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      //  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      //  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      //})();
-    </script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -46,7 +35,7 @@
     ================================================== -->
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container">
+        <div class="container-fluid">
           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -58,21 +47,23 @@
               <li class="">
                 <a href="./index.html">Inicio</a>
               </li>
-              <li class="active dropdown">
-                <a href="./guias.html" class="dropdown-toggle" data-toggle="dropdown">Guías
-								<b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="./guias.html#como-empezar">Cómo empezar</a></li>
-									<li><a href="./guias.html#un-mapa">Un mapa</a></li>
-									<li><a href="./guias.html#capas">Capas</a></li>
-								</ul>
+              <li class="active">
+                <a href="./guias.html">Guías</a>
               </li>
               <li class="">
-                <a href="#">Documentación</a>
+                <a href="./documentacion.html">API</a>
               </li>
               <li class="">
-                <a href="#">Desarrolladores</a>
+                <a href="./ejemplos.html">Ejemplos</a>
+              </li>
+              <li class="">
+                <a href="./casos.html">Casos</a>
+              </li>
+              <li class="">
+                <a href="./crearMapa.html">Crea un mapa para tu sitio</a>
+              </li>
+              <li class="">
+                <a href="http://github.com/CGastrell/argenmap.jquery">Ver en Github</a>
               </li>
             </ul>
           </div>
@@ -83,26 +74,26 @@
 <!-- Subhead
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
-  <div class="container">
-    <h1>ArgenMap v2</h1>
+  <div class="container-fluid">
+    <h1>ArgenMap v2 :: Guías</h1>
     <p class="lead">ArgenMap + jQuery + OpenLayers</p>
   </div>
 </header>
 
 
-  <div class="container">
+  <div class="container-fluid">
 
     <!-- Docs nav
     ================================================== -->
-    <div class="row">
+    <div class="row-fluid">
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
           <li><a href="#como-empezar"><i class="icon-chevron-right"></i> Cómo empezar</a></li>
           <li><a href="#un-mapa"><i class="icon-chevron-right"></i> Un mapa</a></li>
           <li><a href="#capas"><i class="icon-chevron-right"></i> Capas</a></li>
           <li><a href="#marcadores"><i class="icon-chevron-right"></i> Marcadores</a></li>
-          <li><a href="#ejemplos"><i class="icon-chevron-right"></i> Más ejemplos</a></li>
-          <!-- <li><a href="#what-next"><i class="icon-chevron-right"></i> What next?</a></li> -->
+          <!-- <li><a href="#ejemplos"><i class="icon-chevron-right"></i> Más ejemplos</a></li>
+          <li><a href="#what-next"><i class="icon-chevron-right"></i> What next?</a></li> -->
         </ul>
       </div>
       <div class="span9">
@@ -113,11 +104,11 @@
         ================================================== -->
         <section id="como-empezar">
           <div class="page-header">
-            <h1>1. Cómo empezar</h1>
+            <h2>1. Cómo empezar</h2>
           </div>
           <p class="lead">
 						Esta guía es un ejemplo práctico del uso de ArgenMap v2. La misma está basada en casos de estudio
-						en base a los cuales se concibió ArgenMap. Si buscas ayuda específica de algun método u opción, debes remitirte
+						en base a los cuales se concibió ArgenMap. Si buscas ayuda específica de algún método u opción, debes remitirte
 						a la sección de desarrolladores, donde podrás hallar un listado detallado de los métodos y funciones de ArgenMap v2.
 					</p>
 					<p><strong>ArgenMap</strong> es un plugin para jQuery. Todos los ejemplos asumen
@@ -131,12 +122,12 @@
 &lt;html&gt;
   &lt;head&gt;
   &lt;!-- jQuery, vinculado directo a cdn de google --&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
   &lt;!-- ArgenMap v2, vinculado directo desde el Instituto Geogr&#225;fico Nacional --&gt;
   &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js&quot;&gt;&lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;div id=&quot;mapa&quot; style=&quot;height:450px;&quot;&gt;&lt;/div&gt;
+    &lt;div id=&quot;prueba&quot; style=&quot;height:450px;&quot;&gt;&lt;/div&gt;
   &lt;/body&gt;
 &lt;/html&gt;</pre>
 					<p>Tal vez tu página no se ve así, pero lo importante es que incluyas
@@ -145,7 +136,7 @@
 &lt;head&gt;
 ...
 &lt;!-- jQuery, vinculado directo a cdn de google --&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
 &lt;!-- ArgenMap v2, vinculado directo desde el Instituto Geogr&#225;fico Nacional --&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js&quot;&gt;&lt;/script&gt;
 ...
@@ -179,32 +170,36 @@ $(document).ready(function(){
           <div class="row-fluid">
             <div class="span6">
               <h3>Código</h3>
-              <p><strong>Todo el código</strong> que se encuentra en estas guías se refiere
-							a JavaScript y/o HTML.<br />A menudo se darán ejemplos con un
-							botón para poder ejecutar el código y ver su resultado.<br />
-							Este es un script tag tal como esta insertado en esta página
-							(sólo el selector es distinto).</p>
+							<div class="bs-docs-example">
+								<p><strong>Todo el código</strong> que se encuentra en estas guías se refiere
+								a JavaScript y/o HTML.<br />A menudo se darán ejemplos con un
+								botón para poder ejecutar el código y ver su resultado.<br />
+								Este es un script tag tal como esta insertado en esta página
+								(sólo el selector es distinto).</p>
 <pre class="prettyprint">
 &lt;script&gt;
   //al ejecutar este c&oacute;digo se ver&aacute;
   //el resultado en el cuadro de ejemplo
   $('#mapa').argenmap();
 &lt;/script&gt;</pre>
-						<a id="guias-demo1" class="btn btn-large btn-primary btn-block" href="#guias-demo1">Ejecutar ejemplo</a>
-						<script>
-							$('#guias-demo1').click(function(){
-								$('#guias-demo1-resultado').argenmap();
-								return false;
-							});
-						</script>
-            </div>
+							<a id="guias-demo1" class="btn btn-large btn-primary btn-block" href="#guias-demo1">Ejecutar ejemplo</a>
+							<script>
+								$('#guias-demo1').click(function(){
+									$('#guias-demo1-resultado').argenmap();
+									return false;
+								});
+							</script>
+							</div>
+						</div>
             <div class="span6">
-              <h3>Resultado</h3>
-              <p>
-								El resultado del código se mostrará siempre en un DIV con un borde punteado rojo, como el que se muestra aquí debajo.
-							</p>
-							<div id="guias-demo1-resultado" class="resultado"></div>
-            </div>
+							<h3>Resultado</h3>
+							<div class="bs-docs-resultado">
+								<small>
+									El resultado del código se mostrará siempre en un DIV con un borde punteado rojo, como el que se muestra aquí debajo.
+								</small>
+								<div id="guias-demo1-resultado" class="resultado"></div>
+							</div>
+						</div>
           </div>
         </section>
 
@@ -214,22 +209,26 @@ $(document).ready(function(){
         ================================================== -->
         <section id="un-mapa">
           <div class="page-header">
-            <h1>2. Un mapa</h1>
+            <h2>2. Un mapa</h2>
           </div>
           <p class="lead">ArgenMap es una librería para mostrar mapas de Argentina. Su función más
 					básica será instanciar un mapa en el/los selector/es indicados con jQuery</p>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).argenmap([opciones])</h2></div>
-          <p>Las opciones del mapa pueden ser incluídas al momento de inicializarlo
+					<div class="alert metodo"><h3>$(<em>selector</em>).argenmap(<em>[opciones:Objeto]</em>)</h3></div>
+					<p><code>.argenmap()</code> inicializa un mapa en el selector indicado</p>
+          <p>Las opciones del mapa pueden ser incluidas al momento de inicializarlo
 					mediante un objeto de JavaScript, o bien pueden ser modificadas luego
 					a través de llamadas al mismo selector.</p>
           <div class="row-fluid">
             <div class="span6">
-							<p>Este es un ejemplo de como inicializar un mapa con distintas opciones:</p>
+							<div class="bs-docs-example">
+							<small>Utilizando un objeto con propiedades <code>centro</code> y <code>zoom</code> se puede configurar el mapa
+							para la zona que se quiere enfocar.</small><br />
+							<small>Este es un ejemplo de como inicializar un mapa con distintas opciones:</small>
+							</div>
 <pre class="prettyprint">
 &lt;script&gt;
-//inicialización básica, con centro
-//predefinido en latitud -35, longitud -57
+//inicialización básica
 $('#prueba').argenmap();
 
 //inicialización con centro en el Aconcagua
@@ -268,19 +267,20 @@ $('#prueba').argenmap(
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="mapas-demo1-resultado" class="resultado" style="height:370px"></div>
+							<div class="bs-docs-resultado">
+								<div id="mapas-demo1-resultado" class="resultado" style="height:370px"></div>
+							</div>
 						</div>
 					</div>
-          <p>Utilizando un objeto con propiedades <code>centro</code> y <code>zoom</code> se puede configurar el mapa
-					para la zona que se quiere enfocar.</p>
+          
 					
 					<h2>Tipos de mapa</h2>
 					<p>También puede definirse un tipo de mapa. Los valores válidos son <code>baseign</code>
 					y <code>satelital</code>. Por defecto, el tipo de mapa es <code>baseign</code></p>
           <div class="row-fluid">
             <div class="span6">
-							<h4>Ejemplos</h4>
+							<div class="bs-docs-example">
+							</div>
 <pre class="prettyprint">
 &lt;script&gt;
 //inicialización con centro en el Aconcagua
@@ -337,32 +337,36 @@ $('#prueba').argenmap({
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="mapas-demo2-resultado" class="resultado" style="height:470px"></div>
+							<div class="bs-docs-resultado">
+								<div id="mapas-demo2-resultado" class="resultado" style="height:360px"></div>
+							</div>
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).centro(lat, lon)</h2></div>
-					<p>Luego de instanciar un mapa, puede usarse <code>.centro(lat,lon)</code> para cambiar
-					el centro del mapa</p>
+					<div class="alert metodo"><h2>$(<em>selector</em>).centro(lat, lon)</h2></div>
+					<p>Luego de instanciar un mapa, puede usarse <code>.centro(lat,lon)</code> para centrar
+					el mapa donde se desée.</p>
 					<p><code>lat</code> (requerido): número indicando los grados decimales de latitud</p>
 					<p><code>lon</code> (requerido): número indicando los grados decimales de longitud</p>
 					quiere visualizar el mapa.</p>
-					<p>Si no se provee latitud o longitud,
-					la llamada no tendrá efecto.</p>
+					<h4>Lectura/escritura</h4>
+					<p>Si no se provee latitud ni longitud,
+					el método devuelve un array con las coordenadas actuales del centro del mapa.</p>
+					<p><span class="label label-info">Nota:</span> al ejecutar la llamada en modo lectura (sin parámetros)
+					la función rompe la encadenabilidad de jQuery, es decir, solo devuelve el resultado para
+					la primer coincidencia del selector</p>
           <div class="row-fluid">
             <div class="span6">
-							<h4>Ejemplos</h4>
+							<div class="bs-docs-example"></div>
 <pre class="prettyprint">
 &lt;script&gt;
-//se instancia de mapa y
+//instancia de mapa y
 //la llamada puede encadenarse:
 $('#prueba').argenmap().centro(-34.872,-57.965);
 <span class="nocode"><a id="mapas-demo3a" class="btn btn-mini btn-primary" href="#mapas-demo3">Ejecutar ejemplo</a></span>
 
 //una vez instanciado, podemos simplemente
-//hacer la llamada
-//vista del Parque Centenario
+//hacer la llamada, vista del Parque Centenario
 $('#prueba').centro(-34.6069,-58.4353);
 <span class="nocode"><a id="mapas-demo3b" class="btn btn-mini btn-primary" href="#mapas-demo3">Ejecutar ejemplo</a></span>
 
@@ -374,7 +378,7 @@ $('#prueba').centro(-41.1217,-71.3095);
 						
 <script>
 	$('#mapas-demo3a').click(function(){
-		$('#mapas-demo3-resultado').argenmap().centro(-34.872,-57.965).zoom(12);
+		$('#mapas-demo3-resultado').argenmap().centro(-34.872,-57.965).zoom(7);
 		return false;
 	});
 	$('#mapas-demo3b').click(function(){
@@ -388,18 +392,19 @@ $('#prueba').centro(-41.1217,-71.3095);
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="mapas-demo3-resultado" class="resultado" style="height:350px"></div>
+							<div class="bs-docs-resultado">
+								<div id="mapas-demo3-resultado" class="resultado" style="height:320px"></div>
+							</div>
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).zoom(zoom)</h2></div>
+					<div class="alert metodo"><h2>$(<em>selector</em>).zoom(zoom)</h2></div>
 					<p>Acerca o aleja la vista del mapa sin cambiar de posición.</p>
-					<p><code>zoom</code> (requerido): 1 - 22 número indicando el nivel de zoom al que se
+					<p><code>zoom</code> (requerido): 0 - 19 número indicando el nivel de zoom al que se
 					quiere visualizar el mapa.</p>
           <div class="row-fluid">
             <div class="span6">
-							<h4>Ejemplos</h4>
+							<div class="bs-docs-example"></div>
 <pre class="prettyprint">
 &lt;script&gt;
 //vista del Parque Centenario
@@ -433,8 +438,9 @@ $('#prueba').zoom(15);
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="mapas-demo4-resultado" class="resultado" style="height:280px"></div>
+							<div class="bs-docs-resultado">
+								<div id="mapas-demo4-resultado" class="resultado" style="height:280px"></div>
+							</div>
 						</div>
 					</div>
         </section>
@@ -445,20 +451,20 @@ $('#prueba').zoom(15);
         ================================================== -->
         <section id="capas">
           <div class="page-header">
-            <h1>3. Capas</h1>
+            <h2>3. Capas</h2>
           </div>
           <p class="lead">Una vez instanciado el mapa, se puede optar por mostrar
 					capas desde otros servidores o mismo del servicio WMS del Instituto
 					Geográfico Nacional.</p>
 					
-					<div class="alert alert-warn">Todas las capas, sin importar que tipo sean,
+					<div class="alert alert-info">Todas las capas, sin importar que tipo sean,
 					llevan una propiedad <code>nombre</code> para poder identificarlas luego. Es importante
 					intentar que <code>nombre</code> sea único, pero no es imprescindible.<br />
 					Cualquier otra operación a realizar con la capa, deberá ser referida
 					por el nombre (removerCapa, modificarCapa, modificarTransparenciaDeCapa)
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).agregarCapa(capaPredefinida)</h2></div>
+					<div class="alert metodo"><h2>$(<em>selector</em>).agregarCapa(capaPredefinida)</h2></div>
           <h3>Capas predefinidas</h3>
 					<p>Las capas predefinidas son capas que pueden agregarse simplemente por su nombre, sin necesidad
 					de ningún otro parámetro, haciendo la llamada <code>.agregarCapa(<em>"nombre_de_capa"</em>)</code></p>
@@ -476,7 +482,7 @@ $('#prueba').zoom(15);
 					</div>
           <div class="row-fluid">
             <div class="span6">
-							<h4>Ejemplos</h4>
+							<div class="bs-docs-example"></div>
 <pre class="prettyprint">
 &lt;script&gt;
 //vista del mapa normal
@@ -514,16 +520,17 @@ $('#prueba').argenmap({tipo:satelital})
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="capas-demo1-resultado" class="resultado" style="height:280px"></div>
+							<div class="bs-docs-resultado">
+								<div id="capas-demo1-resultado" class="resultado" style="height:280px"></div>
+							</div>
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).agregarCapaWMS(opciones)</h2></div>
+					<div class="alert metodo"><h2>$(<em>selector</em>).agregarCapaWMS(opciones)</h2></div>
 					<p>Las opciones que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:
 						<dl class="dl-horizontal">
 							<dt><code>url</code></dt>
-							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://wms.ign.gob.ar/geoserver/wms?</em></dd>
+							<dd>cadena de texto indicando la url del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms</em></dd>
 							<dt><code>capas</code></dt>
 							<dd>cadena de texto de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo:
 							<em>"departamentos, rios, ciudades"</em></dd>
@@ -533,10 +540,10 @@ $('#prueba').argenmap({tipo:satelital})
 							<dd>cadena de texto indicando el nombre que tendrá la capa. Recuerda que es importante definir el nombre e
 							intentar que sea único. Es el nombre que se utilizará en el panel de capas.</dd>
 							<dt><code>formato</code></dt>
-							<dd>valor por defecto: <code>"image/jpeg"</code> Cadena de texto indicando un formato MIME de archivo: "image/jpeg",
+							<dd>valor por defecto: <code>"image/png"</code> Cadena de texto indicando un formato MIME de archivo: "image/jpeg",
 							"image/jpg", "image/png", "image/png8", "image/gif".</dd>
 							<dt><code>transparente</code></dt>
-							<dd>valor por defecto: <code>false</code> Boolean indicando si la capa tiene trasparencias.
+							<dd>valor por defecto: <code>true</code> Boolean indicando si la capa tiene trasparencias.
 							Esta opción debe ser coherente con <code>formato</code>: solo "image/png", "image/gif" o
 							"image/png8" pueden ser transparentes.</dd>
 						</dl>
@@ -547,7 +554,9 @@ $('#prueba').argenmap({tipo:satelital})
 					</div>
 					<div class="row-fluid">
 						<div class="span6">
-							<h4>Ejemplo de capa WMS: capa de datos del IGN</h4>
+							<div class="bs-docs-example">
+								<small>Ejemplo de capa WMS: capa de datos del IGN</small>
+							</div>
 <pre class="prettyprint">
 //instanciamos un mapa vacio
 $('#prueba').argenmap({tipo:'blanco'});
@@ -617,12 +626,13 @@ capaBaseIGN = {
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="capas-demo2-resultado" class="resultado" style="margin-top:100px;height:380px"></div>
+							<div class="bs-docs-resultado">
+								<div id="capas-demo2-resultado" class="resultado" style="margin-top:50px;height:410px"></div>
+							</div>
 						</div>
 					</div>
 					
-					<div class="alert alert-info"><h2>$(<em>selector</em>).agregarCapaKML(opciones)</h2></div>
+					<div class="alert metodo"><h2>$(<em>selector</em>).agregarCapaKML(opciones)</h2></div>
 					<p>
 						Es una capa que se importa desde un archivo <code>.kml</code>. Sus opciones son:
 						<dl class="dl-horizontal">
@@ -643,11 +653,11 @@ capaBaseIGN = {
 						</div>
 						<div class="row-fluid">
 							<div class="span6">
-								<h4>Ejemplo:</h4>
+								<div class="bs-docs-example"></div>
 <pre class="prettyprint">
 var capaKml = {
   tipo: 'kml',
-  url: '../demo/prueba.kml',
+  url: 'prueba.kml',
   nombre: 'Capa KML'
 }
 $('#prueba').argenmap().agregarCapaKML(capaKml);
@@ -656,7 +666,7 @@ $('#prueba').argenmap().agregarCapaKML(capaKml);
 <script>
 var capaKml = {
   tipo: 'kml',
-  url: '../demo/prueba.kml',
+  url: 'prueba.kml',
   nombre: 'Capa KML'
 }
 
@@ -669,8 +679,9 @@ var capaKml = {
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="capas-demo3-resultado" class="resultado" style="height:280px"></div>
+							<div class="bs-docs-resultado">
+								<div id="capas-demo3-resultado" class="resultado" style="height:280px"></div>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -681,13 +692,14 @@ var capaKml = {
         ================================================== -->
         <section id="marcadores">
           <div class="page-header">
-            <h1>4. Marcadores</h1>
+            <h2>4. Marcadores</h2>
           </div>
           <p class="lead">Trabajar con marcadores debería ser simple, esa es la idea con
 					ArgenMap. Para crear un marcador se puede suministrar un objeto con opciones
 					o simplemente hacer la llamada <code>$(<em>selector</em>).agregarMarcador()</code>
 					y por defecto el marcador se agregará en el centro del mapa.
 					</p>
+					<div class="alert metodo"><h2>$(<em>selector</em>).agregarMarcador(<em>[opciones]</em>)</h2></div>
 					<p>Para personalizar el comportamiento del marcador pueden utilizarse estas opciones
 						<dl class="dl-horizontal">
 							<dt><code>lonlat</code></dt>
@@ -705,6 +717,8 @@ var capaKml = {
 							<dt><code>lat</code></dt>
 							<dd>Las coordenadas pueden proveerse por separado, nombrando cada valor
 							por su eje (lon y lat)</dd>
+							<dt><code>contenido</code></dt>
+							<dd>Cadena de texto con los datos que mostrará el marcador. Esta cadena acepta HTML.</dd>
 							<!--
 							<dt><code>capas</code></dt>
 							<dd>cadena de texto de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo:
@@ -722,7 +736,7 @@ var capaKml = {
 					</p>
 					<div class="row-fluid">
 						<div class="span6">
-							<h4>Ejemplo:</h4>
+							<div class="bs-docs-example"></div>
 <pre class="prettyprint">
 $('#prueba').argenmap().agregarMarcador();
 <span class="nocode"><a id="marcadores-demo1a" class="btn btn-mini btn-primary" href="#marcadores-demo1">Ejecutar ejemplo</a></span>
@@ -734,10 +748,9 @@ $('#prueba').argenmap().agregarMarcador({
 <span class="nocode"><a id="marcadores-demo1b" class="btn btn-mini btn-primary" href="#marcadores-demo1">Ejecutar ejemplo</a></span>
 
 $('#prueba').argenmap().agregarMarcador({
-  lon:-57,
-  lat:-35,
-  contenido: '&lt;h1&gt;Marcador&lt;/h1&gt;&lt;p&gt;Este es el contenido del marcador&lt;/p&gt;',
-  mostrarConClick: true
+  lon:-58,
+  lat:-32,
+  contenido: '&lt;h2&gt;Marcador&lt;/h2&gt;&lt;p&gt;Este es el contenido del marcador&lt;/p&gt;'
 });
 <span class="nocode"><a id="marcadores-demo1c" class="btn btn-mini btn-primary" href="#marcadores-demo1">Ejecutar ejemplo</a></span>
 </pre>
@@ -753,8 +766,8 @@ $('#prueba').argenmap().agregarMarcador({
 	$('#marcadores-demo1c').click(function(){
 		$('#marcadores-demo1-resultado').argenmap().agregarMarcador(
 		{
-			lonlat:[-34,-56],
-			contenido: '<h1>Marcador</h1><p>Este es el contenido del marcador</p>',
+			lonlat:[-32,-58],
+			contenido: '<h2>Marcador</h2><p>Este es el contenido del marcador</p>',
 			mostrarConClick: true
 		});
 		return false;
@@ -762,8 +775,9 @@ $('#prueba').argenmap().agregarMarcador({
 </script>
 						</div>
 						<div class="span6">
-							<h4>Resultado</h4>
-							<div id="marcadores-demo1-resultado" class="resultado" style="height:280px"></div>
+							<div class="bs-docs-resultado">
+								<div id="marcadores-demo1-resultado" class="resultado" style="height:280px"></div>
+							</div>
 						</div>
 					</div>
         </section>
@@ -771,10 +785,10 @@ $('#prueba').argenmap().agregarMarcador({
 
 
         <!-- Examples
-        ================================================== -->
+        ==================================================
         <section id="examples">
           <div class="page-header">
-            <h1>5. Examples</h1>
+            <h2>5. Examples</h2>
           </div>
           <p class="lead">Move beyond the base template with a few example layouts. We encourage folks to iterate on these examples and not simply use them as an end result.</p>
           <ul class="thumbnails bootstrap-examples">
@@ -801,21 +815,21 @@ $('#prueba').argenmap().agregarMarcador({
             </li>
           </ul>
         </section>
-
+				-->
 
 
 
         <!-- Next
-        ================================================== -->
+        ================================================== 
         <section id="what-next">
           <div class="page-header">
-            <h1>What next?</h1>
+            <h2>What next?</h2>
           </div>
           <p class="lead">Head to the docs for information, examples, and code snippets, or take the next leap and customize Bootstrap for any upcoming project.</p>
           <a class="btn btn-large btn-primary" href="./scaffolding.html" onclick="_gaq.push(['_trackEvent', 'Getting started', 'Next steps', 'Visit docs']);">Visit the Bootstrap docs</a>
           <a class="btn btn-large" href="./customize.html" style="margin-left: 5px;" onclick="_gaq.push(['_trackEvent', 'Getting started', 'Next steps', 'Customize']);">Customize Bootstrap</a>
         </section>
-
+				-->
 
 
 
@@ -830,10 +844,9 @@ $('#prueba').argenmap().agregarMarcador({
     ================================================== -->
     <footer class="footer">
       <div class="container">
-        <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>Documentación diseñada con todo el amor del mundo <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a> por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
-        <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-        <p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p class="pull-right"><a href="#">Volver arriba</a></p>
+        <p>Documentación diseñada con todo el amor del mundo en base a <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a>, diseñado por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a> bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p>Iconos de <a href="http://glyphicons.com">Glyphicons Free</a>, bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
 				<!--
         <ul class="footer-links">
           <li><a href="http://blog.getbootstrap.com">Read the blog</a></li>
@@ -851,7 +864,7 @@ $('#prueba').argenmap().agregarMarcador({
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
 
-    <script src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
+    <script src="http://ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
     <!-- Placed at the end of the document so the pages load faster 
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
     <script src="bootstrap/js/bootstrap-alert.js"></script>
@@ -889,19 +902,19 @@ $('#prueba').argenmap().agregarMarcador({
 
     <!-- Analytics
     ================================================== -->
-    <script>
-      var _gauges = _gauges || [];
-      //(function() {
-      //  var t   = document.createElement('script');
-      //  t.type  = 'text/javascript';
-      //  t.async = true;
-      //  t.id    = 'gauges-tracker';
-      //  t.setAttribute('data-site-id', '4f0dc9fef5a1f55508000013');
-      //  t.src = '//secure.gaug.es/track.js';
-      //  var s = document.getElementsByTagName('script')[0];
-      //  s.parentNode.insertBefore(t, s);
-      //})();
-    </script>
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-689568-24']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
 
   </body>
 </html>
