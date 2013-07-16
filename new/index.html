@@ -5,7 +5,8 @@
 		<title>argenmap.jquery v2</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootplus -->
-		<link href="css/bootplus.min.css" rel="stylesheet" media="screen">
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/font-awesome.min.css">		<link href="css/bootplus.min.css" rel="stylesheet" media="screen">
 		<link href="css/bootplus-responsive.min.css" rel="stylesheet" media="screen">
 		<link href="js/google-code-prettify/prettify-default.css" rel="stylesheet">
 		<!--[if IE 7]>
@@ -71,7 +72,7 @@
 				<ul class="nav nav-pills">
 					<li class="active"><a href="#">Guía rápida</a></li>
 					<li><a href="caracteristicas.html">Características</a></li>
-					<li><a href="#">API</a></li>
+					<li><a href="api.html">API</a></li>
 					<li><a href="#">Ejemplos</a></li>
 					<li><a href="#">Casos</a></li>
 					<li><a href="#">Acerca de los datos</a></li>
@@ -182,14 +183,14 @@ $(document).ready(function(){
   &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js&quot;&gt;&lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;div id=&quot;prueba&quot; style=&quot;height:450px;&quot;&gt;&lt;/div&gt;
-    &lt;script&gt;
-    //con esta llamada, el c&oacute;digo se ejecuta
-    //cuando la p&aacute;gina termin&oacute; de cargarse
-    $(document).ready(function(){
-      $('#mapa').argenmap();
-    });
-    &lt;/script&gt;
+	&lt;div id=&quot;prueba&quot; style=&quot;height:450px;&quot;&gt;&lt;/div&gt;
+	&lt;script&gt;
+	//con esta llamada, el c&oacute;digo se ejecuta
+	//cuando la p&aacute;gina termin&oacute; de cargarse
+	$(document).ready(function(){
+	  $('#mapa').argenmap();
+	});
+	&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</pre>
 						<p class="alert alert-info">
@@ -229,6 +230,10 @@ $(document).ready(function(){
 		$(document).ready(function(){
 			$('#mapa').argenmap();
 			//window.prettyPrint && prettyPrint()
+			$('.navbar [href^=#]').click(function (e) {
+				e.preventDefault();
+			});
+
 		})
 		</script>
 	</body>
