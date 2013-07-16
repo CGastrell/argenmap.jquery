@@ -1012,7 +1012,7 @@
 						nombre: "IGN",
 						noMagic: true,
 						singleTile: false,
-						transitionEffect: 'resize',
+						transitionEffect: 'map-resize',
 						proyeccion: this.opciones.proyeccion						
 					});
 					$.extend(p,o);
