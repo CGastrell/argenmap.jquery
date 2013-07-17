@@ -61,7 +61,7 @@
 			"alertas": [
 				{
 					"tipo": "info",
-					"texto": "IMPORTANTE: Las capas satelitales y base están preparadas para mostrarse en <code>EPSG:3857</code>, si necesitás instanciar un mapa con <code>EPSG:4326</code> para luego importar capas WMS que necesiten esa proyección, deberás hacerlo tipo <code>blanco</code> y luego agregar las capas WMS que necesites."
+					"texto": "IMPORTANTE: Las capas satelitales y base están preparadas para mostrarse en <code>EPSG:3857</code>, si necesitás instanciar un mapa en <code>EPSG:4326</code> para luego importar capas WMS que necesiten esa proyección, deberás hacerlo tipo <code>blanco</code> y luego agregar las capas WMS que necesites."
 				}
 			]
 		},
@@ -91,7 +91,7 @@
 			"alertas": [
 				{
 					"tipo":"info",
-					"texto": "Cuando se usa <code>.centro()</code> para pedir las coordenadas del centro del mapa se rompe la <em>encadenabilidad</em> de jQuery y la función devuelve un <code>array</code>"
+					"texto": "Cuando se usa <code>.centro()</code> para pedir las coordenadas del centro del mapa se rompe la <em>encadenabilidad</em> de jQuery y este devuelve un <code>array</code>"
 				}
 			]
 		},
@@ -114,7 +114,7 @@
 			"alertas": [
 				{
 					"tipo":"info",
-					"texto": "Cuando se usa <code>.zoom()</code> para pedir el nivel de zoom del mapa se rompe la <em>encadenabilidad</em> de jQuery y la llamada devuelve un <code>int</code>."
+					"texto": "Cuando se usa <code>.zoom()</code> para pedir el nivel de zoom del mapa se rompe la <em>encadenabilidad</em> de jQuery y este devuelve un <code>int</code>."
 				}
 			]
 		},
@@ -127,8 +127,9 @@
 				{
 					"nombre":"capaBase",
 					"tipo":"string",
-					"requerido":true,
-					"descripcion": "El nombre de una de las capas base estándar (<code>Satélite</code> o <code>Base IGN</code>) o el nombre de una capa superpuesta previamente con <a href='#agregarCapaBaseWMS'>agregarCapaBaseWMS()</a>"
+					"valorPorDefecto": "null",
+					"requerido": true,
+					"descripcion": "El nombre de una de las capas base estándar (<code>Satélite</code> o <code>Base IGN</code>) o el nombre de una capa base previamente agregada con <a href='#agregarCapaBaseWMS'>agregarCapaBaseWMS()</a>"
 				}
 			],
 			"opciones": [
@@ -136,7 +137,7 @@
 			"alertas": [
 				{
 					"tipo":"info",
-					"texto": "Cuando se usa <code>.capaBase()</code> para pedir la capa base actual del mapa se rompe la <em>encadenabilidad</em> de jQuery y la llamada devuelve un <code>string</code> indicando el nombre de la capa base actual del mapa."
+					"texto": "Cuando se usa <code>.capaBase()</code> para pedir la capa base actual del mapa se rompe la <em>encadenabilidad</em> de jQuery y este devuelve un <code>string</code> indicando el nombre de la capa base actual del mapa."
 				}
 			]
 		},
@@ -350,7 +351,7 @@
 			"alertas": [
 				{
 					"tipo":"warning",
-					"texto": "Atención:</span> El archivo KML debe estar en el mismo dominio, de lo contrario recibirá un error de <a href='http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen'><strong><em>Política del mismo origen (Same origin policy)</em></strong></a>"
+					"texto": "Atención:</span> El archivo KML debe estar en el mismo dominio, de lo contrario recibirás un error de <a href='http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen'><strong><em>Política del mismo origen (Same origin policy)</em></strong></a>"
 				}
 			]
 		},

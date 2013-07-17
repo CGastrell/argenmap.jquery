@@ -74,7 +74,7 @@
 					<li><a href="index.html">Guía rápida</a></li>
 					<li class="active"><a href="#">Características</a></li>
 					<li><a href="api.html">API</a></li>
-					<li><a href="#">Ejemplos</a></li>
+					<li><a href="ejemplos.html">Ejemplos</a></li>
 					<li><a href="#">Casos</a></li>
 					<li><a href="#">Acerca de los datos</a></li>
 					<li><a href="#">Creá un mapa para tu sitio</a></li>
@@ -91,7 +91,10 @@
 				
 				<div class="row-fluid">
 					<p class="lead"><strong>argenmap.jquery</strong> es un plugin para jQuery que permite combinar los
-							mapas web del <a href="http://www.ign.gob.ar" target="_blank">Instituto Geográfico Nacional</a>, <a href="http://www.openstreetmap.org" target="_blank">OpenStreetMap</a> y <a href="http://developers.google.com/maps/documentation/javascript/?hl=es" target="_blank">Google Maps</a>. De esta manera, podés poner en tu sitio
+							mapas web del <a href="http://www.ign.gob.ar" target="_blank">Instituto Geográfico Nacional</a>,
+							<a href="http://www.openstreetmap.org" target="_blank">OpenStreetMap</a> y
+							<a href="http://developers.google.com/maps/documentation/javascript/?hl=es" target="_blank">Google Maps</a>.
+							De esta manera, podés poner en tu sitio
 							un mapa de Argentina con los datos oficiales del IGN sobre las
 							imágenes satelitales de google.
 					</p>
@@ -120,6 +123,13 @@
 					argenmap.jquery <em>automágicamente</em>.
 				</p>
 				<ul>
+					<li>
+						Provee todos los métodos, incluyendo <code>argenmap()</code>, como plugins de jQuery. Esto significa
+						que sobre un selector <code>$('#mimapa')</code> puede instanciarse un mapa con
+						<code>$('#mimapa').argenmap()</code> y, luego de haberlo instanciado, pueden hacerse
+						llamadas a los <em>subplugins</em> como <code>$('#mimapa').agregarMarcador()</code>,
+						<code>$('#mimapa').zoom(12)</code> o <code>$('#mimapa').centro(-34.232,-58.922)</code>.
+					</li>
 					<li>
 						Crea una instancia de clase Argenmap en el <code>data</code> del elemento vía jQuery.
 					</li>
