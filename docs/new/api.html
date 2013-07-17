@@ -43,27 +43,28 @@
 				margin-bottom: 5px;
 			}
 			.bs-docs-sidenav {
-				width: 258px;
 				margin: 10px 0 0;
 				padding: 0;
+				width:100%;
 			}
 			.bs-docs-sidenav.affix {
 				top: 10px;
+				width:22.5%;
 			}
 			.bs-docs-sidenav > li > a {
 				display: block;
-				
 				color: #737373;
 				display: block;
 				margin: 0;
 				padding: 12px 0 0 20px;
 				height: 32px;
 			}
+
 		</style>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	</head>
 	<body onload="prettyPrint()">
-		<div style="background-color:#f5f5f5" id="head">
+		<div style="background-color:#000;color:white" id="head">
 			<div class="container">
 
 				<div class="row">
@@ -89,29 +90,49 @@
 
 		<div class="navbar">
 			<div class="navbar-inner">
-				<a class="brand" href="#">argenmap.jquery v2</a>
-				<ul class="nav nav-pills">
-					<li><a href="index.html">Guía rápida</a></li>
-					<li><a href="caracteristicas.html">Características</a></li>
-					<li class="active"><a href="#">API</a></li>
-					<li><a href="#">Ejemplos</a></li>
-					<li><a href="#">Casos</a></li>
-					<li><a href="#">Acerca de los datos</a></li>
-					<li><a href="#">Creá un mapa para tu sitio</a></li>
-				</ul>
+				<div class="container-fluid">
+					<a class="brand" href="#">argenmap.jquery v2</a>
+					<ul class="nav nav-pills">
+						<li><a href="index.html">Guía rápida</a></li>
+						<li><a href="caracteristicas.html">Características</a></li>
+						<li class="active"><a href="#">API</a></li>
+						<li><a href="ejemplos.html">Ejemplos</a></li>
+						<li><a href="#">Casos</a></li>
+						<li><a href="#">Acerca de los datos</a></li>
+						<li><a href="#">Creá un mapa para tu sitio</a></li>
+					</ul>
+				</div>
 			</div><!-- navbar-inner -->
 		</div><!-- navbar -->
 
-		<div class="container">
-			<div class="row">
+		<div class="container-fluid">
+			<div class="row-fluid">
 				<div class="span3 bs-docs-sidebar" id="side-nav">
-					<ul class="nav nav-list bs-docs-sidenav">
+					<ul class="nav nav-list bs-docs-sidenav visible-desktop">
 
 					</ul>
 				</div>
 
 				<div class="span9 metodos">
-
+					<section id="intro">
+						<p class="lead">Todos los métodos de la API son plugins de jQuery que trabajan sobre el mapa instanciado
+							en una etiqueta HTML. De tal manera, si instanciamos un mapa en un div:
+							<pre class="prettyprint">
+&lt;div id=&quot;mapa&quot; style=&quot;height:300px&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+$('#mapa').argenmap();
+&lt;/script&gt;
+</pre>
+							y luego, más adelante en el código o en la estructura de nuestra aplicación, queremos cambiar el centro
+							o agregar un marcador, la llamada será:
+							<pre class="prettyprint">
+&lt;script&gt;
+$('#mapa').centro(-34.1445,-58.84);
+$('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
+&lt;/script&gt;
+</pre>
+						</p>
+					</section>
 				</div>
 			</div><!-- row -->
 		 
@@ -136,7 +157,7 @@ function buildSection(id,obj)
 {
 	var section = $('<section />');
 	section.attr('id',id);
-	section.append('<h2>'+id+'</h2>');
+	section.append('<h2><span style="color:#999">$(selector).</span>'+id+'()</h2>');
 	//descripcion
 	$.each(obj.descripcion,function(i,e){
 		var p = $('<p />').html(e);
@@ -194,6 +215,17 @@ function buildSection(id,obj)
 			});
 		});
 	}
+
+	//alertas
+	if(obj.alertas.length)
+	{
+		$.each(obj.alertas,function(i,e){
+			$('<p />').addClass('alert')
+				.addClass('alert-' + e.tipo)
+				.html(e.texto)
+				.appendTo(section);
+		});
+	}
 	$('.metodos').append(section);
 	$('.metodos').append('<hr />');
 }
@@ -220,11 +252,11 @@ $(document).ready(function(){
 	setTimeout(function () {
 		$('.bs-docs-sidenav').affix({
 			offset: {
-				top: 150
+				top: 154
 			}
 		});
-		$('body').scrollspy({target:'#side-nav'});
-	},1000);
+		//$('body').scrollspy({target:'#side-nav'});
+	},500);
 });
 </script>
 	</body>

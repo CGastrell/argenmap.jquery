@@ -1246,6 +1246,57 @@
 			}
 		});
 	}
+	$.fn.centro = function(lat,lon)
+	{
+		//getter
+		//el getter/lector solo devuelve la primer coincidencia de selector
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') ) return null;
+			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
+			return ctro ? [ctro.lat,ctro.lon] : null;
+		}
+		//setter
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			
+			a.centro(lat,lon);
+		});
+	}
+	$.fn.zoom = function(zoom)
+	{
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') ) return null;
+			var z = this.data('argenmap').mapa.getZoom();
+			return $.isNumeric(z) ? z : null;
+		}
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a || !$.isNumeric(zoom)) return;
+			
+			a.zoom(zoom);
+		});
+	}
+	$.fn.capaBase = function(capa)
+	{
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') ) return null;
+			// var z = this.data('argenmap').mapa.getZoom();
+			return this.data('argenmap').capaBase();
+		}
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a || typeof(capa) != "string") return;
+			
+			a.capaBase(capa);
+		});
+	}
 	$.fn.agregarCapa = function(opciones, extras)
 	{
 		//chainability
@@ -1386,57 +1437,6 @@
 			if(!a) return;
 			if(!$.isArray(arrayMarcadores)) return;
 			a.agregarMarcadores(arrayMarcadores);
-		});
-	}
-	$.fn.centro = function(lat,lon)
-	{
-		//getter
-		//el getter/lector solo devuelve la primer coincidencia de selector
-		if(arguments.length === 0)
-		{
-			if( !this.data('argenmap') ) return null;
-			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
-			return ctro ? [ctro.lat,ctro.lon] : null;
-		}
-		//setter
-		return this.each(function(){
-			var $this = $(this);
-			var a = $this.data('argenmap');
-			if(!a) return;
-			
-			a.centro(lat,lon);
-		});
-	}
-	$.fn.zoom = function(zoom)
-	{
-		if(arguments.length === 0)
-		{
-			if( !this.data('argenmap') ) return null;
-			var z = this.data('argenmap').mapa.getZoom();
-			return $.isNumeric(z) ? z : null;
-		}
-		return this.each(function(){
-			var $this = $(this);
-			var a = $this.data('argenmap');
-			if(!a || !$.isNumeric(zoom)) return;
-			
-			a.zoom(zoom);
-		});
-	}
-	$.fn.capaBase = function(capa)
-	{
-		if(arguments.length === 0)
-		{
-			if( !this.data('argenmap') ) return null;
-			// var z = this.data('argenmap').mapa.getZoom();
-			return this.data('argenmap').capaBase();
-		}
-		return this.each(function(){
-			var $this = $(this);
-			var a = $this.data('argenmap');
-			if(!a || typeof(capa) != "string") return;
-			
-			a.capaBase(capa);
 		});
 	}
 })(jQuery, window);
