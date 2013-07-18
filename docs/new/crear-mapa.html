@@ -31,7 +31,6 @@
 				 -webkit-box-shadow: none;
 						-moz-box-shadow: none;
 								 box-shadow: none;
-
 			}
 			section > .page-header,
 			section > .lead {
@@ -39,6 +38,9 @@
 			}
 			section > ul li {
 				margin-bottom: 5px;
+			}
+			.popover.bottom {
+				box-shadow: 0 -3px 10px #777;
 			}
 		</style>
 
@@ -92,7 +94,7 @@
 		================================================== -->
 		<div class="row">
 			<div class="span3 bs-docs-sidebar">
-				<h4>Configurar tu mapa</h4>
+				<h4>Configurá tu mapa</h4>
 				<div class="accordion" id="accordion2">
 					<div class="accordion-group">
 						<div class="accordion-heading">
@@ -143,7 +145,7 @@
 								Marcador
 							</a>
 						</div>
-						<div id="collapseTwo" class="accordion-body collapse">
+						<div id="collapseTwo" class="accordion-body collapse" style="padding-bottom:10px;">
 							<div class="accordion-inner">
 								<form class="form-search form-horizontal">
 									<label>Buscar dirección</label>
@@ -177,7 +179,7 @@
 							<h3>Código</h3>
 						</div>
 						<div class="modal-body">
-							<p>Recuerda incluir las librerías en el <code>HEAD</code> de tu página:</p>
+							<p>Recordá incluir las librerías en el <code>HEAD</code> de tu página:</p>
 <pre class="prettyprint lang-html">
 &lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js&quot;&gt;&lt;/script&gt;
@@ -185,10 +187,10 @@
 							<p>Luego agrega este <code>DIV</code> donde quieras ubicar el mapa:</p>
 							<div class="well well-small" id="theDivIsTheLaw">
 							</div>
-							<p>... y por último, inserta este código en un tag <code>SCRIPT</code></p>
+							<p>... y por último, insertá este código en un tag <code>SCRIPT</code></p>
 							<div class="alert alert-info"><strong>Nota:</strong> El código JavaScript debe
 							ejecutarse cuando la página terminó de cargarse</div>
-							<textarea id="theCodeIsTheLaw" rows=6 style="width:100%;font-size:13px;"></textarea>
+							<textarea id="theCodeIsTheLaw" rows=6 style="width:95%;font-size:13px;"></textarea>
 						</div>
 						<div class="modal-footer">
 							<a data-dismiss="modal" aria-hidden="true" class="btn">Cerrar</a>
@@ -199,7 +201,7 @@
 			</div>
 			<div class="span9">
 				<section id="examples">
-					<div class="resultado shadowed" id="mapaDemo" style="width:800px;height:350px; margin:0 auto;">
+					<div class="resultado" id="mapaDemo" style="width:800px;height:350px; margin:0 auto;box-shadow: 0px -10px 30px #555;">
 					</div>
 				</section>
 			</div>
@@ -221,7 +223,7 @@
 		================================================== -->
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-		<script src="js/bootstrap.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 		<script src="js/google-code-prettify/prettify.js"></script>
 		<script src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
 		
@@ -324,10 +326,11 @@
 									// callback(resultsArr);
 									$('#geosearch').popover({
 										html: true,
-										placement: 'right',
+										placement: 'bottom',
 										title: 'Resultados',
 										trigger: 'manual',
-										content: popoverContent
+										content: popoverContent,
+										container: 'body'
 									}).popover('show');
 								};
 							});
