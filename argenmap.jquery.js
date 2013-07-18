@@ -637,6 +637,11 @@
 				opciones = {}
 			}else{
 				coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
+				
+				//hago una copia del objeto pasado como
+				//parametro porque se pasa por referencia
+				opciones = $.extend({}, opciones);
+				
 			}
 			//si a esta altura no esta definido coordenadas, cancelamos
 			if(!coordenadas) return;
