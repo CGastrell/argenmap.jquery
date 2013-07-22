@@ -1242,12 +1242,12 @@
 	{
 		return this.each(function(){
 			var $this = $(this);
-			var argenmap = $this.data('argenmap');
-			if(!argenmap) //dom element sin inicializar
+			var a = $this.data('argenmap');
+			if(!a) //dom element sin inicializar
 			{
-				argenmap = new ArgenMap($this,opciones);
-				$this.data('argenmap',argenmap);
-				argenmap.inicializar();
+				a = new ArgenMap($this,opciones);
+				$this.data('argenmap',a);
+				a.inicializar();
 			}
 		});
 	}
@@ -1257,7 +1257,10 @@
 		//el getter/lector solo devuelve la primer coincidencia de selector
 		if(arguments.length === 0)
 		{
-			if( !this.data('argenmap') ) return null;
+			if( !this.data('argenmap') )
+			{
+				return null;
+			}
 			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
 			return ctro ? [ctro.lat,ctro.lon] : null;
 		}
@@ -1274,7 +1277,10 @@
 	{
 		if(arguments.length === 0)
 		{
-			if( !this.data('argenmap') ) return null;
+			if( !this.data('argenmap') )
+			{
+				return null;
+			}
 			var z = this.data('argenmap').mapa.getZoom();
 			return $.isNumeric(z) ? z : null;
 		}
@@ -1290,14 +1296,19 @@
 	{
 		if(arguments.length === 0)
 		{
-			if( !this.data('argenmap') ) return null;
-			// var z = this.data('argenmap').mapa.getZoom();
+			if( !this.data('argenmap') )
+			{
+				return null;
+			}
 			return this.data('argenmap').capaBase();
 		}
 		return this.each(function(){
 			var $this = $(this);
 			var a = $this.data('argenmap');
-			if(!a || typeof(capa) != "string") return;
+			if(!a || typeof(capa) != "string")
+			{
+				return;
+			}
 			
 			a.capaBase(capa);
 		});
@@ -1309,9 +1320,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapa(opciones, extras);
 		});
 	}
@@ -1322,9 +1330,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapaWMS(opciones);
 		});
 	}
@@ -1335,9 +1340,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapaWMS(opciones);
 		});
 	}
@@ -1351,9 +1353,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapaKML(opciones);
 		});
 	}
