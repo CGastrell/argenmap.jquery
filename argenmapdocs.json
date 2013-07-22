@@ -424,7 +424,7 @@
 			],
 			"alertas": [
 				{
-					"tipo":"info",
+					"tipo":"warning",
 					"texto": "Si agregás un marcador con el mismo nombre que otro, el más nuevo reemplazará al anterior. Este comportamiento provoca que al agregar más de un marcador sin nombre, empiecen a pisarse entre sí (por adoptar el nombre por defecto 'Marcador'). Esto no es un error, está hecho así intencionalmente."
 				}
 			]
