@@ -182,17 +182,16 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 			$('.metodos').append(section);
 			$('.metodos').append('<hr />');
 		}
-		var d;
 		$(document).ready(function(){
 			//$('#mapa').argenmap();
 			var $window = $(window);
 
 			$.getJSON('argenmapdocs.json',function(data){
 				buildSidebar(data.metodos);
-				d = data;
 				$.each(data.metodos,function(i,e){
 					buildSection(i,e);
 				});
+				if(window.location.hash) $("html, body").animate({ scrollTop: $(window.location.hash).offset().top }, 500);
 			});
 
 			// Disable certain links in docs
@@ -209,6 +208,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 					}
 				});
 				$('body').scrollspy({target:'#side-nav'});
+
 			},500);
 		});
 		</script>
