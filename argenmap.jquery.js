@@ -964,7 +964,7 @@
 			}
 			return resultado;
 		},
-		/*
+		/**
 		 * Crea capas predefinidas y las adosa al array this.capas
 		 * Esta funcion NO agrega las capa al mapa, solo las crea y las deja en el array
 		 * @param array Las capas predefinidas a crear (IGN, baseIGN, Google, Bing, KML)
@@ -977,7 +977,7 @@
 				}, this)
 			);
 		},
-		/*
+		/**
 		 * Crea una capa predefinida y la adosa al array this.capas
 		 * Esta funcion NO agrega la capa al mapa, solo la crea y la deja en el array
 		 * @param string La capa predefinida a crear (IGN, baseIGN, Google, Bing, KML)
