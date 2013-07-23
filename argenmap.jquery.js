@@ -11,19 +11,19 @@
  *  Todos los derechos reservados.
  *
  */
- ;function ($, window, document, undefined) {
+;(function ( $, window, document, undefined ) {
 	IGN_CACHES = [
 		'http://cg.aws.af.cm/tms',
 		'http://mapaabierto.aws.af.cm/tms',
 		'http://robomap-cgastrell.rhcloud.com/tms'
-	];	
+	];  
 	//-----------------------------------------------------------------------//
 	// jQuery event
 	//-----------------------------------------------------------------------//
 	//resized event: se escucha desde un DOMElement y se dispara
 	//cada vez que ese elemento cambia de tamanio (ancho o alto)
 	$.event.special.resized = {
-		setup: function(){
+		setup: function (){
 				var self = this, $this = $(this);
 				var $w = $this.width();
 				var $h = $this.height();
@@ -35,7 +35,7 @@
 						}
 				},20);
 		},
-		teardown: function(){
+		teardown: function (){
 				clearInterval(interval);
 		}
 	};
@@ -44,22 +44,22 @@
 	{
 	  Array.prototype.indexOf = function(elt /*, from*/)
 	  {
-	    var len = this.length >>> 0;
+		var len = this.length >>> 0;
 
-	    var from = Number(arguments[1]) || 0;
-	    from = (from < 0)
-	         ? Math.ceil(from)
-	         : Math.floor(from);
-	    if (from < 0)
-	      from += len;
+		var from = Number(arguments[1]) || 0;
+		from = (from < 0)
+			 ? Math.ceil(from)
+			 : Math.floor(from);
+		if (from < 0)
+		  from += len;
 
-	    for (; from < len; from++)
-	    {
-	      if (from in this &&
-	          this[from] === elt)
-	        return from;
-	    }
-	    return -1;
+		for (; from < len; from++)
+		{
+		  if (from in this &&
+			  this[from] === elt)
+			return from;
+		}
+		return -1;
 	  };
 	}
 	/* CLASE CACHE DE CLIENTE */
@@ -101,7 +101,7 @@
 				 try{
 					 delete this.cacheRef[sale];
 				 }catch(e){
-				 	this.cacheRef[sale] = undefined;
+					this.cacheRef[sale] = undefined;
 				 }
 			}
 		}
@@ -1013,7 +1013,7 @@
 					});
 					$.extend(p,o);
 
-					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);					
+					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);                    
 				break;
 				case "ign":
 					o = traducirObjeto(extras);
@@ -1022,16 +1022,16 @@
 						transparente: true,
 						type:'png',
 						serviceVersion: "",
-						esCapaBase: false,						
+						esCapaBase: false,                      
 						nombre: "IGN",
 						noMagic: true,
 						singleTile: false,
 						transitionEffect: 'map-resize',
-						proyeccion: this.opciones.proyeccion						
+						proyeccion: this.opciones.proyeccion                        
 					});
 					$.extend(p,o);
 					//c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
-					c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);					
+					c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);                  
 					/*
 					 * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
 					 * así que la agrego a manopla.
@@ -1452,4 +1452,6 @@
 			a.agregarMarcadores(arrayMarcadores);
 		});
 	}
-})(jQuery, window);
+})(jQuery, window, document, undefined);
+
+
