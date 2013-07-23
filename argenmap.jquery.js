@@ -1,20 +1,27 @@
-/**
- * argenmap.jquery v2.4
- * @author Christian Gastrell
+/*
+ *  Argenmap 2 Plugin para JQuery 
+ *  Version   : v2.4.2
+ *  Date      : 2013-02-16
+ *  Licence   : GPL v3 : http://www.gnu.org/licenses/gpl.html  
+ *  Author    : Christian Gastrell
+ *  Contact   : cgastrell@gmail.com
+ *  Web site  : http://ign.gob.ar/argenmap2
+ *   
+ *
  */
-(function ($, window, undefined) {
+;(function ( $, window, document, undefined ) {
 	IGN_CACHES = [
 		'http://cg.aws.af.cm/tms',
 		'http://mapaabierto.aws.af.cm/tms',
 		'http://robomap-cgastrell.rhcloud.com/tms'
-	];	
+	];  
 	//-----------------------------------------------------------------------//
 	// jQuery event
 	//-----------------------------------------------------------------------//
 	//resized event: se escucha desde un DOMElement y se dispara
 	//cada vez que ese elemento cambia de tamanio (ancho o alto)
 	$.event.special.resized = {
-		setup: function(){
+		setup: function (){
 				var self = this, $this = $(this);
 				var $w = $this.width();
 				var $h = $this.height();
@@ -26,7 +33,7 @@
 						}
 				},20);
 		},
-		teardown: function(){
+		teardown: function (){
 				clearInterval(interval);
 		}
 	};
@@ -35,22 +42,22 @@
 	{
 	  Array.prototype.indexOf = function(elt /*, from*/)
 	  {
-	    var len = this.length >>> 0;
+		var len = this.length >>> 0;
 
-	    var from = Number(arguments[1]) || 0;
-	    from = (from < 0)
-	         ? Math.ceil(from)
-	         : Math.floor(from);
-	    if (from < 0)
-	      from += len;
+		var from = Number(arguments[1]) || 0;
+		from = (from < 0)
+			 ? Math.ceil(from)
+			 : Math.floor(from);
+		if (from < 0)
+		  from += len;
 
-	    for (; from < len; from++)
-	    {
-	      if (from in this &&
-	          this[from] === elt)
-	        return from;
-	    }
-	    return -1;
+		for (; from < len; from++)
+		{
+		  if (from in this &&
+			  this[from] === elt)
+			return from;
+		}
+		return -1;
 	  };
 	}
 	/* CLASE CACHE DE CLIENTE */
@@ -92,7 +99,7 @@
 				 try{
 					 delete this.cacheRef[sale];
 				 }catch(e){
-				 	this.cacheRef[sale] = undefined;
+					this.cacheRef[sale] = undefined;
 				 }
 			}
 		}
@@ -1004,7 +1011,7 @@
 					});
 					$.extend(p,o);
 
-					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);					
+					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);                    
 				break;
 				case "ign":
 					o = traducirObjeto(extras);
@@ -1013,16 +1020,16 @@
 						transparente: true,
 						type:'png',
 						serviceVersion: "",
-						esCapaBase: false,						
+						esCapaBase: false,                      
 						nombre: "IGN",
 						noMagic: true,
 						singleTile: false,
-						transitionEffect: 'resize',
-						proyeccion: this.opciones.proyeccion						
+						transitionEffect: 'map-resize',
+						proyeccion: this.opciones.proyeccion                        
 					});
 					$.extend(p,o);
 					//c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
-					c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);					
+					c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);                  
 					/*
 					 * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
 					 * así que la agrego a manopla.
@@ -1242,13 +1249,75 @@
 	{
 		return this.each(function(){
 			var $this = $(this);
-			var argenmap = $this.data('argenmap');
-			if(!argenmap) //dom element sin inicializar
+			var a = $this.data('argenmap');
+			if(!a) //dom element sin inicializar
 			{
-				argenmap = new ArgenMap($this,opciones);
-				$this.data('argenmap',argenmap);
-				argenmap.inicializar();
+				a = new ArgenMap($this,opciones);
+				$this.data('argenmap',a);
+				a.inicializar();
 			}
+		});
+	}
+	$.fn.centro = function(lat,lon)
+	{
+		//getter
+		//el getter/lector solo devuelve la primer coincidencia de selector
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') )
+			{
+				return null;
+			}
+			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
+			return ctro ? [ctro.lat,ctro.lon] : null;
+		}
+		//setter
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a) return;
+			
+			a.centro(lat,lon);
+		});
+	}
+	$.fn.zoom = function(zoom)
+	{
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') )
+			{
+				return null;
+			}
+			var z = this.data('argenmap').mapa.getZoom();
+			return $.isNumeric(z) ? z : null;
+		}
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a || !$.isNumeric(zoom)) return;
+			
+			a.zoom(zoom);
+		});
+	}
+	$.fn.capaBase = function(capa)
+	{
+		if(arguments.length === 0)
+		{
+			if( !this.data('argenmap') )
+			{
+				return null;
+			}
+			return this.data('argenmap').capaBase();
+		}
+		return this.each(function(){
+			var $this = $(this);
+			var a = $this.data('argenmap');
+			if(!a || typeof(capa) != "string")
+			{
+				return;
+			}
+			
+			a.capaBase(capa);
 		});
 	}
 	$.fn.agregarCapa = function(opciones, extras)
@@ -1258,9 +1327,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapa(opciones, extras);
 		});
 	}
@@ -1271,9 +1337,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapaWMS(opciones);
 		});
 	}
@@ -1284,9 +1347,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapaWMS(opciones);
 		});
 	}
@@ -1300,9 +1360,6 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			// var capa = null;
-			// capa = a._crearCapaWMS(opciones);
-			// if(capa) a._agregarCapa(capa);
 			a.agregarCapaKML(opciones);
 		});
 	}
@@ -1393,55 +1450,6 @@
 			a.agregarMarcadores(arrayMarcadores);
 		});
 	}
-	$.fn.centro = function(lat,lon)
-	{
-		//getter
-		//el getter/lector solo devuelve la primer coincidencia de selector
-		if(arguments.length === 0)
-		{
-			if( !this.data('argenmap') ) return null;
-			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
-			return ctro ? [ctro.lat,ctro.lon] : null;
-		}
-		//setter
-		return this.each(function(){
-			var $this = $(this);
-			var a = $this.data('argenmap');
-			if(!a) return;
-			
-			a.centro(lat,lon);
-		});
-	}
-	$.fn.zoom = function(zoom)
-	{
-		if(arguments.length === 0)
-		{
-			if( !this.data('argenmap') ) return null;
-			var z = this.data('argenmap').mapa.getZoom();
-			return $.isNumeric(z) ? z : null;
-		}
-		return this.each(function(){
-			var $this = $(this);
-			var a = $this.data('argenmap');
-			if(!a || !$.isNumeric(zoom)) return;
-			
-			a.zoom(zoom);
-		});
-	}
-	$.fn.capaBase = function(capa)
-	{
-		if(arguments.length === 0)
-		{
-			if( !this.data('argenmap') ) return null;
-			// var z = this.data('argenmap').mapa.getZoom();
-			return this.data('argenmap').capaBase();
-		}
-		return this.each(function(){
-			var $this = $(this);
-			var a = $this.data('argenmap');
-			if(!a || typeof(capa) != "string") return;
-			
-			a.capaBase(capa);
-		});
-	}
-})(jQuery, window);
+})(jQuery, window, document, undefined);
+
+

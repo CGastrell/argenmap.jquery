@@ -1,94 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>ArgenMap · Guía</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="plugin de jquery para crear mapas de argentina con datos oficiales del Instituto Geográfico Nacional argentino">
-    <meta name="author" content="Christian Gastrell">
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>argenmap.jquery v2</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Bootplus -->
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/bootplus.min.css" rel="stylesheet" media="screen">
+		<link href="css/bootplus-responsive.min.css" rel="stylesheet" media="screen">
+		<link href="css/docs.css" rel="stylesheet" media="screen">
+		<link href="js/google-code-prettify/prettify-default.css" rel="stylesheet">
+		<!--[if IE 7]>
+		<link rel="stylesheet" href="css/bootplus-ie7.min.css">
+		<![endif]-->
+	</head>
+	<body>
+		<div style="background-color:#f5f5f5" id="head">
+			<div class="container">
 
-    <!-- Le styles -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="bootstrap/css/docs.css" rel="stylesheet">
-    <link href="bootstrap/js/google-code-prettify/prettify.css" rel="stylesheet">
+				<div class="row">
+					<span class="span2" style="border-right:1px solid #ccc">
+						 <h2><a class="brand " href="http://www.ign.gob.ar/argenmap">Argenmap</a></h2>
+					</span><!-- .span2 -->
+					<span class="span4 lead">
+							<p>Un plugin de
+								<a href="http://es.wikipedia.org/wiki/JQuery" target="_blank">jQuery</a>
+								para poner un mapa de Argentina en tu web.
+							</p>
+					</span><!-- .span4 .lead -->
+					<p class="span3 pull-right">
+						<a target="_blank" href="http://www.ign.gob.ar"><img src="img/icon-ign-48x48.png"></a>
+						<a target="_blank" href="http://www.twitter.com/argenmap"><img src="img/twitter-icon.png"></a>
+						<a target="_blank" href="http://jquery.com/"><img src="img/jquery-icon.png"></a>
+						<a target="_blank" href="http://es.wikipedia.org/wiki/HTML5"><img src="img/html5-icon.png"></a>
+					</p><!-- .span3 -->
+				</div><!-- row-fluid -->
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+			</div><!-- .container -->
+		</div><!-- #head -->
 
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="bootstrap/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
-		
-		<!-- este js va aca para poder ejecutar codigo inline -->
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-  </head>
-
-  <body data-spy="scroll" data-target=".bs-docs-sidebar">
-
-    <!-- Navbar
-    ================================================== -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="./index.html">ArgenMap</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="">
-                <a href="./index.html">Inicio</a>
-              </li>
-              <li class="">
-                <a href="./guias.html">Guías</a>
-              </li>
-              <li class="">
-                <a href="./documentacion.html">API</a>
-              </li>
-              <li class="">
-                <a href="./ejemplos.html">Ejemplos</a>
-              </li>
-              <li class="">
-                <a href="./casos.html">Casos</a>
-              </li>
-              <li class="active">
-                <a href="./crearMapa.html">Crea un mapa para tu sitio</a>
-              </li>
-              <li class="">
-                <a href="http://github.com/CGastrell/argenmap.jquery">Ver en Github</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-<!-- Subhead
-================================================== -->
-<header class="jumbotron subhead" id="overview" style="padding:8px 0">
-  <div class="container">
-    <h1>ArgenMap v2</h1>
-    <p class="lead">ArgenMap + jQuery + OpenLayers</p>
-  </div>
-</header>
+		<div class="navbar">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<a class="brand" href="#">argenmap.jquery v2</a>
+					<ul class="nav nav-pills">
+						<li><a href="index.html">Guía rápida</a></li>
+						<li><a href="caracteristicas.html">Características</a></li>
+						<li><a href="api.html">API</a></li>
+						<li><a href="ejemplos.html">Ejemplos</a></li>
+						<li><a href="casos.html">Casos</a></li>
+						<li><a href="datos.html">Acerca de los datos</a></li>
+						<li class="active"><a href="#">Creá un mapa para tu sitio</a></li>
+					</ul>
+				</div>
+			</div><!-- navbar-inner -->
+		</div><!-- navbar -->
 
 
-  <div class="container">
+	<div class="container">
 
-    <!-- Docs nav
-    ================================================== -->
-    <div class="row">
-      <div class="span3 bs-docs-sidebar">
-				<h4>Configurar tu mapa</h4>
+		<!-- Docs nav
+		================================================== -->
+		<div class="row">
+			<div class="span3 bs-docs-sidebar">
+				<h4>Configurá tu mapa</h4>
 				<div class="accordion" id="accordion2">
 					<div class="accordion-group">
 						<div class="accordion-heading">
@@ -139,19 +115,19 @@
 								Marcador
 							</a>
 						</div>
-						<div id="collapseTwo" class="accordion-body collapse">
+						<div id="collapseTwo" class="accordion-body collapse" style="padding-bottom:10px;">
 							<div class="accordion-inner">
 								<form class="form-search form-horizontal">
 									<label>Buscar dirección</label>
 									<input type="text" id="geosearch" class="span2 search-query" placeholder="Av. Cabildo 381, Buenos Aires">
-                  <!-- <div class="input-append">
+									<!-- <div class="input-append">
 										<button type="submit" class="btn"><i class="icon-search"></i></button>
 									</div> -->
 									
 									<h6>Información del marcador <small>puedes usar html</small></h6>
 									<textarea id="contenidoMarcador" rows="3"><h1>Marcador</h1>Este es el contenido del marcador</textarea>
 									<br /><small>Dejar en blanco para que el marcador no sea "clickeable"</small>
-									<br /><button id="actualizarInfo" class="pull-right btn btn-mini btn-primary" type="button">Actualizar marcador <i class="icon-refresh"></i> </button>
+									<br /><button id="actualizarInfo" class="pull-right btn btn-primary" type="button">Actualizar marcador <i class="icon-refresh"></i> </button>
 								</form>
 							</div>
 						</div>
@@ -173,7 +149,7 @@
 							<h3>Código</h3>
 						</div>
 						<div class="modal-body">
-							<p>Recuerda incluir las librerías en el <code>HEAD</code> de tu página:</p>
+							<p>Recordá incluir las librerías en el <code>HEAD</code> de tu página:</p>
 <pre class="prettyprint lang-html">
 &lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js&quot;&gt;&lt;/script&gt;
@@ -181,10 +157,10 @@
 							<p>Luego agrega este <code>DIV</code> donde quieras ubicar el mapa:</p>
 							<div class="well well-small" id="theDivIsTheLaw">
 							</div>
-							<p>... y por último, inserta este código en un tag <code>SCRIPT</code></p>
+							<p>... y por último, insertá este código en un tag <code>SCRIPT</code></p>
 							<div class="alert alert-info"><strong>Nota:</strong> El código JavaScript debe
 							ejecutarse cuando la página terminó de cargarse</div>
-							<textarea id="theCodeIsTheLaw" rows=6 style="width:100%;font-size:13px;"></textarea>
+							<textarea id="theCodeIsTheLaw" rows=6 style="width:95%;font-size:13px;"></textarea>
 						</div>
 						<div class="modal-footer">
 							<a data-dismiss="modal" aria-hidden="true" class="btn">Cerrar</a>
@@ -192,73 +168,50 @@
 					</div>
 					
 				</div>
-      </div>
-      <div class="span9">
-
-
-        <!-- Examples
-        ================================================== -->
-        <section id="examples">
-          <div class="resultado shadowed" id="mapaDemo" style="width:800px;height:350px; margin:0 auto;">
+			</div>
+			<div class="span9">
+				<section id="examples">
+					<div class="resultado shadowed" id="mapaDemo" style="width:800px;height:350px; margin:0 auto;">
 					</div>
-        </section>
-				
-      </div>
-    </div>
+				</section>
+			</div>
+		</div>
 
-  </div>
-
-
-
-    <!-- Footer
-    ================================================== -->
-    <footer class="footer">
-      <div class="container">
-        <p class="pull-right"><a href="#">Volver arriba</a></p>
-        <p>Documentación diseñada con todo el amor del mundo en base a <a href="http://github.com/twitter/bootstrap" target="_blank">Bootstrap</a>, diseñado por <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a> bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-        <p>Iconos de <a href="http://glyphicons.com">Glyphicons Free</a>, bajo licencia <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-				<!--
-        <ul class="footer-links">
-          <li><a href="http://blog.getbootstrap.com">Read the blog</a></li>
-          <li><a href="https://github.com/twitter/bootstrap/issues?state=open">Submit issues</a></li>
-          <li><a href="https://github.com/twitter/bootstrap/wiki">Roadmap and changelog</a></li>
-        </ul>
-				-->
-      </div>
-    </footer>
+	</div>
 
 
 
-    <!-- Le javascript
-    ================================================== -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="bootstrap/js/google-code-prettify/prettify.js"></script>
+		<!-- Footer
+		================================================== -->
+		<footer class="footer">
+			<p>Instituto Geográfico Nacional - 2013</p>
+		</footer>
 
-    <!-- <script src="http://mapa.ign.gob.ar/cg/OpenLayers-2.12/build/OpenLayers-argenmap-closure.js"></script> -->
-    <script src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
+
+
+		<!-- Le javascript
+		================================================== -->
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/google-code-prettify/prettify.js"></script>
+		<script src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
 		
-    <!-- Codigo para la pagina
-    ================================================== -->
+		<!-- Codigo para la pagina
+		================================================== -->
 		<script>
 			var gc;
 			var lastResults = [];
 			$(document).ready(function(){
 				var $window = $(window);
-				// side bar
-				$('.bs-docs-sidenav').affix({
-					offset: {
-						top: function () { return $window.width() <= 980 ? 290 : 210 }
-					, bottom: 270
-					}
-				});
 
 				// make code pretty
 				window.prettyPrint && prettyPrint();
 				gc = new google.maps.Geocoder();
-        // var callback = function(e){console.log(e);}
-        $(document).on("click",'a.georesult',function(e){
-            //console.log($(this).data('coords'));
-            $('#geosearch').popover('hide');
+				// var callback = function(e){console.log(e);}
+				$(document).on("click",'a.georesult',function(e){
+						//console.log($(this).data('coords'));
+						$('#geosearch').popover('hide');
 						$('#mapaDemo').centro($(this).data('lat'),$(this).data('lon')).zoom(12);
 						if($('#mapaDemo').data('argenmap').marcadores.length > 0)
 						{
@@ -266,9 +219,9 @@
 						}else{
 							$('#mapaDemo').agregarMarcador({lon:$(this).data('lon'),lat:$(this).data('lat'),contenido:$('#contenidoMarcador').val()});
 						}
-            return false;
-          }
-        );
+						return false;
+					}
+				);
 				$('#getCode').click(function(e){
 					var ancho = $.isNumeric($('#anchoDivVal').val()) ? $('#anchoDivVal').val() + 'px' : 'auto';
 					var alto = $.isNumeric($('#altoDivVal').val()) ? $('#altoDivVal').val() + 'px' : '300px';
@@ -316,7 +269,7 @@
 				$('#tipoDeMapa').change(function(e){
 					$('#mapaDemo').capaBase($(this).val());
 				});
-        $('#geosearch').typeahead({
+				$('#geosearch').typeahead({
 					source: function( query, callback) {
 
 							var resultsArr = new Array();
@@ -343,10 +296,11 @@
 									// callback(resultsArr);
 									$('#geosearch').popover({
 										html: true,
-										placement: 'right',
+										placement: 'bottom',
 										title: 'Resultados',
 										trigger: 'manual',
-										content: popoverContent
+										content: popoverContent,
+										container: 'body'
 									}).popover('show');
 								};
 							});
@@ -357,8 +311,8 @@
 		});
 		</script>
 
-    <!-- Analytics
-    ================================================== -->
+		<!-- Analytics
+		================================================== -->
 		<script type="text/javascript">
 
 			var _gaq = _gaq || [];
@@ -373,5 +327,5 @@
 
 		</script>
 
-  </body>
+	</body>
 </html>
