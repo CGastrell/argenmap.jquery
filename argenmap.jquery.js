@@ -1,14 +1,12 @@
 /*
- *  Argenmap Plugin para JQuery 
- *  Version   : 1.4
+ *  Argenmap 2 Plugin para JQuery 
+ *  Version   : v2.4.2
  *  Date      : 2013-02-16
  *  Licence   : GPL v3 : http://www.gnu.org/licenses/gpl.html  
  *  Author    : Christian Gastrell
  *  Contact   : cgastrell@gmail.com
  *  Web site  : http://ign.gob.ar/argenmap2
  *   
- *  Copyright (c) 2012 Instituto Geográfico Nacional de la República Argentina
- *  Todos los derechos reservados.
  *
  */
 ;(function ( $, window, document, undefined ) {
