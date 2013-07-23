@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://earth.google.com/kml/2.2">
+   <Document>
+      <Style id="online">
+         <IconStyle>
+            <Icon>
+               <href>http://www.ign.gob.ar/argenmap/argenmap.jquery/img/marcadores/punto.png</href>
+            </Icon>
+         </IconStyle>
+	 <LabelStyle>
+	    <color>ff4f4072</color>
+            <scale>1.5</scale>
+         </LabelStyle>
+      </Style>
+      <Style id="offline">
+         <IconStyle>
+            <Icon>
+               <href>http://google-maps-icons.googlecode.com/files/darkred.png</href>
+            </Icon>
+         </IconStyle>
+      </Style>
+      <Placemark>
+         <name>Estación IGM1</name>
+         <title>Estación IGM1</title>
+         <description><![CDATA[
+	  <h1>IGM1</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=IGM1', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=IGM1">información detallada para la estación IGM1</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.439319327778, -34.572243702778</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación ALUM</name>
+         <title>Estación ALUM</title>
+         <description><![CDATA[
+	  <h1>ALUM</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=ALUM', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=ALUM">información detallada para la estación ALUM</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-66.596628272222, -27.323426738889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación AUTF</name>
+         <title>Estación AUTF</title>
+         <description><![CDATA[
+	  <h1>AUTF</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=AUTF', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=AUTF">información detallada para la estación AUTF</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-68.303566588889, -54.839524961111</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación AZUL</name>
+         <title>Estación AZUL</title>
+         <description><![CDATA[
+	  <h1>AZUL</h1>
+	  <p>
+	  Estado: OFFLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=AZUL', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=AZUL">información detallada para la estación AZUL</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#offline</styleUrl>
+	          <Point>
+            <coordinates>-59.881280186111, -36.767022230556</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación BCAR</name>
+         <title>Estación BCAR</title>
+         <description><![CDATA[
+	  <h1>BCAR</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=BCAR', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=BCAR">información detallada para la estación BCAR</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.301095094444, -37.761233563889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación CATA</name>
+         <title>Estación CATA</title>
+         <description><![CDATA[
+	  <h1>CATA</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CATA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CATA">información detallada para la estación CATA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-65.774120916667, -28.470985027778</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación CSJ1</name>
+         <title>Estación CSJ1</title>
+         <description><![CDATA[
+	  <h1>CSJ1</h1>
+	  <p>
+	  Estado: FUERA DE FUNCIONAMIENTO	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CSJ1', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CSJ1">información detallada para la estación CSJ1</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-68.427244127778, -31.980526358333</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación CSLO</name>
+         <title>Estación CSLO</title>
+         <description><![CDATA[
+	  <h1>CSLO</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CSLO', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CSLO">información detallada para la estación CSLO</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-69.302213955556, -31.784887263889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación EBYP</name>
+         <title>Estación EBYP</title>
+         <description><![CDATA[
+	  <h1>EBYP</h1>
+	  <p>
+	  Estado: FUERA DE FUNCIONAMIENTO	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=EBYP', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=EBYP">información detallada para la estación EBYP</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-55.892174525, -27.368944119444</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación ESQU</name>
+         <title>Estación ESQU</title>
+         <description><![CDATA[
+	  <h1>ESQU</h1>
+	  <p>
+	  Estado: OFFLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=ESQU', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=ESQU">información detallada para la estación ESQU</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#offline</styleUrl>
+	          <Point>
+            <coordinates>-71.323400608333, -42.917113622222</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación GUAY</name>
+         <title>Estación GUAY</title>
+         <description><![CDATA[
+	  <h1>GUAY</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=GUAY', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=GUAY">información detallada para la estación GUAY</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-59.026222830556, -31.869130425</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación JBAL</name>
+         <title>Estación JBAL</title>
+         <description><![CDATA[
+	  <h1>JBAL</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=JBAL', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=JBAL">información detallada para la estación JBAL</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-65.62274965, -27.5844083</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación LHCL</name>
+         <title>Estación LHCL</title>
+         <description><![CDATA[
+	  <h1>LHCL</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=LHCL', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=LHCL">información detallada para la estación LHCL</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-65.595247225, -38.002659525</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación LPGS</name>
+         <title>Estación LPGS</title>
+         <description><![CDATA[
+	  <h1>LPGS</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=LPGS', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=LPGS">información detallada para la estación LPGS</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-57.932299538889, -34.906745113889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MA01</name>
+         <title>Estación MA01</title>
+         <description><![CDATA[
+	  <h1>MA01</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MA01', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MA01">información detallada para la estación MA01</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-68.057351577778, -38.951048919444</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MA02</name>
+         <title>Estación MA02</title>
+         <description><![CDATA[
+	  <h1>MA02</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MA02', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MA02">información detallada para la estación MA02</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.394088041667, -34.607023147222</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MECO</name>
+         <title>Estación MECO</title>
+         <description><![CDATA[
+	  <h1>MECO</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MECO', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MECO">información detallada para la estación MECO</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.075845330556, -29.184887138889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MPL2</name>
+         <title>Estación MPL2</title>
+         <description><![CDATA[
+	  <h1>MPL2</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MPL2', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MPL2">información detallada para la estación MPL2</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-57.571297291667, -38.005767336111</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MZAC</name>
+         <title>Estación MZAC</title>
+         <description><![CDATA[
+	  <h1>MZAC</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZAC', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZAC">información detallada para la estación MZAC</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-68.875573638889, -32.895152763889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MZAE</name>
+         <title>Estación MZAE</title>
+         <description><![CDATA[
+	  <h1>MZAE</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZAE', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZAE">información detallada para la estación MZAE</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-68.150061438889, -33.254843188889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MZSR</name>
+         <title>Estación MZSR</title>
+         <description><![CDATA[
+	  <h1>MZSR</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZSR', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZSR">información detallada para la estación MZSR</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-68.334310444444, -34.615470791667</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación NESA</name>
+         <title>Estación NESA</title>
+         <description><![CDATA[
+	  <h1>NESA</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=NESA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=NESA">información detallada para la estación NESA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-64.45400475, -40.105393075</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación NGAQ</name>
+         <title>Estación NGAQ</title>
+         <description><![CDATA[
+	  <h1>NGAQ</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=NGAQ', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=NGAQ">información detallada para la estación NGAQ</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-60.729346080556, -26.685912761111</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación PEJO</name>
+         <title>Estación PEJO</title>
+         <description><![CDATA[
+	  <h1>PEJO</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=PEJO', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=PEJO">información detallada para la estación PEJO</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-61.894638644444, -35.806324605556</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación RIO2</name>
+         <title>Estación RIO2</title>
+         <description><![CDATA[
+	  <h1>RIO2</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=RIO2', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=RIO2">información detallada para la estación RIO2</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-67.751117886111, -53.785471883333</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación RWSN</name>
+         <title>Estación RWSN</title>
+         <description><![CDATA[
+	  <h1>RWSN</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=RWSN', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=RWSN">información detallada para la estación RWSN</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-65.107248338889, -43.298880663889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación SANT</name>
+         <title>Estación SANT</title>
+         <description><![CDATA[
+	  <h1>SANT</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SANT', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SANT">información detallada para la estación SANT</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-70.668553722222, -33.150288030556</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación SBAL</name>
+         <title>Estación SBAL</title>
+         <description><![CDATA[
+	  <h1>SBAL</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SBAL', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SBAL">información detallada para la estación SBAL</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-61.22656255, -30.308778094444</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación SL01</name>
+         <title>Estación SL01</title>
+         <description><![CDATA[
+	  <h1>SL01</h1>
+	  <p>
+	  Estado: OFFLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SL01', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SL01">información detallada para la estación SL01</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#offline</styleUrl>
+	          <Point>
+            <coordinates>-66.314009580556, -33.156356275</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación SRLP</name>
+         <title>Estación SRLP</title>
+         <description><![CDATA[
+	  <h1>SRLP</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SRLP', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SRLP">información detallada para la estación SRLP</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-64.280404658333, -36.621499455556</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación SVIC</name>
+         <title>Estación SVIC</title>
+         <description><![CDATA[
+	  <h1>SVIC</h1>
+	  <p>
+	  Estado: OFFLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SVIC', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SVIC">información detallada para la estación SVIC</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#offline</styleUrl>
+	          <Point>
+            <coordinates>-54.487520519444, -26.993713675</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación TERO</name>
+         <title>Estación TERO</title>
+         <description><![CDATA[
+	  <h1>TERO</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=TERO', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=TERO">información detallada para la estación TERO</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-64.256780725, -27.789145166667</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación TUC1</name>
+         <title>Estación TUC1</title>
+         <description><![CDATA[
+	  <h1>TUC1</h1>
+	  <p>
+	  Estado: OFFLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=TUC1', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=TUC1">información detallada para la estación TUC1</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#offline</styleUrl>
+	          <Point>
+            <coordinates>-65.195669077778, -26.832654213889</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación TUCU</name>
+         <title>Estación TUCU</title>
+         <description><![CDATA[
+	  <h1>TUCU</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=TUCU', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=TUCU">información detallada para la estación TUCU</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-65.230351583333, -26.8432551</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación UCOR</name>
+         <title>Estación UCOR</title>
+         <description><![CDATA[
+	  <h1>UCOR</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UCOR', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UCOR">información detallada para la estación UCOR</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-64.193505597222, -31.434959986111</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación UNPA</name>
+         <title>Estación UNPA</title>
+         <description><![CDATA[
+	  <h1>UNPA</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNPA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNPA">información detallada para la estación UNPA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-69.208654094444, -51.647992583333</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación UNRO</name>
+         <title>Estación UNRO</title>
+         <description><![CDATA[
+	  <h1>UNRO</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNRO', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNRO">información detallada para la estación UNRO</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-60.628425208333, -32.959352930556</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación UNSA</name>
+         <title>Estación UNSA</title>
+         <description><![CDATA[
+	  <h1>UNSA</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNSA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNSA">información detallada para la estación UNSA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-65.4076433, -24.727456330556</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación UNSJ</name>
+         <title>Estación UNSJ</title>
+         <description><![CDATA[
+	  <h1>UNSJ</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNSJ', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UNSJ">información detallada para la estación UNSJ</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-68.577060686111, -31.541257816667</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación UYPA</name>
+         <title>Estación UYPA</title>
+         <description><![CDATA[
+	  <h1>UYPA</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UYPA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UYPA">información detallada para la estación UYPA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.067188505556, -32.291249577778</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación VBCA</name>
+         <title>Estación VBCA</title>
+         <description><![CDATA[
+	  <h1>VBCA</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=VBCA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=VBCA">información detallada para la estación VBCA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-62.269227116667, -38.700768191667</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación PDE3</name>
+         <title>Estación PDE3</title>
+         <description><![CDATA[
+	  <h1>PDE3</h1>
+	  <p>
+	  Estado: FUERA DE FUNCIONAMIENTO	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=PDE3', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=PDE3">información detallada para la estación PDE3</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-65.899380336111, -47.756627136111</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación UYSO</name>
+         <title>Estación UYSO</title>
+         <description><![CDATA[
+	  <h1>UYSO</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UYSO', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=UYSO">información detallada para la estación UYSO</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.013617802778, -33.261261608333</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación CHAC</name>
+         <title>Estación CHAC</title>
+         <description><![CDATA[
+	  <h1>CHAC</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CHAC', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=CHAC">información detallada para la estación CHAC</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.959693111111, -27.420439941667</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación MZAU</name>
+         <title>Estación MZAU</title>
+         <description><![CDATA[
+	  <h1>MZAU</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZAU', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=MZAU">información detallada para la estación MZAU</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-69.118411991667, -33.735956636111</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación PRNA</name>
+         <title>Estación PRNA</title>
+         <description><![CDATA[
+	  <h1>PRNA</h1>
+	  <p>
+	  Estado: OFFLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=PRNA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=PRNA">información detallada para la estación PRNA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#offline</styleUrl>
+	          <Point>
+            <coordinates>-60.469439288889, -31.781435880556</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación EPSF</name>
+         <title>Estación EPSF</title>
+         <description><![CDATA[
+	  <h1>EPSF</h1>
+	  <p>
+	  Estado: ONLINE	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=EPSF', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=EPSF">información detallada para la estación EPSF</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-60.672143244444, -31.639930602778</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación COCA</name>
+         <title>Estación COCA</title>
+         <description><![CDATA[
+	  <h1>COCA</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=COCA', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=COCA">información detallada para la estación COCA</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-58.830972586111, -27.467092452778</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación SUAR</name>
+         <title>Estación SUAR</title>
+         <description><![CDATA[
+	  <h1>SUAR</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SUAR', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=SUAR">información detallada para la estación SUAR</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-61.931291994444, -37.458499961111</coordinates>
+         </Point>
+      </Placemark>
+      <Placemark>
+         <name>Estación GVIL</name>
+         <title>Estación GVIL</title>
+         <description><![CDATA[
+	  <h1>GVIL</h1>
+	  <p>
+	  Estado: SIN NOVEDAD	  </p>
+	  <p>
+	  Ver la <a onclick="window.open('http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=GVIL', '_blank','width=900,resizable=1,scrollbars=1');" href="http://www.ign.gob.ar/archivos/ramsac/estacion2.php?estacion=GVIL">información detallada para la estación GVIL</a>
+
+	  </p>
+	]]> </description>
+	          	<styleUrl>#online</styleUrl>
+	          <Point>
+            <coordinates>-63.013642527778, -35.032600238889</coordinates>
+         </Point>
+      </Placemark>
+   </Document>
+</kml>

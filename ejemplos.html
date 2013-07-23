@@ -473,15 +473,15 @@ $('#mapa').agregarCapaKML( inundacion )
 							$('#datos2').click(function(){
 								$('#datoskml-resultado').argenmap().centro(-34.92358781656045, -57.92985480346745).zoom(12);
 								var arroyos = {
-								  url:'../arroyos.kml',
+								  url:'arroyos.kml',
 								  nombre: 'Cuencas de arroyos'
 								};
 								var inundacion = {
-								  url:'../inundacion.kml',
+								  url:'inundacion.kml',
 								  nombre: 'Zonas inundadas'
 								};
 								var topografia = {
-								  url:'../topografia.kml',
+								  url:'topografia.kml',
 								  nombre: 'Curvas de nivel'
 								};
 								$('#datoskml-resultado').agregarCapaKML( inundacion ).agregarCapaKML(arroyos).agregarCapaKML(topografia);
