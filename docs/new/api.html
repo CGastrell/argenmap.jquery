@@ -92,125 +92,141 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 		</div><!-- .container -->
 
 		<footer class="footer">
-			<p>© Instituto Geográfico Nacional 2013</p>
+			<p>Instituto Geográfico Nacional - 2013</p>
 		</footer>
 
 		<script src="js/bootstrap.min.js"></script>
 		<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
 		<script src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
 		<script src="js/google-code-prettify/prettify.js"></script>
-<script>
-function buildSidebar(obj)
-{
-	$.each(obj,function(i,e){
-		$('.bs-docs-sidenav').append('<li><a href="#' + i + '"> .' + i + '()</a></li>');
-	});
-}
-function buildSection(id,obj)
-{
-	var section = $('<section />');
-	section.attr('id',id);
-	section.append('<h2><span style="color:#999">$(selector).</span>'+id+'()</h2>');
-	//descripcion
-	$.each(obj.descripcion,function(i,e){
-		var p = $('<p />').html(e);
-		section.append(p);
-	});
-
-	//argumentos
-	section.append('<h3>Argumentos</h3>');
-	var tabla_args = $('<table class="table table-striped table-hover" />').appendTo(section);
-	$('<tr />').append('<th>argumento</th>')
-		.append('<th>tipo</th>')
-		.append('<th>predeterminado</th>')
-		.append('<th>requerido</th>')
-		.append('<th>descripción</th>')
-		.appendTo(tabla_args);
-	$.each(obj.argumentos,function(i,e){
-		var tr = $('<tr />').appendTo(tabla_args);
-		$.each(e,function(ii,ee){
-			if(ii == "requerido")
-			{
-				if(ee == false)
-				{
-					ee = '<p style="text-align:center"><span class="label">no</span></p>';
-				}else{
-					ee = '<p style="text-align:center"><span class="label label-warning">si</span></p>';
-				}
-			}
-			$('<td />').html(ee).appendTo(tr);
-		});
-	});
-
-	//opciones
-	if(obj.opciones.length){
-		section.append('<h3>Opciones</h3>');
-		var tabla_opcs = $('<table class="table table-striped table-hover" />').appendTo(section);
-		$('<tr />').append('<th>nombre</th>')
-			.append('<th>tipo</th>')
-			.append('<th>predeterminado</th>')
-			.append('<th>requerido</th>')
-			.append('<th>descripción</th>')
-			.appendTo(tabla_opcs);
-		$.each(obj.opciones,function(i,e){
-			var tr = $('<tr />').appendTo(tabla_opcs);
-			$.each(e,function(ii,ee){
-				if(ii == "requerido")
-				{
-					if(ee == false)
-					{
-						ee = '<p style="text-align:center"><span class="label">no</span></p>';
-					}else{
-						ee = '<p style="text-align:center"><span class="label label-warning">si</span></p>';
-					}
-				}
-				$('<td />').html(ee).appendTo(tr);
+		<script>
+		function buildSidebar(obj)
+		{
+			$.each(obj,function(i,e){
+				$('.bs-docs-sidenav').append('<li><a href="#' + i + '"> .' + i + '()</a></li>');
 			});
-		});
-	}
+		}
+		function buildSection(id,obj)
+		{
+			var section = $('<section />');
+			section.attr('id',id);
+			section.append('<h2><span style="color:#999">$(selector).</span>'+id+'()</h2>');
+			//descripcion
+			$.each(obj.descripcion,function(i,e){
+				var p = $('<p />').html(e);
+				section.append(p);
+			});
 
-	//alertas
-	if(obj.alertas.length)
-	{
-		$.each(obj.alertas,function(i,e){
-			$('<p />').addClass('alert')
-				.addClass('alert-' + e.tipo)
-				.html(e.texto)
-				.appendTo(section);
-		});
-	}
-	$('.metodos').append(section);
-	$('.metodos').append('<hr />');
-}
-var d;
-$(document).ready(function(){
-	//$('#mapa').argenmap();
-	var $window = $(window);
+			//argumentos
+			section.append('<h3>Argumentos</h3>');
+			var tabla_args = $('<table class="table table-striped table-hover" />').appendTo(section);
+			$('<tr />').append('<th>argumento</th>')
+				.append('<th>tipo</th>')
+				.append('<th>predeterminado</th>')
+				.append('<th>requerido</th>')
+				.append('<th>descripción</th>')
+				.appendTo(tabla_args);
+			$.each(obj.argumentos,function(i,e){
+				var tr = $('<tr />').appendTo(tabla_args);
+				$.each(e,function(ii,ee){
+					if(ii == "requerido")
+					{
+						if(ee == false)
+						{
+							ee = '<p style="text-align:center"><span class="label">no</span></p>';
+						}else{
+							ee = '<p style="text-align:center"><span class="label label-warning">si</span></p>';
+						}
+					}
+					$('<td />').html(ee).appendTo(tr);
+				});
+			});
 
-	$.getJSON('../argenmapdocs.json',function(data){
-		buildSidebar(data.metodos);
-		d = data;
-		$.each(data.metodos,function(i,e){
-			buildSection(i,e);
-		});
-	});
-
-	// Disable certain links in docs
-	$('section [href^=#]').click(function (e) {
-		e.preventDefault();
-	});
-
-	
-	// side bar
-	setTimeout(function () {
-		$('.bs-docs-sidenav').affix({
-			offset: {
-				top: 154
+			//opciones
+			if(obj.opciones.length){
+				section.append('<h3>Opciones</h3>');
+				var tabla_opcs = $('<table class="table table-striped table-hover" />').appendTo(section);
+				$('<tr />').append('<th>nombre</th>')
+					.append('<th>tipo</th>')
+					.append('<th>predeterminado</th>')
+					.append('<th>requerido</th>')
+					.append('<th>descripción</th>')
+					.appendTo(tabla_opcs);
+				$.each(obj.opciones,function(i,e){
+					var tr = $('<tr />').appendTo(tabla_opcs);
+					$.each(e,function(ii,ee){
+						if(ii == "requerido")
+						{
+							if(ee == false)
+							{
+								ee = '<p style="text-align:center"><span class="label">no</span></p>';
+							}else{
+								ee = '<p style="text-align:center"><span class="label label-warning">si</span></p>';
+							}
+						}
+						$('<td />').html(ee).appendTo(tr);
+					});
+				});
 			}
+
+			//alertas
+			if(obj.alertas.length)
+			{
+				$.each(obj.alertas,function(i,e){
+					$('<p />').addClass('alert')
+						.addClass('alert-' + e.tipo)
+						.html(e.texto)
+						.appendTo(section);
+				});
+			}
+			$('.metodos').append(section);
+			$('.metodos').append('<hr />');
+		}
+		var d;
+		$(document).ready(function(){
+			//$('#mapa').argenmap();
+			var $window = $(window);
+
+			$.getJSON('argenmapdocs.json',function(data){
+				buildSidebar(data.metodos);
+				d = data;
+				$.each(data.metodos,function(i,e){
+					buildSection(i,e);
+				});
+			});
+
+			// Disable certain links in docs
+			$('section [href^=#]').click(function (e) {
+				e.preventDefault();
+			});
+
+			
+			// side bar
+			setTimeout(function () {
+				$('.bs-docs-sidenav').affix({
+					offset: {
+						top: 154
+					}
+				});
+				$('body').scrollspy({target:'#side-nav'});
+			},500);
 		});
-		$('body').scrollspy({target:'#side-nav'});
-	},500);
-});
-</script>
+		</script>
+		<!-- Analytics
+		================================================== -->
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-689568-24']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+
 	</body>
 </html>
