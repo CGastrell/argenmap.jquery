@@ -30,9 +30,9 @@ div.olLayerDiv {
 }
 .olControlAttribution {
     font-size: smaller;
-	/* fix para el attrib de bing
+    /* fix para el attrib de bing
     right: 3px;
-	*/
+    */
     bottom: 0; /*4.5em; idem*/
     position: absolute;
     display: block;
@@ -261,11 +261,11 @@ div.olControlSaveFeaturesItemInactive {
 
 .olPopupCloseBox {
   background: url("img/close.png") no-repeat;
-	opacity:0.75;
+    opacity:0.75;
   cursor: pointer;
 }
 .olPopupCloseBox:hover {
-	opacity:1;
+    opacity:1;
 }
 
 .olFramedCloudPopupContent {
@@ -328,8 +328,8 @@ div.olControlSaveFeaturesItemInactive {
     padding-bottom: 5px;
     padding-right: 10px;
     /*background-color: darkblue;
-		for the facha, senior*/
-		background:rgba(0, 60, 136, 0.5);
+        for the facha, senior*/
+        background:rgba(0, 60, 136, 0.5);
 }
 
 .olControlLayerSwitcher .layersDiv .baseLbl,
@@ -351,9 +351,25 @@ div.olControlSaveFeaturesItemInactive {
     top: 5px;
     right: 0;
     cursor: pointer;
-	opacity: 0.5;
     border:none;
     padding:0;
+border-top-left-radius: 10px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;
+border-bottom-left-radius: 10px;
+font-size: 18px;
+font-weight: normal;
+text-indent: 4px;
+line-height: 18px;
+}
+
+.olControlLayerSwitcher .minimizeDiv {
+    border-radius: 0px;
+    top: 4px;
+    border:1px solid rgba(255,255,255,0.25);
+    background-color: transparent;
+line-height: 15px;
+text-indent: 6px;
 }
 
 .olBingAttribution {
@@ -515,3 +531,219 @@ div.olControlZoom a {
     color:white !important;
 }
 
+/* Ign Zoom bar y demases */
+.olIgnIconos {
+    display: block;
+    width: 21px;
+    height: 21px;
+}
+.olIgnIconos > div {
+background-color: white;/*#555;*/
+position: absolute;
+    
+}
+.olIgnIconos.iconoMas, .olIgnIconos.iconoMenos {
+    position: relative;
+}
+.olIgnIconos.iconoMas div.mas_parte1 {
+width: 5px;
+height: 15px;
+left: 8px;
+top: 4px;
+}
+.olIgnIconos.iconoMas div.mas_parte2 {
+width: 15px;
+height: 5px;
+left: 3px;
+top: 9px;
+}
+.olIgnIconos.iconoMenos div.menos {
+width: 15px;
+height: 5px;
+left: 3px;
+top: 9px;
+}
+/*
+.olIgnTools.mas {
+    background-position: 0 0!important;
+}
+.olIgnTools.menos {
+    background-position: 0 -20px!important;
+}
+.olIgnTools.acercar {
+    background-position: 0 -40px!important;
+}
+.olIgnTools.mover {
+    background-position: 0 -60px!important;
+}
+.olIgnTools.medir {
+    background-position: 0 -80px!important;
+}
+.olIgnTools.dropdown {
+    background-position: 0 -100px!important;
+}
+.olIgnTools.closeup {
+    background-position: 0 -120px!important;
+}
+*/
+.olIgnIconos.handler {
+    background:url(img/knob.png) no-repeat;
+    width: 29px!important;              
+    height: 29px!important;             
+}
+.olControlPanZoomBarIGN {
+    position: absolute;
+    z-index: 1000;
+    background-color: rgba(0, 60, 136, 0.5);/*white;*/
+    border: 1px solid #bbb;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+    -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    /*opacity: 0.85;
+    filter: alpha(opacity=85);*/
+}
+.olControlPanZoomBarIGN:hover {
+    /*border-color: #969696;*/
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+.olControlPanZoomBarIGN > .olButton.zoomout, .olControlPanZoomBarIGN > .olButton.zoomin {
+    opacity: 0.8;
+    display: block;
+    padding: 4px;
+    cursor: pointer;    
+}
+.olControlPanZoomBarIGN > .olButton.zoomin {
+    border-bottom-width: 1px;
+    border-bottom-style: inherit;
+    border-bottom-color: inherit;
+}
+.olControlPanZoomBarIGN > .olButton.zoomin:hover, .olControlPanZoomBarIGN > .olButton.zoomout:hover {
+    opacity: 1;
+}
+.olControlPanZoomBarIGN > .handler {
+    opacity: 0.8;
+}
+.olControlPanZoomBarIGN > .handler:hover {
+    opacity: 1;
+}
+.olControlPanZoomBarIGN > .olButton.zoombar {
+    padding: 6px 10px;
+    border-bottom-width: 1px;
+    border-bottom-style: inherit;
+    border-bottom-color: inherit;
+}
+.olControlPanZoomBarIGN > .olButton.zoombar > .zoomBarBg {
+    background: #e7e7e7; /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover,  #e7e7e7 0%, #e0e0e0 100%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#e7e7e7), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover,  #e7e7e7 0%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover,  #e7e7e7 0%,#e0e0e0 100%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover,  #e7e7e7 0%,#e0e0e0 100%); /* IE10+ */
+    background: radial-gradient(ellipse at center,  #e7e7e7 0%,#e0e0e0 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e7e7e7', endColorstr='#e0e0e0',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    width: 10px;
+    height: 188px;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+}
+/*
+.olControlNavToolbarIgn {
+    background-color: white;
+    border: 1px solid #bbb;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+    opacity: 0.85;
+    filter: alpha(opacity=85);
+}
+.olControlNavToolbarIgn:hover {
+    border-color: #969696;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+.olControlNavToolbarIgn div {
+    opacity: 0.8;
+    display: block;
+    padding: 5px;
+    cursor: pointer;
+}
+.olControlNavToolbarIgn div:hover {
+    opacity: 1;
+}
+*/
+/* positions */
+/*
+.olControlNavToolbarIgn {
+    top: 295px;
+    left: 20px;
+    -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+}
+*/
+/* layouts */
+/*
+.olControlEditingToolbarIgn div {
+    float: right;
+}
+*/
+/* individual controls */
+/*
+.olControlNavToolbarIgn .olControlNavigationItemInactive {
+    background-position: -103px -1px;
+}
+.olControlNavToolbarIgn .olControlNavigationItemActive {
+    background-position: -103px -24px;
+}
+.olControlNavToolbarIgn .olControlZoomBoxItemInactive {
+    background-position: -128px -1px;
+}
+.olControlNavToolbarIgn .hidden {
+    display: none;
+}
+.olControlNavToolbarIgn.open div {
+    border-bottom: 1px solid #dddddd;
+}
+.olControlNavToolbarIgn.open div:last-child {
+    border-bottom: none;
+}
+.olControlNavToolbarIgn .olControlZoomBoxItemActive  {
+    background-position: -128px -24px;
+}
+.olControlNavToolbarIgn .dropdown {
+    padding: 3px 5px;
+}
+.olControlNavToolbarIgn .caret {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #888;
+    content: "";
+    display: block;
+    height: 0;
+    line-height: 14px;
+    vertical-align: top;
+    width: 0;
+    margin: 0 0 0 6px;
+}
+.olControlNavToolbarIgn.open .caret {
+    border-top: none;
+    border-bottom: 4px solid #888;
+}
+.olControlNavToolbarIgn div:last-child {
+    border-top: 1px solid #dddddd;
+}
+.olControlNavToolbarIgn.open div:last-child {
+    border-top: none!important;
+}
+*/
