@@ -51,7 +51,7 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 		this.buttons=[];
 		this._addHtmlButton("zoomin","<span class=\"olIgnIconos iconoMas\" title=\"Acercar\"><div class='mas_parte1'></div><div class='mas_parte2'></div></span>","static");
 		if(this.zoomBar && this.map.viewPortDiv.clientHeight > this.minHeight){
-			centered = this._addZoomBar(new OpenLayers.Pixel(this.zoomBarLeft,this.zoomBarTop));
+			this._addZoomBar(new OpenLayers.Pixel(this.zoomBarLeft,this.zoomBarTop));
 		}
 		this._addHtmlButton("zoomout","<span class=\"olIgnIconos iconoMenos\" title=\"Alejar\"><div class='menos'></div></span>","static");
 		return this.div;
