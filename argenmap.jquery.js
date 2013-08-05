@@ -6,7 +6,6 @@
  *  Author    : Christian Gastrell
  *  Contact   : cgastrell@gmail.com
  *  Web site  : http://ign.gob.ar/argenmap2
- *   
  *
  */
 ;(function ( $, window, document, undefined ) {
@@ -392,6 +391,7 @@
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
 				
 			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
+			opcionesDeMapa.controls = [];
 			// opcionesDeMapa.displayProjection = new OpenLayers.Projection("EPSG:4326");
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
 			this.actualizar();
@@ -402,11 +402,14 @@
 			del control Navigation agregado a través
 			de addControls()
 			*/
-			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
-			this.mapa.removeControl(nav);
+			// var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
+			// this.mapa.removeControl(nav);
+			//remover el control por default
+			// this.mapa.removeControl(this.mapa.controls[0]);
 
 			this.mapa.addControls([
-				new OpenLayers.Control.LayerSwitcher(),
+				new OpenLayers.Control.PanZoomBarIGN({zoomBar:false}),
+				new OpenLayers.Control.LayerSwitcherIGN(),
 				new OpenLayers.Control.Navigation({
 					//Esto no causa efecto
 					//creo que porque el Map
@@ -441,7 +444,7 @@
 			 * El valor predeterminado es muy bajo
 			 */
 			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
-			nav.dragPan.kinetic.deceleration=0.007
+			nav.dragPan.kinetic.deceleration = 0.007;
 
 			// eventos
 			this.mapa.events.on({
@@ -463,16 +466,18 @@
 			});
 			
 			//little kludge para cambar titulos del layerSwitcher
-			this.$el.find('div.baseLbl').text("Capas base");
-			this.$el.find('div.dataLbl').text("Superpuestas");
+			// this.$el.find('div.baseLbl').text("Capas base");
+			// this.$el.find('div.dataLbl').text("Superpuestas");
 		},
 		actualizar: function()
 		{
-
 			var f = this.$el.children('div.argenmapMapFooter');
 			var c = this.$el.children('div.argenmapMapCanvas');
 			c.css('height',(this.$el.innerHeight() - f.outerHeight() ) + 'px');
-			if(this.mapa) this.mapa.updateSize();
+			if(this.mapa) {
+				this.mapa.updateSize();
+				this.mapa.events.triggerEvent('updatesize');
+			}
 		},
 		agregarCapa: function(opciones,extras)
 		{
