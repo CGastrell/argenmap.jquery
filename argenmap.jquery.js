@@ -1206,8 +1206,8 @@
 			this.$el.html("");//vaciar el contenedor
 			this.$el.css('padding',0);//reset el padding, por si las flies
 			var alto = this.$el.innerHeight();
-			var a = $('<a style="float:left;" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs" />')
-				.append('<img src="http://www.ign.gob.ar/argenmap/argenmap.jquery/img/logoignsintexto-25px.png" />');
+			var a = $('<a style="float:left;" target="_blank" href="http://www.ign.gob.ar/argenmap2/argenmap.jquery/docs" />')
+				.append('<img src="'+OpenLayers.ImgPath+'logoignsintexto-25px.png" />');
 
 			var f = $('<div class="argenmapMapFooter" />')
 				.css({
