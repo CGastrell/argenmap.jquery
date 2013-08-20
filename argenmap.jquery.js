@@ -642,64 +642,36 @@
 		},
 		agregarMarcador: function(opciones)
 		{
-			var coordenadas;
-			if(undefined == opciones)
-			{
-				//si se llama sin argumentos, marcamos el centro
-				coordenadas = this.mapa.getCenter();
-				opciones = {}
-			}else{
-				coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
-				
-				//hago una copia del objeto pasado como
-				//parametro porque se pasa por referencia
-				opciones = $.extend({}, opciones);
-				
-			}
-			//si a esta altura no esta definido coordenadas, cancelamos
-			if(!coordenadas) return;
-			//borro el lonlat que pueda haber venido con las opciones, ya tengo las coords
-			if(typeof(opciones) == "object"){
-				try{
-					delete opciones["lonlat"];
-					delete opciones["latlng"];
-					delete opciones["lat"];
-					delete opciones["lon"];
-					delete opciones["lng"];
-					delete opciones["long"];
-				}catch(e){//IE8 no soporta "delete"
-					opciones["lonlat"] = undefined;
-					opciones["latlng"] = undefined;
-					opciones["lat"] = undefined;
-					opciones["lon"] = undefined;
-					opciones["long"] = undefined;
-					opciones["lng"] = undefined;
-				}
-			}else if($.isArray(opciones)){
-				//esto es por si se llamo a agregarMarcador([lat,lon])
-				opciones = {};
-			}
-			//hay que independizar el icono por defecto
+			//aca tiene que llegar un objeto SI o SI, aunque sea vacio {}
 			var predeterminadasMarcador = {
+				lon: this.mapa.getCenter().lon,
+				lat: this.mapa.getCenter().lat,
 				capa:"Marcadores",
 				listarCapa: false,
 				nombre: "Marcador",
 				contenido: "",
 				mostrarConClick: true,
+				desplegarContenido: false,
 				icono: ''
 			};
-			var o = $.extend({},predeterminadasMarcador,opciones);
+			var coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
+			var o = $.extend({}, predeterminadasMarcador, opciones, coordenadas);
+
+			//leo las coordenadas de nuevo despues de haber mergeado
+			//las necesito para el createMarker
+			coordenadas = leerCoordenadas(o,this.opciones.proyeccion);
+
+			//quito el marcador que pueda haber existido con el mismo nombre
 			this.quitarMarcador(o.nombre);
+			
 			var icono = o.icono;
 			//para detectar el tamanio de imagen voy a tener que hacer un preload
 			//y en el callback volver a llamar esta funcion nuevamente
 			if(typeof(icono) === "string" || icono === null)
 			{
 				var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
-				var esUrl;
-				var esArchivoImagen;
-				esUrl = urlPattern.test(icono);
-				esArchivoImagen = (/\.(gif|jpg|jpeg|png)$/i).test(icono);
+				var esUrl = urlPattern.test(icono);;
+				var esArchivoImagen = (/\.(gif|jpg|jpeg|png)$/i).test(icono);
 				if(!esArchivoImagen && !esUrl)
 				{
 					o.icono = this._crearIconoPredeterminado(icono);
@@ -712,19 +684,15 @@
 								var oi = new OpenLayers.Icon(icono,
 									new OpenLayers.Size(w,h),
 									new OpenLayers.Pixel(-(w / 2 << 0),-h));
-								o.lonlat = coordenadas;
 								o.icono = oi;
 								this.agregarMarcador(o);
 							},
 							this)
 						);
 					return;
-				}
-			}else{
-				//si no es string debe ser objeto, "siga siga" dice el arbitro
-				// console.log('icono != string')
-			}
-			// !preload
+				};
+			};
+			// /preload
 
 			if(o.contenido == "")
 			{
@@ -750,7 +718,6 @@
 			o = traducirObjeto(o);
 			var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
 			var m = f.createMarker();
-			// console.log(opcionesFeature);
 			f.nombre = m.nombre = o.nombre;
 			f.closeBox = true;
 			f.popupClass = OpenLayers.Popup.FramedCloud;
@@ -795,8 +762,6 @@
 				//esto es por si se llamo a modificarMarcador("nombre",[lat,lon])
 				opciones = {};
 			}
-			// console.log(f.marker.icon);
-			// return;
 			var opcionesPrevias = {
 				lonlat: coordenadas,
 				icono: f.marker.icon.clone(),//<----?!?!?!?!hay que reproducir lo que hice en agregarMarcador?
@@ -1395,28 +1360,37 @@
 	 */
 	$.fn.agregarMarcador = function(opciones,lon)
 	{
-		//si llega con un par de numeros como args...
-		if(undefined != lon && $.isNumeric(opciones) && $.isNumeric(lon))
-		{
-			opciones = [opciones,lon];
+		var o = {};
+		if(arguments.length === 2) {
+			//si llega con un par de coordenadas como args...
+			if($.isNumeric(arguments[0]) && $.isNumeric(arguments[1])) {
+				o.lat = arguments[0];
+				o.lon = arguments[1];
+			};
 		}else if(typeof(opciones) == "string") {
 			//si llega con un string estilo "-34.218,-56.813"...
 			var arsplit = opciones.split(",");
 			arsplit[0] = parseFloat(arsplit[0]);
 			arsplit[1] = parseFloat(arsplit[1]);
-			if(isNaN(arsplit[0]) || isNaN(arsplit[1]))
+			if(arsplit.length === 2 && !isNaN(arsplit[0]) && !isNaN(arsplit[1]))
 			{
-				opciones = null;
-			}else{
-				opciones = arsplit;
-			}
-		}
+				o.lat = arsplit[0];
+				o.lon = arsplit[1];
+			};
+		}else if($.isArray(opciones)) {
+			//si llega como un array de [lat,lon]
+			o.lat = opciones[0];
+			o.lon = opciones[1];
+		}else{
+			o = $.extend({},o,opciones);
+		};
+		
 		return this.each(function(){
-			var o = $.extend({},opciones);
+			// var o = $.extend({},opciones);
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			a.agregarMarcador(opciones);
+			a.agregarMarcador(o);
 		});
 	}
 	$.fn.modificarMarcador = function(nombre,opciones)
