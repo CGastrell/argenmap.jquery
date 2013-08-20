@@ -361,6 +361,7 @@ font-size: 18px;
 font-weight: normal;
 text-indent: 4px;
 line-height: 18px;
+box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 }
 
 .olControlLayerSwitcher .minimizeDiv {
