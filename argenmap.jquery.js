@@ -48,7 +48,7 @@
 		var from = Number(arguments[1]) || 0;
 		from = (from < 0)
 			 ? Math.ceil(from)
-			 : Math.floor(from);
+			 : parseInt(from);
 		if (from < 0)
 		  from += len;
 
@@ -130,10 +130,10 @@
 		var product = 1;
 		for (var i=0, len=paramString.length; i<len; i++) { 
 			product *= paramString.charCodeAt(i) * this.URL_HASH_FACTOR; 
-			product -= Math.floor(product); 
+			product -= parseInt(product); 
 		}
-		this.cache.guardar(paramString, urls[Math.floor(product * urls.length)]);
-		return urls[Math.floor(product * urls.length)];
+		this.cache.guardar(paramString, urls[parseInt(product * urls.length)]);
+		return urls[parseInt(product * urls.length)];
 	}
 	/**
 	 * Mapa de propiedades traducidas
@@ -153,6 +153,7 @@
 		listarCapa: 'displayInLayerSwitcher'
 	}
 	//hard coded, modificar para la version final
+	// var rutaRelativa = "http://vm/argenmap2/";
 	var rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
 	OpenLayers.ImgPath = rutaRelativa + "img/";
 
@@ -397,56 +398,47 @@
 			// opcionesDeMapa.displayProjection = new OpenLayers.Projection("EPSG:4326");
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
 			this.actualizar();
-			/*
-			 * KLUDGE!
-			Saco el control Navigation predeterminado
-			porque si no no le importan las opciones
-			del control Navigation agregado a través
-			de addControls()
-			*/
-			// var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
-			// this.mapa.removeControl(nav);
-			//remover el control por default
-			// this.mapa.removeControl(this.mapa.controls[0]);
-
-			this.mapa.addControls([
-				new OpenLayers.Control.PanZoomBarIGN({zoomBar:false}),
-				new OpenLayers.Control.LayerSwitcherIGN(),
-				new OpenLayers.Control.Navigation({
-					//Esto no causa efecto
-					//creo que porque el Map
-					//ya tiene un control Navigation
-					dragPanOptions: {
-						enableKinetic: true,
-						kineticInterval: 400
-					},
-					//permito que el mapa se mueve 
-					//aunque el mouse haya dejado 
-					//el canvas del mapa
-					documentDrag:true,
-					mouseWheelOptions: {
-						interval: 100,
-						cumulative:false,
-						maxDelta:6
-					}
-				}),
-				new OpenLayers.Control.PinchZoom({
-					handlerOptions: {
-						//Esto evita que se propaguen
-						//los eventos. creo que
-						//esto en false es lo que hacía
-						//que en mobile el pinch se
-						//destronctrolara
-						stopDown:true
-					}
-				})
-			]);
-			/*
-			 * Aumento la desaceleración del kinetic.
-			 * El valor predeterminado es muy bajo
-			 */
-			var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
-			nav.dragPan.kinetic.deceleration = 0.007;
+			//opcion de mapa fijo, sin controles
+			if(!this.opciones.mapaFijo) {
+				this.mapa.addControls([
+					new OpenLayers.Control.PanZoomBarIGN({zoomBar:false}),
+					new OpenLayers.Control.LayerSwitcherIGN(),
+					new OpenLayers.Control.Navigation({
+						//Esto no causa efecto
+						//creo que porque el Map
+						//ya tiene un control Navigation
+						dragPanOptions: {
+							enableKinetic: true,
+							kineticInterval: 400
+						},
+						//permito que el mapa se mueve 
+						//aunque el mouse haya dejado 
+						//el canvas del mapa
+						documentDrag:true,
+						mouseWheelOptions: {
+							interval: 100,
+							cumulative:false,
+							maxDelta:6
+						}
+					}),
+					new OpenLayers.Control.PinchZoom({
+						handlerOptions: {
+							//Esto evita que se propaguen
+							//los eventos. creo que
+							//esto en false es lo que hacía
+							//que en mobile el pinch se
+							//destronctrolara
+							stopDown:true
+						}
+					})
+				]);
+				/*
+				 * Aumento la desaceleración del kinetic.
+				 * El valor predeterminado es muy bajo
+				 */
+				var nav = this.mapa.getControlsByClass("OpenLayers.Control.Navigation")[0];
+				nav.dragPan.kinetic.deceleration = 0.007;
+			};
 
 			// eventos
 			this.mapa.events.on({
@@ -664,7 +656,7 @@
 
 			//quito el marcador que pueda haber existido con el mismo nombre
 			this.quitarMarcador(o.nombre);
-			
+
 			var icono = o.icono;
 			//para detectar el tamanio de imagen voy a tener que hacer un preload
 			//y en el callback volver a llamar esta funcion nuevamente
@@ -1168,12 +1160,12 @@
 		 */
 		_prepararDiv: function()
 		{
-			// if(this.$el.data('argenmap')) this.destruir();//instancia anterior si la hubiese, no deberia ir aca
 			this.$el.html("");//vaciar el contenedor
 			this.$el.css('padding',0);//reset el padding, por si las flies
+			this.$el.css('min-width',240);//restringir ancho minimo
 			var alto = this.$el.innerHeight();
-			var a = $('<a style="float:left;" target="_blank" href="http://www.ign.gob.ar/argenmap2/argenmap.jquery/docs" />')
-				.append('<img src="'+OpenLayers.ImgPath+'logoignsintexto-25px.png" />');
+			var logoLink = $('<a style="float:left;" target="_blank" href="http://www.ign.gob.ar/argenmap2/argenmap.jquery/docs" />');
+			$('<img src="'+OpenLayers.ImgPath+'logoignsintexto-25px.png" />').css('height','20px').appendTo(logoLink);
 
 			var f = $('<div class="argenmapMapFooter" />')
 				.css({
@@ -1183,16 +1175,25 @@
 					'box-shadow': '0 0 11px rgb(5, 66, 100) inset',
 					'font-size': '10px',
 					'text-align': 'right',
-					'min-height': '25px',
-					'line-height': '13px',
+		      'height': '20px',//issue30
+		      'min-height': '15px',
+		      'line-height': '20px',
+					/*'min-height': '25px',
+					'line-height': '13px',*/
 					'vertical-align':'middle',
 					'padding': '5px',
 					'margin':0,
 					'border':0
-				}).append(a)
-				.append('<a style="color:'+this.colorLetraPie+';text-decoration:underline;font-weight:normal" target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales">Topónimos, datos topográficos - 2013 IGN Argentina // Calles - OpenStreetMap</a>');
-			var c = $('<div class="argenmapMapCanvas" />')
+				}).append(logoLink);
+			$('<a target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales"></a>')
 				.css({
+					'color': this.colorLetraPie,
+					'text-decoration': 'underline',
+					'font-weight': 'normal'
+				})
+				.text('Datos IGN Argentina // OpenStreetMap')
+				.appendTo(f);
+			var c = $('<div class="argenmapMapCanvas" />').css({
 					padding:0,//reset de padding, de nuevo, por si las flies
 					margin:0,//idem
 					border:0,//idem
@@ -1202,14 +1203,13 @@
 					position: 'relative',
 					'background-color': 'rgb(229, 227, 223)',
 					overflow: 'hidden'
-				});
-				this.divMapa = c.get(0);
-				this.$el.bind('resized',$.proxy(function()//delega la funcion a this
-					{
-						this.actualizar();
-					},this)
-				);
-				this.$el.append(c).append(f);
+			});
+			this.divMapa = c.get(0);
+			this.$el.bind('resized',$.proxy(function(){
+					this.actualizar();
+				},this)
+			);
+			this.$el.append(c).append(f);
 		}
 	}
 	/* COPIA DE FUNCION isNumeric de jQuery 1.7+ para compatibilidad */
