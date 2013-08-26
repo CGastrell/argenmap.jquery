@@ -535,8 +535,8 @@ div.olControlZoom a {
 /* Ign Zoom bar y demases */
 .olIgnIconos {
     display: block;
-    width: 21px;
-    height: 21px;
+    width: 15px;
+    height: 15px;
 }
 .olIgnIconos > div {
 background-color: white;/*#555;*/
@@ -547,22 +547,16 @@ position: absolute;
     position: relative;
 }
 .olIgnIconos.iconoMas div.mas_parte1 {
-width: 5px;
-height: 15px;
-left: 8px;
-top: 4px;
+width: 3px;
+height: 11px;
+left: 6px;
+top: 2px;
 }
-.olIgnIconos.iconoMas div.mas_parte2 {
-width: 15px;
-height: 5px;
-left: 3px;
-top: 9px;
-}
-.olIgnIconos.iconoMenos div.menos {
-width: 15px;
-height: 5px;
-left: 3px;
-top: 9px;
+.olIgnIconos.iconoMas div.mas_parte2, .olIgnIconos.iconoMenos div.menos {
+width: 11px;
+height: 3px;
+left: 2px;
+top: 6px;
 }
 /*
 .olIgnTools.mas {
@@ -590,7 +584,8 @@ top: 9px;
 .olIgnIconos.handler {
     background:url(img/knob.png) no-repeat;
     width: 29px!important;              
-    height: 29px!important;             
+    height: 29px!important;
+    background-size: 75%;
 }
 .olControlPanZoomBarIGN {
     position: absolute;
@@ -635,7 +630,7 @@ top: 9px;
     opacity: 1;
 }
 .olControlPanZoomBarIGN > .olButton.zoombar {
-    padding: 6px 10px;
+    padding: 6px 8px;
     border-bottom-width: 1px;
     border-bottom-style: inherit;
     border-bottom-color: inherit;
@@ -649,7 +644,7 @@ top: 9px;
     background: -ms-radial-gradient(center, ellipse cover,  #e7e7e7 0%,#e0e0e0 100%); /* IE10+ */
     background: radial-gradient(ellipse at center,  #e7e7e7 0%,#e0e0e0 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e7e7e7', endColorstr='#e0e0e0',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-    width: 10px;
+    width: 6px;
     height: 188px;
     -webkit-border-radius: 4px;
        -moz-border-radius: 4px;
