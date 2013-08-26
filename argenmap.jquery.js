@@ -11,10 +11,11 @@
  */
 ;(function ( $, window, document, undefined ) {
 	IGN_CACHES = [
-		'http://cg.aws.af.cm/tms',
-		'http://mapaabierto.aws.af.cm/tms',
-		'http://robomap-cgastrell.rhcloud.com/tms'
-	];
+    		'http://cg.aws.af.cm/tms',
+        	'http://190.220.8.216/tms',
+	    	'http://mapaabierto.aws.af.cm/tms',
+	        'http://igntiles1.ap01.aws.af.cm/tms'
+	];  
 	//-----------------------------------------------------------------------//
 	// jQuery event
 	//-----------------------------------------------------------------------//

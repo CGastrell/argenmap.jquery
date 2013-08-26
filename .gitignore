@@ -15,3 +15,8 @@ Thumbs.db
 
 #cosas viejas
 *.old
+
+#cosas que no van
+argenmap.jquery.min.js
+argenmap.jquery.js.orig
+bump.sh
