@@ -1,7 +1,7 @@
 /**
  * @license
  *  Argenmap 2 Plugin para JQuery 
- *  Version   : v2.4.4
+ *  Version   : v2.4.3
  *  Date      : 2013-02-16
  *  Licence   : GPL v3 : http://www.gnu.org/licenses/gpl.html  
  *  Author    : Christian Gastrell
@@ -1175,13 +1175,13 @@
 					'box-shadow': '0 0 11px rgb(5, 66, 100) inset',
 					'font-size': '10px',
 					'text-align': 'right',
-		      'height': '20px',//issue30
-		      'min-height': '15px',
-		      'line-height': '20px',
+					'height': '20px',//issue30
+					'min-height': '15px',
+					'line-height': '20px',
 					/*'min-height': '25px',
 					'line-height': '13px',*/
 					'vertical-align':'middle',
-					'padding': '5px',
+					'padding': '2px',
 					'margin':0,
 					'border':0
 				}).append(logoLink);
