@@ -1,9 +1,14 @@
 OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
-	zoomStopWidth:29,
+	//no se usa?
+	// zoomStopWidth:29,
+
+	//???? pixel step por cada zoom para el handler/knob?
 	zoomStopHeight:9,
+
+	//posizion Y del zoomBar, top de css
 	zoomBarTop:30,
 	zoomBarLeft:0,
-	zoomBarHeight:188,
+	zoomBarHeight:171,
 	zoomBar:true,
 	slider:null,
 	sliderEvents:null,
@@ -12,7 +17,10 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 	mouseDragStart:null,
 	deltaY:null,
 	zoomStart:null,
-	startTop:30,
+
+	//es el top del handler/knob al maximo nivel de zoom (top)
+	startTop:22,
+
 	//el minHeight es el minimo de alto del map.div
 	//para que se renderee el zoombar
 	minHeight:315,
@@ -67,8 +75,6 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 		//este numero, multiplicado por zoomStopHeight deberia dar el top en px del slider
 		var zoomsToEnd = this.map.getNumZoomLevels() - 1 - this.map.getZoom();
 		var slider = OpenLayers.Util.createDiv(id,centered.add(0,zoomsToEnd*this.zoomStopHeight),null,null,"absolute");
-		// console.log(zoomsToEnd * this.zoomStopHeight + centered.y);
-		// console.log(centered);
 		slider.className="handler";
 		slider.innerHTML="<span class=\"olIgnIconos handler\"></span>";
 		slider.style.cursor="move";
@@ -121,7 +127,7 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 	onButtonClick:function(evt){
 		OpenLayers.Control.PanZoom.prototype.onButtonClick.apply(this,arguments);
 		if(evt.buttonElement===this.zoombarDiv){
-			var levels=evt.buttonXY.y/this.zoomStopHeight;
+			var levels = evt.buttonXY.y / this.zoomStopHeight;
 			if(this.forceFixedZoomLevel||!this.map.fractionalZoom){
 				levels= levels << 0;
 			}
