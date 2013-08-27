@@ -645,7 +645,7 @@ top: 6px;
     background: radial-gradient(ellipse at center,  #e7e7e7 0%,#e0e0e0 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e7e7e7', endColorstr='#e0e0e0',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     width: 6px;
-    height: 188px;
+    height: 180px;
     -webkit-border-radius: 4px;
        -moz-border-radius: 4px;
             border-radius: 4px;
