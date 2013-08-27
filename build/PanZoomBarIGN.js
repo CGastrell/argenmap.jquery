@@ -8,12 +8,12 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 	//posizion Y del zoomBar, top de css
 	zoomBarTop:30,
 	zoomBarLeft:0,
-	zoomBarHeight:171,
+	zoomBarHeight:196,
 	zoomBar:true,
 	slider:null,
 	sliderEvents:null,
 	zoombarDiv:null,
-	forceFixedZoomLevel:false,
+	forceFixedZoomLevel:true,
 	mouseDragStart:null,
 	deltaY:null,
 	zoomStart:null,
@@ -59,7 +59,7 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 		this.buttons=[];
 		this._addHtmlButton("zoomin","<span class=\"olIgnIconos iconoMas\" title=\"Acercar\"><div class='mas_parte1'></div><div class='mas_parte2'></div></span>","static");
 		if(this.zoomBar && this.map.viewPortDiv.clientHeight > this.minHeight){
-			this._addZoomBar(new OpenLayers.Pixel(this.zoomBarLeft,this.zoomBarTop));
+			centered = this._addZoomBar(new OpenLayers.Pixel(this.zoomBarLeft,this.zoomBarTop));
 		}
 		this._addHtmlButton("zoomout","<span class=\"olIgnIconos iconoMenos\" title=\"Alejar\"><div class='menos'></div></span>","static");
 		return this.div;
@@ -160,8 +160,7 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 			var deltaY=this.mouseDragStart.y-evt.xy.y;
 			var offsets=OpenLayers.Util.pagePosition(this.zoombarDiv);
 			if( (evt.clientY - offsets[1] - this.zoomStopHeight / 2) >  0 && (evt.clientY - offsets[1]) < this.zoomBarHeight - 2) {
-				var newTop=parseInt(this.slider.style.top) - deltaY;
-				this.slider.style.top=newTop+"px";
+				this.slider.style.top=String(parseInt(this.slider.style.top) - deltaY)+"px";
 				this.mouseDragStart=evt.xy.clone();
 			}
 			this.deltaY=this.zoomStart.y-evt.xy.y;
