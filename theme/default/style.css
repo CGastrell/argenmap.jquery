@@ -605,7 +605,6 @@ top: 6px;
     filter: alpha(opacity=85);*/
 }
 .olControlPanZoomBarIGN:hover {
-    /*border-color: #969696;*/
     opacity: 1;
     filter: alpha(opacity=100);
 }

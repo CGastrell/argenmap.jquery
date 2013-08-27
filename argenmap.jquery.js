@@ -117,9 +117,12 @@
 	OpenLayers.Layer.ArgenmapTMS = OpenLayers.Class(OpenLayers.Layer.TMS, {
 		'cache': new CacheDeCliente()
 	});
+
 	//prueba parse, inicializacion
 	if(Parse)
 		Parse.initialize("32SZ1NyJxqGXw9Efxjb7GBNp87F8WSO5YBG5ZWuX", "xfbfqqeCaRcrgsxGfm5MNlOFmAnsTbQs8QIAosAR");
+	//prueba parse end
+	
 	OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
 	{
 		//prueba parse, tiles
