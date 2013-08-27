@@ -1,7 +1,7 @@
 /**
  * @license
  *  Argenmap 2 Plugin para JQuery 
- *  Version   : v2.4.4
+ *  Version   : v2.4.3
  *  Date      : 2013-02-16
  *  Licence   : GPL v3 : http://www.gnu.org/licenses/gpl.html  
  *  Author    : Christian Gastrell
@@ -81,7 +81,6 @@
 			{
 				return this.cacheRef[tilecode];
 			}
-
 			return false;
 		},
 		/**
@@ -98,7 +97,7 @@
 			{
 				 sale = this.cache.shift();
 				 try{
-					 delete this.cacheRef[sale];
+					delete this.cacheRef[sale];
 				 }catch(e){
 					this.cacheRef[sale] = undefined;
 				 }
@@ -118,8 +117,29 @@
 	OpenLayers.Layer.ArgenmapTMS = OpenLayers.Class(OpenLayers.Layer.TMS, {
 		'cache': new CacheDeCliente()
 	});
+
+	//prueba parse, inicializacion
+	if(Parse)
+		Parse.initialize("32SZ1NyJxqGXw9Efxjb7GBNp87F8WSO5YBG5ZWuX", "xfbfqqeCaRcrgsxGfm5MNlOFmAnsTbQs8QIAosAR");
+	//prueba parse end
+	
 	OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
 	{
+		//prueba parse, tiles
+		var tileUrl = paramString.split('/');
+		var y = parseInt(tileUrl[tileUrl.length - 1].split('.')[0]);
+		var x = parseInt(tileUrl[tileUrl.length - 2]);
+		var z = parseInt(tileUrl[tileUrl.length - 3]);
+
+		var TileRequest = Parse.Object.extend("TileRequest");
+		var tile = new TileRequest();
+		tile.set("x",x);
+		tile.set("y",y);
+		tile.set("z",z);
+		tile.set("url",paramString);
+		tile.set("referer",window.location.href);
+		tile.save();
+
 		var cached = this.cache.recuperar(paramString);
 		if(cached)
 		{
@@ -341,7 +361,8 @@
 			// agregarBaseIGN: true,
 			listarCapaDeMarcadores: false,
 			rutaAlScript: rutaRelativa,
-			mapaFijo: false //...una opcion para sacar controles de navegacion?
+			mapaFijo: false,
+			mostrarBarraDeZoom: false
 		};
 		
 		this.depuracion = opciones.depuracion || false;
@@ -377,6 +398,13 @@
 	ArgenMap.prototype = {
 		inicializar: function()
 		{
+			//prueba de parse, instancia de mapa
+			var InstanciaArgenmap = Parse.Object.extend("InstanciaArgenmap");
+			var instancia = new InstanciaArgenmap();
+			instancia.set('referer',window.location.href);
+			instancia.set('opciones',this.opciones);
+			instancia.save();
+
 			this._prepararDiv();
 			//al inicializar no necesito agregar las capas, las paso como array en las opciones
 			//este es el unico momento en el que this.mapa.layers = this.capas,
@@ -401,8 +429,8 @@
 			//opcion de mapa fijo, sin controles
 			if(!this.opciones.mapaFijo) {
 				this.mapa.addControls([
-					new OpenLayers.Control.PanZoomBarIGN({zoomBar:false}),
-					new OpenLayers.Control.LayerSwitcherIGN(),
+					new OpenLayers.Control.PanZoomBarIGN({zoomBar:this.opciones.mostrarBarraDeZoom}),
+					new OpenLayers.Control.LayerSwitcherIGN({roundedCornerColor:'rgba(28, 116, 165, 0.75)'}),
 					new OpenLayers.Control.Navigation({
 						//Esto no causa efecto
 						//creo que porque el Map
@@ -1175,13 +1203,13 @@
 					'box-shadow': '0 0 11px rgb(5, 66, 100) inset',
 					'font-size': '10px',
 					'text-align': 'right',
-		      'height': '20px',//issue30
-		      'min-height': '15px',
-		      'line-height': '20px',
+					'height': '20px',//issue30
+					'min-height': '15px',
+					'line-height': '20px',
 					/*'min-height': '25px',
 					'line-height': '13px',*/
 					'vertical-align':'middle',
-					'padding': '5px',
+					'padding': '2px',
 					'margin':0,
 					'border':0
 				}).append(logoLink);

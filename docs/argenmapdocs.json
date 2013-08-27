@@ -56,9 +56,27 @@
 					"valorPorDefecto": "false",
 					"requerido": false,
 					"descripcion": "Indica si las capas que contienen los marcadores (si los hubiere) serán visibles en la lista de capas, permitiendo prender y apagar la capa desde el control del mapa."
+				},
+				{
+					"nombre": "mapaFijo",
+					"tipo": "boolean",
+					"valorPorDefecto": "false",
+					"requerido": false,
+					"descripcion": "Si se provee esta opción en <code>true</code> se eliminan los controles de navegación y de zoom, haciendo que el mapa no pueda moverse salvo que se haga por código."
+				},
+				{
+					"nombre": "mostrarBarraDeZoom",
+					"tipo": "boolean",
+					"valorPorDefecto": "false",
+					"requerido": false,
+					"descripcion": "Configurando esta opción en <code>true</code> puede visualizarse una barra para controlar el nivel de zoom."
 				}
 			],
 			"alertas": [
+				{
+					"tipo": "info",
+					"texto": "Aún configurando <code>mostrarBarraDeZoom</code> en <code>true</code>, si el alto del mapa no es suficiente, la barra de zoom se ocultará automáticamente."
+				},
 				{
 					"tipo": "info",
 					"texto": "IMPORTANTE: Las capas satelitales y base están preparadas para mostrarse en <code>EPSG:3857</code>, si necesitás instanciar un mapa en <code>EPSG:4326</code> para luego importar capas WMS que necesiten esa proyección, deberás hacerlo tipo <code>blanco</code> y luego agregar las capas WMS que necesites."
