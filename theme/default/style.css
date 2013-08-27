@@ -329,7 +329,7 @@ div.olControlSaveFeaturesItemInactive {
     padding-right: 10px;
     /*background-color: darkblue;
         for the facha, senior*/
-        background:rgba(0, 60, 136, 0.5);
+        background:rgba(28, 116, 165, 0.75);
 }
 
 .olControlLayerSwitcher .layersDiv .baseLbl,
@@ -590,7 +590,7 @@ top: 6px;
 .olControlPanZoomBarIGN {
     position: absolute;
     z-index: 1000;
-    background-color: rgba(0, 60, 136, 0.5);/*white;*/
+    background-color: rgba(28, 116, 165, 0.75);/*white;*/
     border: 1px solid #bbb;
     -webkit-border-radius: 4px;
        -moz-border-radius: 4px;
