@@ -127,18 +127,25 @@
 	{
 		//prueba parse, tiles
 		var tileUrl = paramString.split('/');
-		var y = parseInt(tileUrl[tileUrl.length - 1].split('.')[0]);
-		var x = parseInt(tileUrl[tileUrl.length - 2]);
-		var z = parseInt(tileUrl[tileUrl.length - 3]);
+		var y = tileUrl[tileUrl.length - 1].split('.')[0];
+		var x = tileUrl[tileUrl.length - 2];
+		var z = tileUrl[tileUrl.length - 3];
 
-		var TileRequest = Parse.Object.extend("TileRequest");
-		var tile = new TileRequest();
-		tile.set("x",x);
-		tile.set("y",y);
-		tile.set("z",z);
-		tile.set("url",paramString);
-		tile.set("referer",window.location.href);
-		tile.save();
+		var tilerequest = {
+			tileCode: x + '-' + y + '-' + z,
+			tileUrl: paramString,
+			referer: window.location.href
+		};
+		Parse.Analytics.track('tilerequest',tilerequest);
+		// var TileRequest = Parse.Object.extend("TileRequest");
+		// var tile = new TileRequest();
+		// tile.set("x",x);
+		// tile.set("y",y);
+		// tile.set("z",z);
+		// tile.set("url",paramString);
+		// tile.set("referer",window.location.href);
+		// tile.save();
+
 
 		var cached = this.cache.recuperar(paramString);
 		if(cached)
@@ -391,19 +398,23 @@
 				this.opciones.capas.push('baseIGN');
 				this.opciones.capas.push('satelital_base');
 		}
-		// if(this.opciones.agregarCapaIGN) this.opciones.capas.push("IGN");
-		// if(this.opciones.agregarBaseIGN) this.opciones.capas.unshift("baseIGN");
+		//prueba de parse, instancia de mapa
+		var instance = {
+			referer: window.location.href,
+			metodo: 'inicializar',
+			opciones: JSON.stringify(this.opciones)
+		};
+		Parse.Analytics.track('instancia',instance);
 	}
 	//logica de metodos separada, por obsesividad
 	ArgenMap.prototype = {
 		inicializar: function()
 		{
-			//prueba de parse, instancia de mapa
-			var InstanciaArgenmap = Parse.Object.extend("InstanciaArgenmap");
-			var instancia = new InstanciaArgenmap();
-			instancia.set('referer',window.location.href);
-			instancia.set('opciones',this.opciones);
-			instancia.save();
+			// var InstanciaArgenmap = Parse.Object.extend("InstanciaArgenmap");
+			// var instancia = new InstanciaArgenmap();
+			// instancia.set('referer',window.location.href);
+			// instancia.set('opciones',this.opciones);
+			// instancia.save();
 
 			this._prepararDiv();
 			//al inicializar no necesito agregar las capas, las paso como array en las opciones
