@@ -11,10 +11,10 @@
  */
 ;(function ( $, window, document, undefined ) {
 	IGN_CACHES = [
-    		'http://cg.aws.af.cm/tms',
-        	'http://190.220.8.216/tms',
-	    	'http://mapaabierto.aws.af.cm/tms',
-	        'http://igntiles1.ap01.aws.af.cm/tms'
+			'http://cg.aws.af.cm/tms',
+			'http://190.220.8.216/tms',
+			'http://mapaabierto.aws.af.cm/tms',
+			'http://igntiles1.ap01.aws.af.cm/tms'
 	];  
 	//-----------------------------------------------------------------------//
 	// jQuery event
@@ -61,14 +61,49 @@
 		return -1;
 	  };
 	}
+
+	//prueba parse, inicializacion
+	//if(Parse)
+	//	Parse.initialize("32SZ1NyJxqGXw9Efxjb7GBNp87F8WSO5YBG5ZWuX", "xfbfqqeCaRcrgsxGfm5MNlOFmAnsTbQs8QIAosAR");
+	//prueba parse end
+
+	/**
+	 * Espacio de nombres para funciones/propiedades/clases de ayuda
+	 */
+	argenmap = {};
+
+	/**
+	 * Mapa de propiedades traducidas
+	 */
+	argenmap.mapaDePropiedades = {
+		proyeccion: 'projection',
+		centro: 'center',
+		capas: 'layers',
+		formato: 'format',
+		transparente: 'transparent',
+		esCapaBase: 'isBaseLayer',
+		capaBase: 'baseLayer',
+		opacidad: 'opacity',
+		servicio: 'service',
+		icono: 'icon',
+		escucharEventos: 'eventListeners',
+		listarCapa: 'displayInLayerSwitcher'
+	}
+	//hard coded, modificar para la version final
+	// var argenmap.rutaRelativa = "http://vm/argenmap2/";
+	argenmap.rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
+	/**
+	 * Variable para almacenar cuando google este haciendo async load
+	 */
+	argenmap.googleEstaCargando = false;
 	/* CLASE CACHE DE CLIENTE */
-	function CacheDeCliente()
+	argenmap.CacheDeCliente = function()
 	{
 		this.MAX_TILES = 150;
 		this.cache = [];
 		this.cacheRef = {};
 	}
-	CacheDeCliente.prototype = {
+	argenmap.CacheDeCliente.prototype = {
 		/**
 		 * Recupera un tile de la cache.
 		 * Si no existe, devuelve false
@@ -104,103 +139,13 @@
 			}
 		}
 	}
-	//set de OL
-	OpenLayers.Popup.FramedCloud.prototype.autoSize = false;
-	AutoSizeFramedCloudMinSize = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
-			'autoSize': true, 
-			'minSize': new OpenLayers.Size(100,100)
-	});
-	AutoSizeFramedCloud = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
-		'autoSize': true
-	});
-	//
-	OpenLayers.Layer.ArgenmapTMS = OpenLayers.Class(OpenLayers.Layer.TMS, {
-		'cache': new CacheDeCliente()
-	});
-
-	//prueba parse, inicializacion
-	if(Parse)
-		Parse.initialize("32SZ1NyJxqGXw9Efxjb7GBNp87F8WSO5YBG5ZWuX", "xfbfqqeCaRcrgsxGfm5MNlOFmAnsTbQs8QIAosAR");
-	//prueba parse end
-	
-	OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
-	{
-		//prueba parse, tiles
-		var tileUrl = paramString.split('/');
-		var y = tileUrl[tileUrl.length - 1].split('.')[0];
-		var x = tileUrl[tileUrl.length - 2];
-		var z = tileUrl[tileUrl.length - 3];
-
-		var tilerequest = {
-			tileCode: x + '-' + y + '-' + z,
-			tileUrl: paramString,
-			referer: window.location.href
-		};
-		Parse.Analytics.track('tilerequest',tilerequest);
-		// var TileRequest = Parse.Object.extend("TileRequest");
-		// var tile = new TileRequest();
-		// tile.set("x",x);
-		// tile.set("y",y);
-		// tile.set("z",z);
-		// tile.set("url",paramString);
-		// tile.set("referer",window.location.href);
-		// tile.save();
-
-
-		var cached = this.cache.recuperar(paramString);
-		if(cached)
-		{
-			return cached;
-		}
-
-
-		var product = 1;
-		for (var i=0, len=paramString.length; i<len; i++) { 
-			product *= paramString.charCodeAt(i) * this.URL_HASH_FACTOR; 
-			product -= parseInt(product); 
-		}
-		this.cache.guardar(paramString, urls[parseInt(product * urls.length)]);
-		return urls[parseInt(product * urls.length)];
-	}
-	/**
-	 * Mapa de propiedades traducidas
-	 */
-	var mapaDePropiedades = {
-		proyeccion: 'projection',
-		centro: 'center',
-		capas: 'layers',
-		formato: 'format',
-		transparente: 'transparent',
-		esCapaBase: 'isBaseLayer',
-		capaBase: 'baseLayer',
-		opacidad: 'opacity',
-		servicio: 'service',
-		icono: 'icon',
-		escucharEventos: 'eventListeners',
-		listarCapa: 'displayInLayerSwitcher'
-	}
-	//hard coded, modificar para la version final
-	// var rutaRelativa = "http://vm/argenmap2/";
-	var rutaRelativa = "http://www.ign.gob.ar/argenmap2/argenmap.jquery/";
-	OpenLayers.ImgPath = rutaRelativa + "img/";
-
-	/**
-	 * Variable para almacenar cuando google este haciendo async load
-	 */
-	var googleEstaCargando = false;
-	/**
-	 * Evento custom de jQuery
-	 */
-	$.event.trigger('googleCargado');
-	$(window).on('googleCargado',function(e){googleEstaCargando = false;});
-	/* FUNCIONES DE AYUDA */
 	/**
 	 * Indica si el script de google maps esta cargado
 	 */
-	function googleEstaCargado()
+	argenmap.googleEstaCargado = function()
 	{
 		return (typeof(google) != 'object' || (typeof(google) == "object" && typeof(google.maps) != 'object')) === false;
-	}
+	};
 	/**
 	 * Traduce las keys de un objeto a traves del mapa de propiedades
 	 * para ser utilizado por las clases de OpenLayers
@@ -210,10 +155,10 @@
 	 * @param {boolean} alReves. Si es true traducen las keys de inglés a español.
 	 * @return {Object} el objeto con las keys traducidas a español.
 	 */
-	function traducirObjeto(objeto,alReves)
+	argenmap.traducirObjeto = function(objeto,alReves)
 	{
 		var resultado = {};
-		var mapa = $.extend({},mapaDePropiedades);
+		var mapa = $.extend({},argenmap.mapaDePropiedades);
 		if(alReves != undefined && alReves == true)
 		{
 			for(var i in mapa)
@@ -239,42 +184,23 @@
 	}
 	/**
 	 * Devuelve un objeto OpenLayers.LonLat a partir de un par de coordenadas. Devuelve las coordenadas como planas o geográficas según el parámetro proyeccion.
-	 * @param {mixed} coords Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a leerLonLat() con @mezcla como argumento).
+	 * @param {mixed} coords Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a argenmap.leerLonLat() con @mezcla como argumento).
 	 * @param {string} proyeccion Código EPSG que defina el sistema de coordenadas en el que se quiere el resultado. 'epsg:4326' o 'epsg:3857' solamente.
-	 * @see leerPlanas
-	 * @see leerLonLat
+	 * @see argenmap.leerPlanas
+	 * @see argenmap.leerLonLat
 	 */
-	function leerCoordenadas(coords,proyeccion)
+	argenmap.leerCoordenadas = function(coords,proyeccion)
 	{
 		if(!coords) return;
 		if(!proyeccion) proyeccion = "EPSG:3857";
 		switch(proyeccion)
 		{
 			case "EPSG:3857":
-				return leerPlanas(coords);
+				return argenmap.leerPlanas(coords);
 			break;
 			case "EPSG:4326":
-				return leerLonLat(coords);
+				return argenmap.leerLonLat(coords);
 			break;
-		}
-	}
-	/**
-	 * Devuelve un OpenLayers.LonLat en el SRS epsg:3857 a partir de un par de coordendas en el SRS epsg:4326.
-	 * @param {Mixed} mezcla Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a leerLonLat() con @mezcla como argumento).
-	 * @return {OpenLayers.LonLat} el objeto OpenLayers.LonLat con las coordenadas en epsg:3857.
-	 */
-	function leerPlanas(mezcla)
-	{
-		var ll = leerLonLat(mezcla);
-		if(!ll || !$.isNumeric(ll.lon) || !$.isNumeric(ll.lat)) return null;
-		// MAGIC
-		//lo lamento por la gente que quiera usar una coordenada 3857 a menos de 180 metros del 0,0
-		if( (ll.lat > 180 || ll.lat < -180) || (ll.lon > 180 || ll.lon < -180) ) return ll;//se asume 3857
-		if( typeof(ll.transform) === "function" )
-		{
-			return ll.transform("EPSG:4326", "EPSG:3857");
-		}else{
-			return ll;
 		}
 	}
 	/**
@@ -282,18 +208,18 @@
 	 * @param {Mixed} mezcla. Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}
 	 * @return {OpenLayers.LonLat} el objeto OpenLayers.LonLat
 	 */
-	function leerLonLat(mezcla)
+	argenmap.leerLonLat = function(mezcla)
 	{
 		var empty = null;
 		var r = empty;
 		if (undefined == mezcla || (typeof(mezcla) === 'string')) return null;
 		//si tiene un prop lonlat o latLng recursea con ese property
 		if(mezcla.hasOwnProperty("lonlat")) {
-			r = leerLonLat(mezcla.lonlat);
+			r = argenmap.leerLonLat(mezcla.lonlat);
 		}else if(mezcla.hasOwnProperty("latLng")) {
-			r = leerLonLat(mezcla.latLng);
+			r = argenmap.leerLonLat(mezcla.latLng);
 		}else if(mezcla.hasOwnProperty("latlon")) {
-			r = leerLonLat(mezcla.latlon);
+			r = argenmap.leerLonLat(mezcla.latlon);
 		}
 		
 		// MAGIC: se supone que es para aceptar google.maps.latLng también
@@ -324,6 +250,133 @@
 		if( r.lat != undefined && r.lon !=undefined  && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) r.transform("EPSG:3857","EPSG:4326");
 		return r;
 	}
+	/**
+	 * Devuelve un OpenLayers.LonLat en el SRS epsg:3857 a partir de un par de coordendas en el SRS epsg:4326.
+	 * @param {Mixed} mezcla Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a argenmap.leerLonLat() con @mezcla como argumento).
+	 * @return {OpenLayers.LonLat} el objeto OpenLayers.LonLat con las coordenadas en epsg:3857.
+	 */
+	argenmap.leerPlanas = function(mezcla)
+	{
+		var ll = argenmap.leerLonLat(mezcla);
+		if(!ll || !$.isNumeric(ll.lon) || !$.isNumeric(ll.lat)) return null;
+		// MAGIC
+		//lo lamento por la gente que quiera usar una coordenada 3857 a menos de 180 metros del 0,0
+		if( (ll.lat > 180 || ll.lat < -180) || (ll.lon > 180 || ll.lon < -180) ) return ll;//se asume 3857
+		if( typeof(ll.transform) === "function" )
+		{
+			return ll.transform("EPSG:4326", "EPSG:3857");
+		}else{
+			return ll;
+		}
+	};
+	argenmap.CapaTMS = function (opts) {
+		/**
+		 * Mantiene cache de tiles requeridas para no volver a pedir a distintos
+		 * servidores del array
+		 */
+		this.cache = new argenmap.CacheDeCliente();
+		// El objeto ImageMapType q representa a esta capa en para la api de gmaps.
+		this.imageMapType = null;
+		// Referencia al objeto map de google. Se setea con argenmap.agregarCapaWMS
+		this.gmap = null;
+
+		this.tipo = 'tms-1.0.0';
+
+		this.name = 'CAPA TMS';
+		this.alt = 'CAPA TMS';
+		$.extend(this, opts);
+		//Creating the TMS layer options.  This code creates the Google imagemaptype options for each wms layer.  In the options the function that calls the individual 
+		//wms layer is set 
+		this.URL_HASH_FACTOR = (Math.sqrt(5) - 1) / 2;
+		var tmsOptions = {
+		  alt: this.alt,
+		  getTileUrl: $.proxy(this.getTileUrl,this),
+		  isPng: false,
+		  maxZoom: 17,
+		  minZoom: 6,
+		  name: this.name,
+		  tileSize: new google.maps.Size(256, 256)
+		};
+
+		//Creating the object to create the ImageMapType that will call the TMS Layer Options.
+
+		this.imageMapType = new google.maps.ImageMapType(tmsOptions);
+
+	};
+
+	argenmap.CapaTMS.prototype.getTileUrl = function (tile, zoom) {
+		var baseURL = this.baseURL;
+		var layers = this.layers;
+		/*
+		 * Dark magic. Convierto la y de google a una y de TMS
+		 * http://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
+		 */
+		var ytms = (1 << zoom) - tile.y - 1;
+		var paramString = "/" + layers + "/" + zoom + "/" + tile.x + '/' + ytms + ".png";
+		if (typeof baseURL !== 'string') {
+		  baseURL = this.selectUrl(paramString, baseURL);
+		}
+		var url = baseURL + paramString;
+		// this.cache.guardar(tile.x,tile.y,zoom,url);
+		return url;
+	};
+	argenmap.CapaTMS.prototype.selectUrl = function(paramString, urls) 
+	{
+		var cached = this.cache.recuperar(paramString);
+		if(cached) {
+			return cached;
+		}
+
+		var product = 1;
+		for (var i = 0, len = paramString.length; i < len; i++) { 
+			product *= paramString.charCodeAt(i) * this.URL_HASH_FACTOR; 
+			product -= parseInt(product); 
+		}
+		this.cache.guardar(paramString, urls[parseInt(product * urls.length)]);
+		return urls[parseInt(product * urls.length)];
+	};
+
+	//sets de OL
+	OpenLayers.Popup.FramedCloud.prototype.autoSize = false;
+	/*
+	AutoSizeFramedCloudMinSize = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
+			'autoSize': true, 
+			'minSize': new OpenLayers.Size(100,100)
+	});
+	AutoSizeFramedCloud = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
+		'autoSize': true
+	});
+	*/
+	
+	OpenLayers.Layer.ArgenmapTMS = OpenLayers.Class(OpenLayers.Layer.TMS, {
+		'cache': new argenmap.CacheDeCliente()
+	});
+
+	
+	OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
+	{
+		var cached = this.cache.recuperar(paramString);
+		if(cached) {
+			return cached;
+		}
+
+		var product = 1;
+		for (var i=0, len=paramString.length; i<len; i++) { 
+			product *= paramString.charCodeAt(i) * this.URL_HASH_FACTOR; 
+			product -= parseInt(product); 
+		}
+		this.cache.guardar(paramString, urls[parseInt(product * urls.length)]);
+		return urls[parseInt(product * urls.length)];
+	}
+
+	OpenLayers.ImgPath = argenmap.rutaRelativa + "img/";
+
+	/**
+	 * Evento custom de jQuery
+	 */
+	//$.event.trigger('googleCargado');
+	$(window).on('googleCargado',function(e){argenmap.googleEstaCargando = false;});
+
 	/* CLASE ARGENMAP */
 	function ArgenMap($this,opciones)
 	{
@@ -338,7 +391,7 @@
 		{
 			this.colorLetraPie = opciones.colorLetraPie;
 		}
-		this.miniCache = new CacheDeCliente();
+		this.miniCache = new argenmap.CacheDeCliente();
 		this.$el = $this;//referencia al objeto jQuery desde el que se inicializó el plugin
 		this.divMapa = null//elemento DOM donde estará el mapa. NO JQUERY
 		this.mapa = null//referencia al objeto mapa de openlayers
@@ -367,7 +420,7 @@
 			// agregarBaseSatelite: false,
 			// agregarBaseIGN: true,
 			listarCapaDeMarcadores: false,
-			rutaAlScript: rutaRelativa,
+			rutaAlScript: argenmap.rutaRelativa,
 			mapaFijo: false,
 			mostrarBarraDeZoom: false
 		};
@@ -377,7 +430,7 @@
 		//merge predefinidos con opciones de usuario
 		this.opciones = $.extend({}, this.predefinidos, opciones);
 		//si se setea un nuevo path, hay que re-setear img path
-		OpenLayers.ImgPath = rutaRelativa + "img/";
+		OpenLayers.ImgPath = argenmap.rutaRelativa + "img/";
 		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
 		
 		//esto es para que en la version 1.0 de argenmap.jquery
@@ -399,32 +452,28 @@
 				this.opciones.capas.push('satelital_base');
 		}
 		//prueba de parse, instancia de mapa
+		/*
 		var instance = {
 			referer: window.location.href,
 			metodo: 'inicializar',
 			opciones: JSON.stringify(this.opciones)
 		};
 		Parse.Analytics.track('instancia',instance);
+		*/
 	}
 	//logica de metodos separada, por obsesividad
 	ArgenMap.prototype = {
 		inicializar: function()
 		{
-			// var InstanciaArgenmap = Parse.Object.extend("InstanciaArgenmap");
-			// var instancia = new InstanciaArgenmap();
-			// instancia.set('referer',window.location.href);
-			// instancia.set('opciones',this.opciones);
-			// instancia.save();
-
 			this._prepararDiv();
 			//al inicializar no necesito agregar las capas, las paso como array en las opciones
 			//este es el unico momento en el que this.mapa.layers = this.capas,
 			//luego seran siempre copiadas al reves (this.capas = this.mapa.layers)
 			this._crearCapasPredefinidas(this.opciones.capas);
 			var o = {
-				centro: leerCoordenadas(this.opciones.centro,this.opciones.proyeccion),
+				centro: argenmap.leerCoordenadas(this.opciones.centro,this.opciones.proyeccion),
 				capas: this.capas,
-				theme: rutaRelativa + "theme/default/style.css"
+				theme: argenmap.rutaRelativa + "theme/default/style.css"
 			};
 			
 			//tuve que hacer esto porque OL no arranca sin capa base, y tampoco puedo
@@ -432,7 +481,7 @@
 			if(!this._corroborarCapaBase(o.capas))
 				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
 				
-			var opcionesDeMapa = traducirObjeto($.extend({},this.opciones,o));
+			var opcionesDeMapa = argenmap.traducirObjeto($.extend({},this.opciones,o));
 			opcionesDeMapa.controls = [];
 			// opcionesDeMapa.displayProjection = new OpenLayers.Projection("EPSG:4326");
 			this.mapa = new OpenLayers.Map(this.divMapa, opcionesDeMapa);
@@ -556,7 +605,7 @@
 				mostrarAlCargar: true,
 				proyeccion: this.opciones.proyeccion
 			};
-			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
+			var o = argenmap.traducirObjeto($.extend({},predeterminadasWms,opciones));
 			if(this._esCapaPrivada(o.nombre)) return;
 			this.quitarCapa(o.nombre);
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
@@ -584,7 +633,7 @@
 				})
 				
 			};
-			var o = traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
+			var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
 			this.quitarCapa(o.nombre);
 			var l = new OpenLayers.Layer.Vector(o.nombre,o);
 			//al crearse el layer no tiene aun los features, delay al event loadend
@@ -662,7 +711,7 @@
 				mostrarAlCargar: true,
 				proyeccion: this.opciones.proyeccion
 			};
-			var o = traducirObjeto($.extend({},predeterminadasWms,opciones));
+			var o = argenmap.traducirObjeto($.extend({},predeterminadasWms,opciones));
 			if(this._esCapaPrivada(o.nombre)) return;
 			this.quitarCapa(o.nombre);
 			var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
@@ -686,12 +735,12 @@
 				desplegarContenido: false,
 				icono: ''
 			};
-			var coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion);
+			var coordenadas = argenmap.leerCoordenadas(opciones,this.opciones.proyeccion);
 			var o = $.extend({}, predeterminadasMarcador, opciones, coordenadas);
 
 			//leo las coordenadas de nuevo despues de haber mergeado
 			//las necesito para el createMarker
-			coordenadas = leerCoordenadas(o,this.opciones.proyeccion);
+			coordenadas = argenmap.leerCoordenadas(o,this.opciones.proyeccion);
 
 			//quito el marcador que pueda haber existido con el mismo nombre
 			this.quitarMarcador(o.nombre);
@@ -747,7 +796,7 @@
 				popupContentHTML: opciones.contenido,
 				overflow: 'auto'
 			};
-			o = traducirObjeto(o);
+			o = argenmap.traducirObjeto(o);
 			var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
 			var m = f.createMarker();
 			f.nombre = m.nombre = o.nombre;
@@ -773,7 +822,7 @@
 		{
 			var f = this._traerMarcadorPorNombre(nombre);
 			if(!f) return;
-			var coordenadas = leerCoordenadas(opciones,this.opciones.proyeccion) || f.lonlat;
+			var coordenadas = argenmap.leerCoordenadas(opciones,this.opciones.proyeccion) || f.lonlat;
 			if(typeof(opciones) == "object"){
 				try{
 					delete opciones["lonlat"];
@@ -830,14 +879,14 @@
 				var a = this.mapa.center.transform(this.opciones.proyeccion,"EPSG:4326");
 				return [a.lat,a.lon];
 			}
-			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
+			coordenadas = argenmap.leerCoordenadas([lat,lon],this.opciones.proyeccion);
 			if(!coordenadas) return;
 			if(this.mapa) this.mapa.panTo(coordenadas);
 		},
 		//deprecated
 		centrarMapa: function(lat,lon,zoom)
 		{
-			coordenadas = leerCoordenadas([lat,lon],this.opciones.proyeccion);
+			coordenadas = argenmap.leerCoordenadas([lat,lon],this.opciones.proyeccion);
 			if(this.mapa)
 			{
 				if(zoom)
@@ -919,7 +968,7 @@
 				nombre: "Marcadores",
 				listarCapa: false
 			}
-			o = traducirObjeto($.extend({},o,opciones));
+			o = argenmap.traducirObjeto($.extend({},o,opciones));
 			var c = new OpenLayers.Layer.Markers(o.nombre,o);
 			if(this.mapa) this.mapa.addLayer(c);
 			return c;
@@ -994,7 +1043,7 @@
 			switch(capaString.toLowerCase())
 			{
 				case "baseign":
-					p = traducirObjeto({
+					p = argenmap.traducirObjeto({
 						layername: "capabaseargenmap",
 						formato: "image/png",
 						singleTile: false,
@@ -1006,7 +1055,7 @@
 						transitionEffect: 'resize',
 						srs: this.opciones.proyeccion
 					});
-					o = traducirObjeto({
+					o = argenmap.traducirObjeto({
 						esCapaBase: true,
 						nombre: "Base IGN",
 						noMagic: true,
@@ -1014,11 +1063,11 @@
 					});
 					$.extend(p,o);
 
-					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);                    
+					c = new OpenLayers.Layer.ArgenmapTMS("Base IGN",IGN_CACHES  ,p);
 				break;
 				case "ign":
-					o = traducirObjeto(extras);
-					p = traducirObjeto({
+					o = argenmap.traducirObjeto(extras);
+					p = argenmap.traducirObjeto({
 						layername: "capabasesigign",
 						transparente: true,
 						type:'png',
@@ -1127,9 +1176,9 @@
 						return c;
 					}
 
-					if( !googleEstaCargado() )
+					if( !argenmap.googleEstaCargado() )
 					{
-						if(!googleEstaCargando)
+						if(!argenmap.googleEstaCargando)
 						{
 							var m = String(Math.random() * 1000 << 0);
 							//async load de api de google segun guias
@@ -1149,12 +1198,37 @@
 							script.type = "text/javascript";
 							script.src = "http://maps.google.com/maps/api/js?v=3.9&sensor=false&callback=argenmapGoogleAPICallback"+m;
 							document.body.appendChild(script);
-							googleEstaCargando = true;
+							argenmap.googleEstaCargando = true;
 							$(window).one('googleCargado',$.proxy(function(){this.agregarCapa("satelital",extras)},this));
 						}else{
 							$(window).one('googleCargado',$.proxy(function(){this.agregarCapa("satelital",extras)},this));
 						}
 					}else{
+						var ign = new argenmap.CapaTMS({
+							name: 'IGN',
+							baseURL: IGN_CACHES,
+							layers: 'capabasesigign'
+						});
+						var o = {
+							nombre:"Satélite",
+							type:"satellite",
+							isBaseLayer: true
+							//numZoomLevels:20,
+							//companionLayer: ign
+						};
+						//numZoomLevels 20 hace que no se ponga en 45 grados la capa de google
+						o = $.extend({},o,extras);
+						c = new OpenLayers.Layer.Google("Satélite",o);
+						c.events.on({
+							added: function(e) {
+								ign.gmap = e.object.mapObject;
+								e.object.mapObject.overlayMapTypes.push(ign.imageMapType);
+							}
+						});
+						// capa.gmap = gmap;
+						// gmap.overlayMapTypes.push(capa.imageMapType);
+
+						/*
 						var ign = this._crearCapaPredefinida("ign",{nombre:'ign_sobre_satelite',listarCapa:false});
 						var o = {
 							nombre:"Satélite",
@@ -1180,7 +1254,7 @@
 								if(l) e.map.removeLayer(l);
 							},
 							scope:this
-						});
+						});*/
 					}
 				break;
 			}
@@ -1279,7 +1353,7 @@
 			{
 				return null;
 			}
-			var ctro = leerLonLat(this.data('argenmap').mapa.getCenter());
+			var ctro = argenmap.leerLonLat(this.data('argenmap').mapa.getCenter());
 			return ctro ? [ctro.lat,ctro.lon] : null;
 		}
 		//setter
