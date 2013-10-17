@@ -30,7 +30,8 @@
 						if($w != $this.width() || $h != $this.height()) {
 							$w = $this.width();
 							$h = $this.height();
-							jQuery.event.handle.call(self, {type:'resized'});
+							$.event.dispatch.call(self, {type:'resized'});
+							// $.event.handle.call(self, {type:'resized'});
 						}
 				},20);
 		},
