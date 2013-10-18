@@ -1,7 +1,7 @@
 /**
  * @license
  *  Argenmap 2 Plugin para JQuery 
- *  Version   : v2.4.3
+ *  Version   : v2.4.6
  *  Date      : 2013-02-16
  *  Licence   : GPL v3 : http://www.gnu.org/licenses/gpl.html  
  *  Author    : Christian Gastrell
@@ -480,7 +480,7 @@
 			//tuve que hacer esto porque OL no arranca sin capa base, y tampoco puedo
 			//forzar a tener una capa base. Que diria Lugosi si no se puede tener un mapa sin base?
 			if(!this._corroborarCapaBase(o.capas))
-				o.capas.push(new OpenLayers.Layer.Vector("sin base",{isBaseLayer:true}));
+				o.capas.push(new OpenLayers.Layer.Vector("capa vacía",{nombre:'capa vacía',isBaseLayer:true}));
 				
 			var opcionesDeMapa = argenmap.traducirObjeto($.extend({},this.opciones,o));
 			opcionesDeMapa.controls = [];
@@ -867,9 +867,13 @@
 		},
 		quitarCapa: function(nombre)
 		{
-			if(this.privados.indexOf(nombre) > -1) return;
+			if(this.privados.indexOf(nombre) > -1) {
+				return;
+			}
 			var c = this._traerCapaPorNombre(nombre);
-			if(!c) return;
+			if(!c) {
+				return;
+			}
 			//el mapa tiene eventos addlayer y removelayer que se encargan del this.capas
 			this.mapa.removeLayer(c);
 		},
@@ -884,20 +888,6 @@
 			if(!coordenadas) return;
 			if(this.mapa) this.mapa.panTo(coordenadas);
 		},
-		//deprecated
-		centrarMapa: function(lat,lon,zoom)
-		{
-			coordenadas = argenmap.leerCoordenadas([lat,lon],this.opciones.proyeccion);
-			if(this.mapa)
-			{
-				if(zoom)
-				{
-					this.mapa.setCenter(coordenadas,zoom);
-				}else{
-					this.mapa.panTo(coordenadas);
-				}
-			}
-		},
 		zoom: function(zoom)
 		{
 			if(arguments.length === 0) return this.mapa.zoom;
@@ -905,11 +895,22 @@
 		},
 		capaBase: function(capa)
 		{
-			if(arguments.length === 0) return this.mapa.baseLayer.nombre;
+			if(arguments.length === 0) {
+				return this.mapa.baseLayer.nombre;
+			}
 			var c = this._traerCapaPorNombre(capa);
 			if(c) this.mapa.setBaseLayer(c);
 		},
 		/* INTERNAS / PRIVADAS */
+		_listarCapas: function()
+		{
+			var r = [];
+			for(var ii = 0; ii < this.capas.length; ii++)
+			{
+				r.push(this.capas[ii].nombre);
+			}
+			return r;
+		},
 		_esCapaPrivada: function(nombre)
 		{
 			return this.privados.indexOf(nombre) > -1;
@@ -928,9 +929,9 @@
 				break;
 				default:
 					a = new OpenLayers.Icon(
-						OpenLayers.ImgPath + "PinDown1.png",
-						new OpenLayers.Size(32,39),
-						new OpenLayers.Pixel(-7,-35)
+						OpenLayers.ImgPath + "argenmapIco.png",
+						new OpenLayers.Size(32,32),
+						new OpenLayers.Pixel(-16,-32)
 					);
 			}
 			return a;
