@@ -346,31 +346,30 @@ div.olControlSaveFeaturesItemInactive {
 
 .olControlLayerSwitcher .maximizeDiv,
 .olControlLayerSwitcher .minimizeDiv {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 23px;
     top: 5px;
     right: 0;
     cursor: pointer;
     border:none;
     padding:0;
-border-top-left-radius: 10px;
+    color: rgba(255,255,255,0.8);
+border-top-left-radius: 8px;
 border-top-right-radius: 0px;
 border-bottom-right-radius: 0px;
-border-bottom-left-radius: 10px;
-font-size: 18px;
+border-bottom-left-radius: 8px;
+border-width: 1px 0px 1px 1px;
+border-color: #bbb;
+border-style: solid;
+font-size: 24px;
 font-weight: normal;
-text-indent: 4px;
-line-height: 18px;
-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    text-indent: 6px;
+line-height: 22px;
+box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
 .olControlLayerSwitcher .minimizeDiv {
     border-radius: 0px;
-    top: 4px;
-    border:1px solid rgba(255,255,255,0.25);
-    background-color: transparent;
-line-height: 15px;
-text-indent: 6px;
 }
 
 .olBingAttribution {
