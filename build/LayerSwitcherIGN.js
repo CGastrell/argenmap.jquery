@@ -506,7 +506,7 @@ OpenLayers.Control.LayerSwitcherIGN =
         // maximize button div
         // var img = OpenLayers.Util.getImageLocation('layer-switcher-maximize.png');
         this.maximizeDiv = document.createElement("div");
-        this.maximizeDiv.innerHTML = "+";
+        this.maximizeDiv.innerHTML = "&laquo;";
         this.maximizeDiv.style.position = "absolute";
         this.maximizeDiv.style.background = this.roundedCornerColor;
         OpenLayers.Element.addClass(this.maximizeDiv, "maximizeDiv olButton");
@@ -517,7 +517,7 @@ OpenLayers.Control.LayerSwitcherIGN =
         // minimize button div
         // var img = OpenLayers.Util.getImageLocation('layer-switcher-minimize.png');
         this.minimizeDiv = document.createElement("div");
-        this.minimizeDiv.innerHTML = "-";
+        this.minimizeDiv.innerHTML = "&raquo;";
         this.minimizeDiv.style.position = "absolute";
         // this.minimizeDiv.style.background = this.roundedCornerColor;
         OpenLayers.Element.addClass(this.minimizeDiv, "minimizeDiv olButton");
