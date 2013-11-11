@@ -1434,7 +1434,7 @@
 			var $this = $(this);
 			var a = $this.data('argenmap');
 			if(!a) return;
-			a.agregarCapaWMS(opciones);
+			a.agregarCapaBaseWMS(opciones);
 		});
 	}
 	$.fn.agregarCapaBing = function(opciones)
