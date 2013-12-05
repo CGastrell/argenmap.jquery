@@ -922,14 +922,154 @@
 			{
 				case "hueco":
 					a = new OpenLayers.Icon(
-						OpenLayers.ImgPath + "marcadorHueco.png",
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
 						new OpenLayers.Size(29,29),
 						new OpenLayers.Pixel(-15,-15)
 					);
 				break;
+				case "aeropuerto":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "cajero":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "peligro":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "terremoto":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "estacionDeServicio":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "inundacion":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "glaciar":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "hospital":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "pico":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "policia":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "correo":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "corteDeLuz":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "restaurante":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "delito":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "tormenta":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "manifestacion":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "tornado":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "tren":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "volcan":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
+				case "cascada":
+					a = new OpenLayers.Icon(
+						OpenLayers.ImgPath + "iconos/"+icono+".png",
+						new OpenLayers.Size(32,37),
+						new OpenLayers.Pixel(-16,-37)
+					);
+				break;
 				default:
 					a = new OpenLayers.Icon(
-						OpenLayers.ImgPath + "argenmapIco.png",
+						OpenLayers.ImgPath + "iconos/argenmapIco.png",
 						new OpenLayers.Size(32,32),
 						new OpenLayers.Pixel(-16,-32)
 					);
