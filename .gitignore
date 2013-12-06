@@ -22,4 +22,4 @@ argenmap.jquery.min.js
 argenmap.jquery.js.orig
 bump.sh
 build/parse-1.2.9.min.js
-node_modeules/
+node_modules/
