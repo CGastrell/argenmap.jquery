@@ -292,19 +292,19 @@ OpenLayers.Control.LayerSwitcherIGN =
         var len = this.map.layers.length;
         this.layerStates = new Array(len);
         for (var i=0; i <len; i++) {
-            var layer = this.map.layers[i];
+            var layeri = this.map.layers[i];
             this.layerStates[i] = {
-                'name': layer.name, 
-                'visibility': layer.visibility,
-                'inRange': layer.inRange,
-                'id': layer.id
+                'name': layeri.name, 
+                'visibility': layeri.visibility,
+                'inRange': layeri.inRange,
+                'id': layeri.id
             };
         }    
 
         var layers = this.map.layers.slice();
         if (!this.ascending) { layers.reverse(); }
-        for(var i=0, len=layers.length; i<len; i++) {
-            var layer = layers[i];
+        for(var ii=0, len2=layers.length; ii<len2; ii++) {
+            var layer = layers[ii];
             var baseLayer = layer.isBaseLayer;
 
             if (layer.displayInLayerSwitcher) {
@@ -396,9 +396,9 @@ OpenLayers.Control.LayerSwitcherIGN =
         }
 
         // set the correct visibilities for the overlays
-        for(var i=0, len=this.dataLayers.length; i<len; i++) {
-            var layerEntry = this.dataLayers[i];   
-            layerEntry.layer.setVisibility(layerEntry.inputElem.checked);
+        for(var ii=0, len2=this.dataLayers.length; ii<len2; ii++) {
+            var layerEntry2 = this.dataLayers[ii];   
+            layerEntry2.layer.setVisibility(layerEntry2.inputElem.checked);
         }
 
     },

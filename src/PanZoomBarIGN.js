@@ -49,8 +49,9 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 	redraw:function(){
 		if(this.div!=null){
 			this.removeButtons();
-			if(this.zoombarDiv)
+			if(this.zoombarDiv) {
 				this._removeZoomBar();
+			}
 		}
 		this.draw();
 	},
@@ -160,7 +161,7 @@ OpenLayers.Control.PanZoomBarIGN=OpenLayers.Class(OpenLayers.Control.PanZoom,{
 			var deltaY=this.mouseDragStart.y-evt.xy.y;
 			var offsets=OpenLayers.Util.pagePosition(this.zoombarDiv);
 			if( (evt.clientY - offsets[1] - this.zoomStopHeight / 2) >  0 && (evt.clientY - offsets[1]) < this.zoomBarHeight - 2) {
-				this.slider.style.top=String(parseInt(this.slider.style.top) - deltaY)+"px";
+				this.slider.style.top=String(parseInt(this.slider.style.top, 10) - deltaY)+"px";
 				this.mouseDragStart=evt.xy.clone();
 			}
 			this.deltaY=this.zoomStart.y-evt.xy.y;
