@@ -183,15 +183,15 @@
      * @see argenmap.leerPlanas
      * @see argenmap.leerLonLat
      */
-    argenmap.leerCoordenadas = function(coords,proyeccion)
-    {
+    argenmap.leerCoordenadas = function(coords,proyeccion) {
         if(!coords) {
             return;
         }
-        if(!proyeccion) {proyeccion = "EPSG:3857"}
+        if(!proyeccion) {
+            proyeccion = "EPSG:3857";
+        }
         var r;
-        switch(proyeccion)
-        {
+        switch(proyeccion) {
             case "EPSG:3857":
                 r = argenmap.leerPlanas(coords);
             break;
@@ -206,8 +206,7 @@
      * @param {Mixed} mezcla. Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}
      * @return {OpenLayers.LonLat} el objeto OpenLayers.LonLat
      */
-    argenmap.leerLonLat = function(mezcla)
-    {
+    argenmap.leerLonLat = function(mezcla) {
         var empty = null;
         var r = empty;
         if (undefined === mezcla || (typeof(mezcla) === 'string')) {return null}
@@ -235,7 +234,7 @@
             r = new OpenLayers.LonLat(mezcla.lon,mezcla.lat);
         }
         // [n, n] array: este caso es cuando es un array, de ser asi asumo que es [lat,lon] (lat PRIMERO!)
-        else if ($.isArray(mezcla)){ 
+        else if ($.isArray(mezcla)) { 
             if ( !$.isNumeric(mezcla[0]) || !$.isNumeric(mezcla[1]) ) {
                 r = empty;
             }else{
@@ -353,7 +352,7 @@
       });
     });
     argenmap.esUrl = function(urlString) {
-        var urlPattern = /^((ftp|http)s?:\/\/){1}([\da-z\.-]+)(\.[a-z\.]{2,6})?([\/\w \.-]*)*\/?$/;
+        var urlPattern = /^((ftp|http)s?:\/\/){1}([\da-z\.-]+)(\.[\d-a-z\.])*(\.[a-z\.]{2,6})?([\/\w \.-]*)*\/?$/;
         var ipPattern = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
         return urlPattern.test(urlString) || ipPattern.test(urlString);
     }
@@ -376,8 +375,7 @@
     });
 
     
-    OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) 
-    {
+    OpenLayers.Layer.HTTPRequest.prototype.selectUrl = function(paramString, urls) {
         var cached = this.cache.recuperar(paramString);
         if(cached) {
             return cached;
@@ -561,10 +559,8 @@
                 addlayer:function(){
                     //kludge para elevar las capas de marcadores
                     var m = this.mapa;
-                    $.each(m.layers,function(i,o)
-                    {
-                        if(o.CLASS_NAME !== undefined && o.CLASS_NAME === "OpenLayers.Layer.Markers")
-                        {
+                    $.each(m.layers,function(i,o) {
+                        if(o.CLASS_NAME !== undefined && o.CLASS_NAME === "OpenLayers.Layer.Markers") {
                             m.setLayerIndex(o,m.layers.length - 1);
                         }
                     });
@@ -670,20 +666,21 @@
             };
 
             var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones));
-            // console.log(argenmap.esUrl(o.sld));
+            console.log(argenmap.esUrl(o.sld));
             if(argenmap.esUrl(o.sld)) {
                 o.styleMap = new OpenLayers.StyleMap();
                 argenmap.loadXML(OpenLayers.ProxyHost + encodeURIComponent(o.sld))
                 .then(function(data){
+                    console.log(data);
                     if(data.getElementsByTagName('UserStyle').length > 0) {
                         o.styleMap = new OpenLayers.StyleMap();
-                        var format = new OpenLayers.Format.SLD();
+                        var format = new OpenLayers.Format.SLD.v1_0_0_GeoServer();
                         _this.estilos[o.nombre] = format.read(data.getElementsByTagName('UserStyle')[0]);
                         // _this.traerCapaPorNombre(o.nombre).styleMap.styles['default'] = _this.estilos[o.nombre];
                         // _this.traerCapaPorNombre(o.nombre).redraw();
                     }
                     o.sld = null;
-                    _this.agregarCapaKML(o);
+                    // _this.agregarCapaKML(o);
                 });
                 return;
             }
@@ -707,7 +704,8 @@
                 //si existe el estilo para la capa, lo cargo
                 // l.styleMap.styles['default'] = s;
                 console.log(_this.estilos[l.nombre]);
-                l.styleMap.styles['default'] = _this.estilos[l.nombre];
+                console.log(l.styleMap.styles['default']);
+                // l.styleMap = new OpenLayers.StyleMap({default:_this.estilos[l.nombre]});
                 //por defecto kml usa geograficas, asumiendo eso, transformo epsg
                 $.each(l.features,function(index,item){
                     if(item.cluster !== undefined) {
@@ -718,6 +716,7 @@
                         item.geometry.transform("EPSG:4326",l.projection);
                     }
                 });
+                // l.styleMap.styles['default'] = _this.estilos[l.nombre];
                 l.redraw();
                 //little kludge?
                 l.map.zoomIn();
