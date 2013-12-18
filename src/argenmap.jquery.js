@@ -9,8 +9,9 @@
  *  Web site  : http://ign.gob.ar/argenmap2
  *
  */
+ var IGN_CACHES, argenmap;
 ;(function ( $, window, document, undefined ) {
-    var IGN_CACHES = [
+    IGN_CACHES = [
             'http://cg.aws.af.cm/tms',
             'http://190.220.8.216/tms',
             'http://mapaabierto.aws.af.cm/tms',
@@ -65,7 +66,7 @@
     /**
      * Espacio de nombres para funciones/propiedades/clases de ayuda
      */
-    var argenmap = {};
+    argenmap = {};
 
     /**
      * Mapa de propiedades traducidas
@@ -82,7 +83,8 @@
         servicio: 'service',
         icono: 'icon',
         escucharEventos: 'eventListeners',
-        listarCapa: 'displayInLayerSwitcher'
+        listarCapa: 'displayInLayerSwitcher',
+        visible: 'visibility'
     };
     //hard coded, modificar para la version final
     // var argenmap.rutaRelativa = "http://vm/argenmap2/";
@@ -92,8 +94,7 @@
      */
     argenmap.googleEstaCargando = false;
     /* CLASE CACHE DE CLIENTE */
-    argenmap.CacheDeCliente = function()
-    {
+    argenmap.CacheDeCliente = function() {
         this.MAX_TILES = 150;
         this.cache = [];
         this.cacheRef = {};
@@ -137,8 +138,7 @@
     /**
      * Indica si el script de google maps esta cargado
      */
-    argenmap.googleEstaCargado = function()
-    {
+    argenmap.googleEstaCargado = function() {
         return (typeof(google) !== 'object' || (typeof(google) === "object" && typeof(google.maps) !== 'object')) === false;
     };
     /**
@@ -150,8 +150,7 @@
      * @param {boolean} alReves. Si es true traducen las keys de inglés a español.
      * @return {Object} el objeto con las keys traducidas a español.
      */
-    argenmap.traducirObjeto = function(objeto,alReves)
-    {
+    argenmap.traducirObjeto = function(objeto,alReves) {
         var resultado = {};
         var mapa = $.extend({},argenmap.mapaDePropiedades);
         if(alReves !== undefined && alReves === true)
@@ -186,7 +185,9 @@
      */
     argenmap.leerCoordenadas = function(coords,proyeccion)
     {
-        if(!coords) {return}
+        if(!coords) {
+            return;
+        }
         if(!proyeccion) {proyeccion = "EPSG:3857"}
         var r;
         switch(proyeccion)
@@ -254,8 +255,7 @@
      * @param {Mixed} mezcla Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a argenmap.leerLonLat() con @mezcla como argumento).
      * @return {OpenLayers.LonLat} el objeto OpenLayers.LonLat con las coordenadas en epsg:3857.
      */
-    argenmap.leerPlanas = function(mezcla)
-    {
+    argenmap.leerPlanas = function(mezcla) {
         var ll = argenmap.leerLonLat(mezcla);
         if(!ll || !$.isNumeric(ll.lon) || !$.isNumeric(ll.lat)) {return null;}
         // MAGIC
@@ -300,7 +300,6 @@
         //Creating the object to create the ImageMapType that will call the TMS Layer Options.
 
         this.imageMapType = new google.maps.ImageMapType(tmsOptions);
-
     };
 
     argenmap.CapaTMS.prototype.getTileUrl = function (tile, zoom) {
@@ -319,8 +318,7 @@
         // this.cache.guardar(tile.x,tile.y,zoom,url);
         return url;
     };
-    argenmap.CapaTMS.prototype.selectUrl = function(paramString, urls) 
-    {
+    argenmap.CapaTMS.prototype.selectUrl = function(paramString, urls) {
         var cached = this.cache.recuperar(paramString);
         if(cached) {
             return cached;
@@ -334,8 +332,34 @@
         this.cache.guardar(paramString, urls[parseInt(product * urls.length, 10)]);
         return urls[parseInt(product * urls.length, 10)];
     };
+    argenmap.createCache = function( requestFunction ) {
+      var cache = {};
+      return function( key, callback ) {
+        if ( !cache[ key ] ) {
+          cache[ key ] = $.Deferred(function( defer ) {
+            requestFunction( defer, key );
+          }).promise();
+        }
+        return cache[ key ].done( callback );
+      };
+    };
+    argenmap.loadXML = argenmap.createCache(function(defer, url){
+      $.ajax({
+        url: url,
+        dataType: "xml",
+        mimeType: "text/xml",
+        success: defer.resolve,
+        error: defer.reject
+      });
+    });
+    argenmap.esUrl = function(urlString) {
+        var urlPattern = /^((ftp|http)s?:\/\/){1}([\da-z\.-]+)(\.[a-z\.]{2,6})?([\/\w \.-]*)*\/?$/;
+        var ipPattern = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        return urlPattern.test(urlString) || ipPattern.test(urlString);
+    }
 
     //sets de OL
+    OpenLayers.ProxyHost = 'http://crossproxy.aws.af.cm/?u=';
     OpenLayers.Popup.FramedCloud.prototype.autoSize = false;
     /*
     AutoSizeFramedCloudMinSize = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
@@ -400,6 +424,10 @@
          * Se utiliza al momento de instanciar el mapa y para buscar por nombre
          */
         this.capas = [];
+        /**
+         * Array de estilos asociados a capas.
+         */
+        this.estilos = {};
         /**
          * Array con los features agregados al mapa, para conveniencia
          */
@@ -602,48 +630,98 @@
                 noMagic: true,
                 esCapaBase: false,
                 mostrarAlCargar: true,
-                proyeccion: this.opciones.proyeccion
+                proyeccion: this.opciones.proyeccion,
+                visible: true
             };
             var o = argenmap.traducirObjeto($.extend({},predeterminadasWms,opciones));
-            if(this._esCapaPrivada(o.nombre)) {return;}
+            if(this._esCapaPrivada(o.nombre)) {
+                return;
+            }
             this.quitarCapa(o.nombre);
             var l = new OpenLayers.Layer.WMS(o.nombre,o.url,o,o);
-            if(this.mapa) {this.mapa.addLayer(l);}
-            if(l.options.isBaseLayer && o.mostrarAlCargar) {this.mapa.setBaseLayer(l);}
+            if(this.mapa) {
+                this.mapa.addLayer(l);
+            }
+            if(l.options.isBaseLayer && o.mostrarAlCargar) {
+                this.mapa.setBaseLayer(l);
+            }
         },
         agregarCapaKML: function(opciones)
         {
-            if(typeof(opciones) !== "object" && typeof(opciones.url) !== "string") {return;}
-            
+            if(typeof(opciones) !== "object" && typeof(opciones.url) !== "string") {
+                return;
+            }
+            var _this = this;
             var predeterminadasKml = {
                 esCapaBase: false,
                 nombre: "Capa KML",
                 proyeccion: this.opciones.proyeccion,
-                url: ""
-            };
-            var extras = {
-                strategies: [new OpenLayers.Strategy.Fixed()],
+                url: "",
+                strategies: [new OpenLayers.Strategy.Fixed(),new OpenLayers.Strategy.Cluster({threshold:2,distance:40})],
                 protocol: new OpenLayers.Protocol.HTTP({
-                        url: opciones.url,
-                        format: new OpenLayers.Format.KML({
-                                extractStyles: true,
-                                extractAttributes: true
-                        })
-                })
-                
+                    url: opciones.url,
+                    // "http://172.20.202.117/crossproxy/crossproxy/?u=" + encodeURIComponent(opciones.url),
+                    format: new OpenLayers.Format.KML({
+                        extractStyles: false,
+                        extractAttributes: true
+                    })
+                }),
+                sld: null
             };
-            var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones,extras));
+
+            var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones));
+            // console.log(argenmap.esUrl(o.sld));
+            if(argenmap.esUrl(o.sld)) {
+                o.styleMap = new OpenLayers.StyleMap();
+                argenmap.loadXML(OpenLayers.ProxyHost + encodeURIComponent(o.sld))
+                .then(function(data){
+                    if(data.getElementsByTagName('UserStyle').length > 0) {
+                        o.styleMap = new OpenLayers.StyleMap();
+                        var format = new OpenLayers.Format.SLD();
+                        _this.estilos[o.nombre] = format.read(data.getElementsByTagName('UserStyle')[0]);
+                        // _this.traerCapaPorNombre(o.nombre).styleMap.styles['default'] = _this.estilos[o.nombre];
+                        // _this.traerCapaPorNombre(o.nombre).redraw();
+                    }
+                    o.sld = null;
+                    _this.agregarCapaKML(o);
+                });
+                return;
+            }
+            // var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones));
             this.quitarCapa(o.nombre);
+
+            // var k = new OpenLayers.Format.KML({
+            //     extractStyles: true,
+            //     extractAttributes: true
+            // });
+
+            // loadKML("http://crossproxy.aws.af.cm?u=" + encodeURIComponent(o.url))
+            // .then(function(data){
+            //   console.log(data);
+            // });
+            // return;
             var l = new OpenLayers.Layer.Vector(o.nombre,o);
+
             //al crearse el layer no tiene aun los features, delay al event loadend
             l.events.register('loadend',l,function(){
-                //por defecto kml usa geograficas, asumiendo eso, transformo cada
-                //geometry de epsg
-                    $.each(l.features,function(index,item){
+                //si existe el estilo para la capa, lo cargo
+                // l.styleMap.styles['default'] = s;
+                console.log(_this.estilos[l.nombre]);
+                l.styleMap.styles['default'] = _this.estilos[l.nombre];
+                //por defecto kml usa geograficas, asumiendo eso, transformo epsg
+                $.each(l.features,function(index,item){
+                    if(item.cluster !== undefined) {
+                        $.each(item.cluster, function(index2,item2){
+                            item2.geometry.transform("EPSG:4326",l.projection);
+                        });
+                    }else{
                         item.geometry.transform("EPSG:4326",l.projection);
-                    });
-                    //little kludge?
-                    l.map.pan(-1,-1);
+                    }
+                });
+                l.redraw();
+                //little kludge?
+                l.map.zoomIn();
+                l.map.zoomOut();
             });
             
             //BUG: la capa no se muestra hasta que el mapa se panea
@@ -664,7 +742,9 @@
             };
             var alSeleccionar = function(e)
             {
+                // console.log(e);
                 var f = e.feature;
+                var isCluster = f.cluster !== undefined;
                 var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
                     f.geometry.getBounds().getCenterLonLat(),
                     new OpenLayers.Size(100,100),
@@ -746,8 +826,7 @@
             //y en el callback volver a llamar esta funcion nuevamente
             if(typeof(icono) === "string" || icono === null)
             {
-                var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
-                var esUrl = urlPattern.test(icono);
+                var esUrl = argenmap.esUrl(icono);
                 var esArchivoImagen = (/\.(gif|jpg|jpeg|png)$/i).test(icono);
                 if(!esArchivoImagen && !esUrl)
                 {

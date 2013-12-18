@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/isaacs/npm.git"
+    "url": "https://github.com/CGastrell/argenmap.jquery.git"
   },
   "author": "Christian Gastrell",
   "license": "BSD",
