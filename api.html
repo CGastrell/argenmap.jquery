@@ -74,6 +74,8 @@
 						<li><a href="#modificarMarcador"> .modificarMarcador()</a></li>
 						<li><a href="#quitarMarcador"> .quitarMarcador()</a></li>
 						<li><a href="#agregarMarcadores"> .agregarMarcadores()</a></li>
+						<li><a href="#openlayers">API OpenLayers</a></li>
+						<li><a href="#Iconos">Íconos</a></li>
 					</ul>
 				</div>
 
@@ -214,6 +216,16 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									</td>
 									<td>Configurando esta opción en <code>true</code> puede visualizarse una barra para controlar el nivel de zoom.</td>
 								</tr>
+								<tr>
+									<td>proxy  <span class="label label-info">nuevo</span></td>
+									<td>string</td>
+									<td><em>http://crossproxy.aws.af.cm/?u=</em></td>
+									<td>
+										<p style="text-align:center"><span class="label">no</span>
+										</p>
+									</td>
+									<td>Opción para usar un proxy en todas las consultas que deban hacerse fuera del dominio donde se está mostrándose el mapa. Usar un string vacío para anular la opción.</td>
+								</tr>
 							</tbody>
 						</table>
 						<p class="alert alert-info">Aún configurando <code>mostrarBarraDeZoom</code> en <code>true</code>, si el alto del mapa no es suficiente, la barra de zoom se ocultará automáticamente.</p>
@@ -239,7 +251,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>float</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>número indicando los grados decimales de latitud</td>
@@ -249,7 +261,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>float</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>número indicando los grados decimales de longitud</td>
@@ -279,7 +291,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>int</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>un entero de 0 a 19 indicando el nivel de zoom al que se quiere visualizar el mapa.</td>
@@ -308,7 +320,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>string</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>El nombre de una de las capas base estándar (<code>Satélite</code> o <code>Base IGN</code>) o el nombre de una capa base previamente agregada con <a href="#agregarCapaBaseWMS">agregarCapaBaseWMS()</a>
@@ -337,7 +349,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>objeto</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>un set de pares de <code>key</code>:<code>valor</code> que configura el pedido a la capa WMS. Las keys que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:</td>
@@ -360,7 +372,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td><em>string vacío</em>
 									</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>La URL del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms?</em>. <b>La URL debe finalizar con el signo ? o con el signo &amp;</b>
@@ -372,7 +384,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td><em>string vacío</em>
 									</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>Los nombres de las capas separados por comas. (corresponde al formato del parámetro LAYERS de WMS) de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo: <em>departamentos,rios,ciudades</em>
@@ -475,7 +487,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>objeto</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>un set de pares de <code>key</code>:<code>valor</code> que configura el pedido a la capa WMS. Las keys que pueden pasarse son los parámetros que pueden pasarse a cualquier WMS:</td>
@@ -498,7 +510,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td><em>string vacío</em>
 									</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>La URL del servidor WMS. Ejemplo: <em>http://mapa.ign.gob.ar/wms?</em>. <b>La URL debe finalizar con el signo ? o con el signo &amp;</b>
@@ -510,7 +522,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td><em>string vacío</em>
 									</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>Los nombres de las capas separados por comas. (corresponde al formato del parámetro LAYERS de WMS) de las capas que se quieren pedir al servidor WMS, separadas por coma. Ejemplo: <em>departamentos,rios,ciudades</em>
@@ -613,7 +625,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>objeto</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>un set de pares de <code>key</code>:<code>valor</code> que configura la capa KML.</td>
@@ -636,7 +648,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td><em>string vacío</em>
 									</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>La URL del archivo KML.</td>
@@ -644,17 +656,37 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 								<tr>
 									<td>nombre</td>
 									<td>string</td>
-									<td><em>string vacío</em>
-									</td>
+									<td><em>string vacío</em></td>
 									<td>
 										<p style="text-align:center"><span class="label">no</span>
 										</p>
 									</td>
 									<td>Nombre que tendrá la capa. Este es el nombre que se mostrará en la lista de capas.</td>
 								</tr>
+								<tr>
+									<td>agruparItems <span class="label label-info">nuevo</span></td>
+									<td>boolean</td>
+									<td>true</td>
+									<td>
+										<p style="text-align:center"><span class="label">no</span>
+										</p>
+									</td>
+									<td>Indica si los marcadores de la capa KML deben ser agrupados cuando estén demasiado juntos</td>
+								</tr>
+								<tr>
+									<td>sld <span class="label label-info">nuevo</span></td>
+									<td>string</td>
+									<td><em>string vacío</em></td>
+									<td>
+										<p style="text-align:center"><span class="label">no</span>
+										</p>
+									</td>
+									<td>URL de un archivo de estilización en formato <a href="http://www.opengeospatial.org/standards/sld" target="_sld">SLD</a>
+									</td>
+								</tr>
 							</tbody>
 						</table>
-						<p class="alert alert-warning">Atención: El archivo KML debe estar en el mismo dominio, de lo contrario recibirás un error de <a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del mismo origen (Same origin policy)</em></strong></a>
+						<p class="alert alert-warning">Atención: El archivo KML y, de ser provisto, el archivo SLD deben estar en el mismo dominio, de lo contrario recibirás un error de <a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del mismo origen (Same origin policy)</em></strong></a>
 						</p>
 					</section>
 					<hr>
@@ -677,7 +709,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>string</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>El nombre asignado a la capa cuando fue creada.</td>
@@ -704,7 +736,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>objeto</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>un set de pares de <code>key</code>:<code>valor</code> que configura opciones extra para el marcador que va a ser creado:</td>
@@ -726,7 +758,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>float</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>La latitud para el marcador (coordenadas geográficas)</td>
@@ -736,7 +768,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>float</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>La longitud para el marcador (coordenadas geográficas)</td>
@@ -752,14 +784,15 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>El nombre que tendrá el marcador. Recordá que si bien es opcional, es importante definir el nombre e intentar que sea único para luego poder accederlo si necesitaras modificarlo o quitarlo.</td>
 								</tr>
 								<tr>
-									<td>icono</td>
+									<td>ícono</td>
 									<td>string</td>
 									<td>null</td>
 									<td>
 										<p style="text-align:center"><span class="label">no</span>
 										</p>
 									</td>
-									<td>La URL de la imagen PNG a utilizar como ícono.
+									<td>El nombre de uno de los íconos de la galeria o bien la URL de la imagen PNG a utilizar como ícono.
+										<p class="alert alert-info">Podés ver todos los íconos en la sección <a href="#Iconos">íconos</a>.</p>
 										<p class="alert alert-info">El marcador utiliza como punto de anclaje el centro horizontal y el borde inferior de la imagen. Ver <a href="http://mapicons.nicolasmollet.com/" target="_blank">Map Icons Collection</a>.</p>
 									</td>
 								</tr>
@@ -798,7 +831,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>string</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>El nombre asignado al marcador cuando fue creado.</td>
@@ -808,7 +841,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>objeto</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>set de pares <code>key</code>:<code>valor</code> con las mismas opciones que se usan para <a href="#agregarMarcador">crear un marcador</a>
@@ -837,7 +870,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>string</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>El nombre asignado al marcador cuando fue creado.</td>
@@ -866,10 +899,154 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>array</td>
 									<td>null</td>
 									<td>
-										<p style="text-align:center"><span class="label label-warning">si</span>
+										<p style="text-align:center"><span class="label label-warning">sí</span>
 										</p>
 									</td>
 									<td>Array de objetos simples. Cada objeto debe ser un objeto de opciones válido como se usaría con <a href="#agregarMarcador">agregarMarcador()</a>.</td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
+					<section id="openlayers">
+						<h2>API OpenLayers</h2>
+						<p>Argenmap 2 utiliza la <a href="http://dev.openlayers.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers-js.html" target="_openlayers">API de OpenLayers versión 2.12</a>.</p>
+						<p>Una vez que se instancia argenmap en un selector, se guarda una instancia de clase <code>Argenmap</code> asociado al mismo a través de la funcionalidad <code>$.data()</code> de jQuery.</p>
+						<p>Asimismo, la clase <code>Argenmap</code> guarda una instancia de clase <a target="_openlayers" href="http://dev.openlayers.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers/Map-js.html">OpenLayers.Map</a> en la propiedad <code>mapa</code>. Referenciando a esta propiedad podés acceder a cualquier otra funcionalidad que necesites de OpenLayers para realizar operaciones y aplicaciones más complejas:
+						<pre class="prettyprint">
+var claseOpenLayersMap = $(&#39;#mapa&#39;).data(&#39;argenmap&#39;).mapa;
+claseOpenLayersMap.getZoom(); //devuelve el nivel de zoom actual del mapa
+</pre>
+						</p>
+						<p>
+							Documentación de OpenLayers 2.12: <a href="http://dev.openlayers.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers-js.html" target="_openlayers">http://dev.openlayers.org/releases/OpenLayers-2.12/doc/apidocs/files/OpenLayers-js.html</a>
+						</p>
+						<p>
+							Ejemplos de OpenLayers: <a href="http://openlayers.org/dev/examples/" target="_ejemplosOpenLayers">http://openlayers.org/dev/examples/</a>
+						</p>
+					</section>
+					<section id="Iconos">
+						<h2>Galería de íconos</h2>
+						<p>La galería de íconos es un diccionario de conveniencia para utilizar marcadores predeterminados. En lugar de suministrar la URL de una imagen que fueras a utilizar como ícono de un marcador, podes usar el nombre de uno de estos íconos.</p>
+						<p class="alert alert-info">El diccionario está compuesto por íconos de la librería <a href="http://mapicons.nicolasmollet.com/" target="_blank">Map Icons Collection</a> de Nicolas Mollet.</p>
+						<p>Por ejemplo, estas dos llamadas a <code>.agregarMarcador()</code> tienen el mismo resultado:<br />
+						<code>$('#mapa').agregarMarcador({icono:"tornado"})</code><br />
+						<code>$('#mapa').agregarMarcador({icono:"http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/tornado.png"})</code><br />
+						<h3>Íconos disponibles:</h3>
+						<table class="table table-striped table-hover">
+							<tbody>
+								<tr>
+									<th>nombre</th>
+									<th>ícono</th>
+									<th>descripción</th>
+								</tr>
+								<tr>
+									<th colspan="3" style="text-align:center">Establecimientos</th>
+								</tr>
+								<tr>
+									<td>aeropuerto</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/aeropuerto.png" /></td>
+									<td>Aeropuertos y pistas de aterrizaje</td>
+								</tr>
+								<tr>
+									<td>cajero</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/cajero.png" /></td>
+									<td>ATM / Cajero electrónico</td>
+								</tr>
+								<tr>
+									<td>correo</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/correo.png" /></td>
+									<td>Correo</td>
+								</tr>
+								<tr>
+									<td>restaurante</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/restaurante.png" /></td>
+									<td>Comedor / Restaurante</td>
+								</tr>
+								<tr>
+									<td>hospital</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/hospital.png" /></td>
+									<td>Hospital / Clínica</td>
+								</tr>
+								<tr>
+									<td>policia</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/policia.png" /></td>
+									<td>Comisaría / Estación de policía</td>
+								</tr>
+								<tr>
+									<td>estacionDeServicio</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/estacionDeServicio.png" /></td>
+									<td>Estación de servicio</td>
+								</tr>
+								<tr>
+									<td>tren</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/tren.png" /></td>
+									<td>Estación de tren</td>
+								</tr>
+								<tr>
+									<th colspan="3" style="text-align:center">Eventos</th>
+								</tr>
+								<tr>
+									<td>manifestacion</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/manifestacion.png" /></td>
+									<td>Manifestación / Turba</td>
+								</tr>
+								<tr>
+									<td>peligro</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/peligro.png" /></td>
+									<td>Atención / Peligro</td>
+								</tr>
+								<tr>
+									<td>delito</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/delito.png" /></td>
+									<td>Delito / Crimen</td>
+								</tr>
+								<tr>
+									<td>inundacion</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/inundacion.png" /></td>
+									<td>Inundaciones</td>
+								</tr>
+								<tr>
+									<td>tormenta</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/tormenta.png" /></td>
+									<td>Tormenta</td>
+								</tr>
+								<tr>
+									<td>tornado</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/tornado.png" /></td>
+									<td>Tornado</td>
+								</tr>
+								<tr>
+									<td>terremoto</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/terremoto.png" /></td>
+									<td>Terremoto / Derrumbe</td>
+								</tr>
+								<tr>
+									<td>volcan</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/volcan.png" /></td>
+									<td>Erupción volcánica / Cenizas</td>
+								</tr>
+								<tr>
+									<td>corteDeLuz</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/corteDeLuz.png" /></td>
+									<td>Corte de luz / Apagón</td>
+								</tr>
+								<tr>
+									<th colspan="3" style="text-align:center">Terreno</th>
+								</tr>
+								<tr>
+									<td>pico</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/pico.png" /></td>
+									<td>Montaña / Cerro / Pico</td>
+								</tr>
+								<tr>
+									<td>cascada</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/cascada.png" /></td>
+									<td>Cascada / Salto</td>
+								</tr>
+								<tr>
+									<td>glaciar</td>
+									<td><img src="http://ign.gob.ar/argenmap2/argenmap.jquery/img/iconos/glaciar.png" /></td>
+									<td>Glaciar</td>
 								</tr>
 							</tbody>
 						</table>
@@ -890,14 +1067,12 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 		<script src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
 		<script src="js/google-code-prettify/prettify.js"></script>
 		<script>
-		function buildSidebar(obj)
-		{
+		function buildSidebar(obj) {
 			$.each(obj,function(i,e){
 				$('.bs-docs-sidenav').append('<li><a href="#' + i + '"> .' + i + '()</a></li>');
 			});
 		}
-		function buildSection(id,obj)
-		{
+		function buildSection(id,obj) {
 			var section = $('<section />');
 			section.attr('id',id);
 			section.append('<h2><span style="color:#999">$(selector).</span>'+id+'()</h2>');
@@ -925,7 +1100,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 						{
 							ee = '<p style="text-align:center"><span class="label">no</span></p>';
 						}else{
-							ee = '<p style="text-align:center"><span class="label label-warning">si</span></p>';
+							ee = '<p style="text-align:center"><span class="label label-warning">sí</span></p>';
 						}
 					}
 					$('<td />').html(ee).appendTo(tr);
@@ -951,7 +1126,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 							{
 								ee = '<p style="text-align:center"><span class="label">no</span></p>';
 							}else{
-								ee = '<p style="text-align:center"><span class="label label-warning">si</span></p>';
+								ee = '<p style="text-align:center"><span class="label label-warning">sí</span></p>';
 							}
 						}
 						$('<td />').html(ee).appendTo(tr);
@@ -960,8 +1135,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 			}
 
 			//alertas
-			if(obj.alertas.length)
-			{
+			if(obj.alertas.length) {
 				$.each(obj.alertas,function(i,e){
 					$('<p />').addClass('alert')
 						.addClass('alert-' + e.tipo)
@@ -986,7 +1160,7 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 
 			// Disable certain links in docs
 			$('section [href^=#]').click(function (e) {
-				e.preventDefault();
+				// e.preventDefault();
 			});
 
 			
