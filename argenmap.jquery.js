@@ -1,7 +1,7 @@
 /**
  * @license
  *  Argenmap 2 Plugin para JQuery 
- *  Version   : v2.4.7
+ *  Version   : v2.4.8
  *  Date      : 2013-02-16
  *  Licence   : BSD : http://www.opensource.org/licenses/bsd-license.php
  *  Author    : Christian Gastrell
