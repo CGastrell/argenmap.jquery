@@ -1,4 +1,5 @@
-[argenmap.jquery](http://www.ign.gob.ar/argenmap/argenmap.jquery/docs) - Mapas web del IGN y jQuery
+[argenmap.jquery](http://www.ign.gob.ar/argenmap2/argenmap.jquery/docs) - Mapas web del IGN y 
+jQuery
 ===================================================
 
 Introducción
@@ -28,7 +29,10 @@ con conocimiento mínimo de aplicaciones de mapas. Basta con saber como se usa u
 - Es simple y elegante.
  
 - Muchos ejemplos
- - Para empezar podés acceder a la [guía] (http://www.ign.gob.ar/argenmap). Al ser de código abierto esperamos contar con colaboración de distintas áreas que aprovechen las ventajas que presenta usar ArgenMap
+ - Para empezar podés acceder a la [guía] (http://www.ign.gob.ar/argenmap2/argenmap.jquery/docs). 
+Al ser de 
+código 
+abierto esperamos contar con colaboración de distintas áreas que aprovechen las ventajas que presenta usar ArgenMap
  - Seguiremos agregando guías, documentación y ejemplos a medida que la librería crece en funcionalidad.
 
  
@@ -37,5 +41,5 @@ con conocimiento mínimo de aplicaciones de mapas. Basta con saber como se usa u
  
 Requerimientos
 
-La librería incluye una versión de OpenLayers optimizada.
+La librería incluye una versión de OpenLayers 2.12 optimizada.
  - Descargar [jQuery 1.7+] ( http://jquery.com ) o vincular desde [CDN] (http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js)
