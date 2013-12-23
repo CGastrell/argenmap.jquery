@@ -2,7 +2,7 @@
 	"metodos":{
 		"argenmap": {
 			"descripcion": [
-				"Crea una instancia de mapa sobre un elemento HTML. <em>Preferentemente divs con un alto definido en píxels</em>, pero cualquier elemento de tipo <em>block<em> con un alto definido puede usarse.",
+				"Crea una instancia de mapa sobre un elemento HTML. <em>Preferentemente divs con un alto definido en píxels</em>, pero cualquier elemento de tipo <em>block</em> con un alto definido puede usarse.",
 				"Argenmap puede instanciarse pasando un objeto como argumento. El objeto puede tener opciones de inicialización. A continuación puedes ver el detalle de las opciones con las que puede inicializarse Argenmap"
 			],
 			"argumentos":[
