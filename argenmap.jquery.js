@@ -353,7 +353,7 @@ var IGN_CACHES, argenmap;
     argenmap.esUrl = function(urlString) {
         // revisar esto!!!
         // var urlPattern = /^((ftp|http)s?:\/\/){1}([\da-z\.-]+)(\.[\d-a-z\.])*(\.[a-z\.]{2,6})?([\/\w \.-]*)*\/?$/;
-        var urlPattern = /^(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/i;
+        var urlPattern = /^((http|ftp|https):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/i;
         var ipPattern = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
         return urlPattern.test(urlString) || ipPattern.test(urlString);
         // return true;
@@ -370,7 +370,6 @@ var IGN_CACHES, argenmap;
     }
 
     //sets de OL
-    OpenLayers.ProxyHost = 'http://crossproxy.aws.af.cm/?u=';
     OpenLayers.Popup.FramedCloud.prototype.autoSize = false;
     /*
     AutoSizeFramedCloudMinSize = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
@@ -456,7 +455,8 @@ var IGN_CACHES, argenmap;
             listarCapaDeMarcadores: false,
             rutaAlScript: argenmap.rutaRelativa,
             mapaFijo: false,
-            mostrarBarraDeZoom: false
+            mostrarBarraDeZoom: false,
+            proxy: "http://crossproxy.aws.af.cm/?u="
         };
         
         this.depuracion = opciones.depuracion || false;
@@ -464,6 +464,7 @@ var IGN_CACHES, argenmap;
         //merge predefinidos con opciones de usuario
         this.opciones = $.extend({}, this.predefinidos, opciones);
         //si se setea un nuevo path, hay que re-setear img path
+        OpenLayers.ProxyHost = this.opciones.proxy;
         OpenLayers.ImgPath = argenmap.rutaRelativa + "img/";
         OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
         
@@ -723,6 +724,7 @@ var IGN_CACHES, argenmap;
 
                 var datos = "";
                 if(f.cluster !== undefined) {
+                    datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
                     $.each(f.cluster, function(i,e) {
                         datos += "<h2>"+e.attributes.name +
                                 "</h2>" + e.attributes.description +

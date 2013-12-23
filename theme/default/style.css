@@ -26,8 +26,7 @@ zoom: 1;}
 
 .argenmapMapCanvas address,.argenmapMapCanvas caption,
 .argenmapMapCanvas cite,.argenmapMapCanvas code,
-.argenmapMapCanvas dfn,.argenmapMapCanvas em,
-.argenmapMapCanvas strong,.argenmapMapCanvas th,.argenmapMapCanvas var
+.argenmapMapCanvas dfn,.argenmapMapCanvas th,.argenmapMapCanvas var
 {font-style:normal;font-weight:normal;}
 
 .argenmapMapCanvas ol,.argenmapMapCanvas ul
@@ -72,8 +71,7 @@ font: inherit;vertical-align: baseline;zoom: 1;}
 
 .argenmapMapFooter address,.argenmapMapFooter caption,
 .argenmapMapFooter cite,.argenmapMapFooter code,
-.argenmapMapFooter dfn,.argenmapMapFooter em,
-.argenmapMapFooter strong,.argenmapMapFooter th,.argenmapMapFooter var
+.argenmapMapFooter dfn,.argenmapMapFooter th,.argenmapMapFooter var
 {font-style:normal;font-weight:normal;}
 
 .argenmapMapFooter ol,.argenmapMapFooter ul
