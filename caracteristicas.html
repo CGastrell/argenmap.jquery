@@ -93,7 +93,7 @@
 			</section>
 
 			<section id="comofunciona">
-				<h3>Cómo funciona argenmap.jquery v1</h3>
+				<h3>Cómo funciona argenmap.jquery v2</h3>
 				<p>
 					Para los programadores que ya conocen librerías de mapas web, éste es un listado simple de lo que hace
 					argenmap.jquery <em>automágicamente</em>.
@@ -110,10 +110,10 @@
 						Crea una instancia de clase Argenmap en el <code>data</code> del elemento vía jQuery.
 					</li>
 					<li>
-						Crea un objeto <code>OpenLayers.Map</code>.
+						Crea un objeto <code>OpenLayers.Map</code> y se almacena en la clase <code>Argenmap.mapa</code>
 					</li>
 					<li>
-						Genera una instancia de la capa base del IGN desde el servicio WMS.
+						Genera una instancia de la capa base del IGN desde el servicio TMS.
 					</li>
 					<li>
 						Genera una instancia de capa de <a href="https://developers.google.com/maps/documentation/javascript/maptypes#BasicMapTypes" target="_blank">google satellite</a> y le superpone
