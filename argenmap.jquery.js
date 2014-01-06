@@ -819,7 +819,7 @@ var IGN_CACHES, argenmap;
                 nombre: "Marcador",
                 contenido: "",
                 mostrarConClick: true,
-                desplegarContenido: false,
+                mostrarContenido: false,
                 icono: ''
             };
             var coordenadas = argenmap.leerCoordenadas(opciones,this.opciones.proyeccion);
@@ -881,6 +881,7 @@ var IGN_CACHES, argenmap;
             var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
             var m = f.createMarker();
             f.nombre = m.nombre = o.nombre;
+            f.mostrarContenido = o.mostrarContenido;
             f.closeBox = true;
             f.popupClass = OpenLayers.Popup.FramedCloud;
             if(o.eventos) {
@@ -889,6 +890,9 @@ var IGN_CACHES, argenmap;
             }
             this.marcadores.push(f);
             capa.addMarker(m);
+            if(o.mostrarContenido) {
+                this._marcadorClickHandler.apply(f,[null])
+            }
         },
         agregarMarcadores: function(arrayMarcadores) {
             if(!$.isArray(arrayMarcadores)) {
@@ -901,7 +905,9 @@ var IGN_CACHES, argenmap;
         },
         modificarMarcador: function(nombre,opciones) {
             var f = this._traerMarcadorPorNombre(nombre);
-            if(!f) {return;}
+            if(!f) {
+                return;
+            }
             var coordenadas = argenmap.leerCoordenadas(opciones,this.opciones.proyeccion) || f.lonlat;
             if(typeof(opciones) == "object") {
                 try{
@@ -930,7 +936,8 @@ var IGN_CACHES, argenmap;
                 listarCapa: f.layer.displayInLayerSwitcher,
                 nombre: f.nombre,
                 contenido: f.data.popupContentHTML,
-                mostrarConClick: f.marker.events.listeners.click !== undefined || f.data.popupContentHTML !== ""
+                mostrarConClick: f.marker.events.listeners.click !== undefined || f.data.popupContentHTML !== "",
+                mostrarContenido: f.mostrarContenido
             };
             var opcionesNuevas = $.extend({},opcionesPrevias,opciones);
             this.quitarMarcador(nombre);
@@ -1168,13 +1175,15 @@ var IGN_CACHES, argenmap;
             if (this.popup == null) {
                 this.popupClass.prototype.autoSize = true;
                 this.popup = this.createPopup(this.closeBox);
-                e.object.map.addPopup(this.popup);
+                this.layer.map.addPopup(this.popup);
                 this.popup.show();
             } else {
                 this.popup.toggle();
             }
             // currentPopup = this.popup;
-            OpenLayers.Event.stop(e);
+            if(e) {
+                OpenLayers.Event.stop(e);
+            }
         },
         /**
          * Agrega una capa OpenLayers.Layer.Markers
