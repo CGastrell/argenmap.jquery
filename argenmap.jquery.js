@@ -674,9 +674,10 @@ var IGN_CACHES, argenmap;
                 o.protocol.format.extractStyles = false;
                 var capas = argenmap.obtenerParametro(o.url,'layers');
                 var format = new OpenLayers.Format.SLD.v1_0_0_GeoServer();
-                argenmap.loadXML(OpenLayers.ProxyHost + encodeURIComponent(o.sld))
-                .then(function(data){
+                argenmap.loadXML(OpenLayers.ProxyHost + encodeURIComponent(o.sld)).then(function(data){
                     var sld = format.read(data);
+                    console.log(sld);
+                    console.log(sld.namedLayers[capas].userStyles[0]);
                     if( sld.namedLayers[capas] !== undefined ) {
                         o.styleMap = new OpenLayers.StyleMap({default:sld.namedLayers[capas].userStyles[0]});
                     }
@@ -690,7 +691,8 @@ var IGN_CACHES, argenmap;
             var l = new OpenLayers.Layer.Vector(o.nombre,o);
 
             //al crearse el layer no tiene aun los features, delay al event loadend
-            l.events.register('loadend',l,function(){
+            l.events.register('loadend',l,function() {
+                console.log(l.features[0]);
                 //por defecto kml usa geograficas, asumiendo eso, transformo epsg
                 $.each(l.features,function(index,item){
                     if(item.cluster !== undefined) {
@@ -702,7 +704,7 @@ var IGN_CACHES, argenmap;
                     }
                 });
                 l.redraw();
-                //little kludge?
+                //little kludge? // no funciona en 2.13
                 l.map.zoomIn();
                 l.map.zoomOut();
             });
