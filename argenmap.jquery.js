@@ -363,7 +363,7 @@ var IGN_CACHES, argenmap;
         // return true;
     }
     argenmap.obtenerParametro = function(url, sParam) {
-        var sPageURL = url;
+        var sPageURL = url.split('?')[1];
         var sURLVariables = sPageURL.split('&');
         for (var i = 0; i < sURLVariables.length; i++) {
             var sParameterName = sURLVariables[i].split('=');
@@ -660,7 +660,7 @@ var IGN_CACHES, argenmap;
                 nombre: "Capa KML",
                 proyeccion: this.opciones.proyeccion,
                 url: "",
-                agruparItems: true,
+                agruparItems: false,
                 strategies: [],
                 // protocol: new OpenLayers.Protocol.HTTP(),
                 sld: null,
@@ -677,7 +677,6 @@ var IGN_CACHES, argenmap;
                 argenmap.loadXML(url)
                     .then(function processSLD(sld){
                         var sld = format.read(sld);
-                        console.log(sld);
                         if( sld.namedLayers[capas] !== undefined ) {
                             o.styleMap = new OpenLayers.StyleMap({default:sld.namedLayers[capas].userStyles[0]});
                         }
@@ -1299,16 +1298,16 @@ var IGN_CACHES, argenmap;
                         transparente: true,
                         type:'png',
                         serviceVersion: "",
-                        esCapaBase: false,                      
+                        esCapaBase: false,
                         nombre: "IGN",
                         noMagic: true,
                         singleTile: false,
                         transitionEffect: 'map-resize',
-                        proyeccion: this.opciones.proyeccion                        
+                        proyeccion: this.opciones.proyeccion
                     });
                     $.extend(p,o);
                     //c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
-                    c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);                  
+                    c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);
                     /*
                      * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
                      * así que la agrego a manopla.
