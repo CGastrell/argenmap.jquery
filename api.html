@@ -684,10 +684,22 @@ $('#mapa').agregarMarcador({nombre:'Mi casa',lat:-34.216,lon:-58.719});
 									<td>URL de un archivo de estilización en formato <a href="http://www.opengeospatial.org/standards/sld" target="_sld">SLD</a>
 									</td>
 								</tr>
+								<tr>
+									<td>filtro <span class="label label-info">nuevo</span></td>
+									<td>string</td>
+									<td><em>string vacío</em></td>
+									<td>
+										<p style="text-align:center"><span class="label">no</span>
+										</p>
+									</td>
+									<td>tipo de geometr&iacute;a a mostrar. Valores posibles <code>Point</code>, <code>Line</code> o <code>Polygon</code>. Configurando este filtro se solucionan problemas que posee el importador de KML cuando se encuentra con Multigeometr&iacute;as (como suele suceder cuando se agrega un KML directo desde GeoServer, donde los pol&iacute;gonos incluyen un punto como centroide).
+									</td>
+								</tr>
 							</tbody>
 						</table>
-						<p class="alert alert-warning">Atención: El archivo KML y, de ser provisto, el archivo SLD deben estar en el mismo dominio, de lo contrario recibirás un error de <a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del mismo origen (Same origin policy)</em></strong></a>
+						<p class="alert alert-warning">Atención: El archivo KML y, de ser provisto, el archivo SLD deben estar en el mismo dominio, de lo contrario recibirás un error de <a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del mismo origen (Same origin policy)</em></strong></a>.
 						</p>
+						<p class="alert alert-info">Para evitar el error de <a href="http://es.wikipedia.org/wiki/Pol%C3%ADtica_del_mismo_origen"><strong><em>Política del mismo origen (Same origin policy)</em></strong></a> Argenmap utiliza un proxy simple en PHP configurado a trav&eacute;s de la opci&oacute;n <a href="#argenmap">proxy</a> de la instancia de Argenmap. Una vez asignado, todos los requests pasan por este proxy. Vos pod&eacute;s utilizar un script de proxy propio y configurarlo asignando su url a <code>proxy</code>.</p>
 					</section>
 					<hr>
 					<section id="quitarCapa">
