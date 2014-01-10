@@ -385,6 +385,54 @@ $('#mapa').agregarMarcadores(marcadores);
 				</div>
 			</div>
 
+			<hr />
+
+			<h3>Marcadores agrupados</h3>
+			<div class="row-fluid">
+				<div class="span6">
+					<h4>Código</h4>
+					<div class="bs-docs-example">
+
+<pre class="prettyprint">
+&lt;script&gt;
+//un mapa en una sola línea de código :)
+$('#mapa').argenmap();
+
+//tomamos los marcadores del ejemplo anterior, pero agregamos
+//capa y listarCapa para poder ver
+//los grupos en el administrador de capas
+var marcadores = [
+  {nombre: 'cataratas', lat: -25.695278, lon: -54.436667, contenido:'Cataratas del Iguazú!', capa: 'Maravillas', listarCapa:true},
+  {nombre: 'atucha', lat: -34.05, lon: -59.2, contenido:'Atucha: central eléctrica', capa: 'Recursos', listarCapa: true},
+  {nombre: 'minera', lat: -27.31,  lon: -66.608617, contenido:'Minera Lumbrera: buena mina', capa: 'Recursos'},
+  {nombre: 'vacio', lat: -32.911,lon: -68.833, contenido:'No soy solo un marcador vacío, tengo sentimientos :(', icono:'hueco', capa: 'Maravillas'}
+];
+$('#mapa').agregarMarcadores(marcadores);
+<span class="nocode"><a id="simples14" class="btn btn-primary" href="#simples13">Ejecutar ejemplo</a></span>
+&lt;/script&gt;</pre>
+						<script>
+							$('#simples14').click(function(){
+								$('#grupomarcadores-resultado').argenmap();
+								var marcadores = [
+								  {nombre: 'cataratas', lat: -25.695278, lon: -54.436667, contenido:'Cataratas del Iguazú!', capa: 'Maravillas', listarCapa: true},
+								  {nombre: 'atucha', lat: -34.05, lon: -59.2, contenido:'Atucha: central eléctrica', capa: 'Recursos', listarCapa: true},
+								  {nombre: 'minera', lat: -27.31,  lon: -66.608617, contenido:'Minera Lumbrera: buena mina', capa: 'Recursos', listarCapa: true},
+								  {nombre: 'vacio', lat: -32.911,lon: -68.833, contenido:'No soy solo un marcador vacío, tengo sentimientos :(',icono:'hueco', capa: 'Maravillas', listarCapa: true}
+								];
+								$('#grupomarcadores-resultado').agregarMarcadores(marcadores);
+								return false;
+							});
+						</script>
+					</div>
+				</div>
+				<div class="span6">
+					<h4>Resultado</h4>
+					<div class="bs-docs-resultado">
+						<div id="grupomarcadores-resultado" style="height:385px;" class="resultado"></div>
+					</div>
+				</div>
+			</div>
+
 		</section>
 
 
