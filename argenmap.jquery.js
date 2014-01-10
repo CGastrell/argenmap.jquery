@@ -32,13 +32,16 @@ var IGN_CACHES, argenmap;
                     $w = $this.width();
                     $h = $this.height();
                     $.event.dispatch.call(self, {type:'resized'});
-                    // $.event.handle.call(self, {type:'resized'});
+                    console.log($this);
                 }
             },20);
-            interval = interval;
+            $this.data('special-resized-interval',interval);
+            return false;
         },
         teardown: function (){
-                clearInterval(interval);
+            clearInterval($(this).data('special-resized-interval'));
+            $(this).data('special-resized-interval', null);
+            return false;
         }
     };
     /* COMPATIBILIDAD CON IE < 9; implementacion de indexOf para arrays */
