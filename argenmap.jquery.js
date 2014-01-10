@@ -82,7 +82,8 @@ var IGN_CACHES, argenmap;
         icono: 'icon',
         escucharEventos: 'eventListeners',
         listarCapa: 'displayInLayerSwitcher',
-        visible: 'visibility'
+        visible: 'visibility',
+        limites: 'extent'
     };
     //hard coded, modificar para la version final
     // var argenmap.rutaRelativa = "http://vm/argenmap2/";
@@ -350,6 +351,10 @@ var IGN_CACHES, argenmap;
         error: defer.reject
       });
     });
+    argenmap.esPathRelativo = function (urlString) {
+        var pattern = /^(http|https|ftp):\/\//i;
+        return !pattern.test(urlString);
+    }
     argenmap.esUrl = function(urlString) {
         // revisar esto!!!
         // var urlPattern = /^((ftp|http)s?:\/\/){1}([\da-z\.-]+)(\.[\d-a-z\.])*(\.[a-z\.]{2,6})?([\/\w \.-]*)*\/?$/;
@@ -359,7 +364,7 @@ var IGN_CACHES, argenmap;
         // return true;
     }
     argenmap.obtenerParametro = function(url, sParam) {
-        var sPageURL = url;
+        var sPageURL = url.split('?')[1];
         var sURLVariables = sPageURL.split('&');
         for (var i = 0; i < sURLVariables.length; i++) {
             var sParameterName = sURLVariables[i].split('=');
@@ -584,7 +589,9 @@ var IGN_CACHES, argenmap;
             }
         },
         agregarCapa: function(opciones,extras) {
-            if(!this.mapa) {return;} //catch por las dudas
+            if(!this.mapa) {
+                return;
+            } //catch por las dudas
             
             /*si es string intentamos una capa predefinida, ojo corte prematuro*/
             if(typeof(opciones) == "string") {
@@ -644,6 +651,43 @@ var IGN_CACHES, argenmap;
                 this.mapa.setBaseLayer(l);
             }
         },
+        agregarImagen: function(opciones) {
+            var predeterminadasImagen = {
+                url:null,
+                limites: null,
+                nombre: 'Imagen',
+                encuadrarAlCargar: false,
+                transparencia: 1,
+                params: {
+                    isBaseLayer: false,
+                    maxResolution: 156543.03390625,
+                    opacity: 1
+                }
+            }
+            var o = $.extend({},predeterminadasImagen,opciones);
+            if(null === o.url || null === o.limites) {
+                return;
+            }
+            o.params.opacity = o.transparencia;
+            var bounds;
+            if($.isArray(o.limites)) {
+                bounds = OpenLayers.Bounds.fromArray(o.limites, true);
+            }else{
+                bounds = OpenLayers.Bounds.fromString(o.limites, true);
+            }
+            bounds.transform('EPSG:4326','EPSG:3857');
+            o.limites = bounds;
+            var img = $('<img src="'+o.url+'" />').load($.proxy(function(){
+                    var size = new OpenLayers.Size(img[0].naturalWidth,img[0].naturalHeight);
+                    var l = new OpenLayers.Layer.Image(o.nombre, o.url, o.limites, size, o.params);
+                    this.mapa.addLayer(l);
+                    if(o.encuadrarAlCargar) {
+                        this.mapa.zoomToExtent(o.limites, true);
+                    }
+                },
+                this)
+            );
+        },
         agregarCapaKML: function(opciones) {
             if(typeof(opciones) !== "object" && typeof(opciones.url) !== "string") {
                 return;
@@ -654,133 +698,138 @@ var IGN_CACHES, argenmap;
                 nombre: "Capa KML",
                 proyeccion: this.opciones.proyeccion,
                 url: "",
-                agruparItems: true,
-                strategies: [new OpenLayers.Strategy.Fixed()],
-                protocol: new OpenLayers.Protocol.HTTP({
-                    url: opciones.url,
-                    // "http://172.20.202.117/crossproxy/crossproxy/?u=" + encodeURIComponent(opciones.url),
-                    format: new OpenLayers.Format.KML({
-                        extractStyles: true,
-                        extractAttributes: true
-                    })
-                }),
-                sld: null
+                agruparItems: false,
+                strategies: [],
+                // protocol: new OpenLayers.Protocol.HTTP(),
+                sld: null,
+                filtro: '',
+                extractStyles: true
             };
             var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones));
-            if(o.agruparItems) {
-                o.strategies.push(new OpenLayers.Strategy.Cluster({threshold:2,distance:40}));
-            }
-            if(o.sld !== null && argenmap.esUrl(o.sld)) {
-                o.protocol.format.extractStyles = false;
+            //intenta cargar sld si existe, de ser asi, corta el proceso y llama
+            //agregarCapaKML con nuevos valores
+            if(o.sld !== null) {
                 var capas = argenmap.obtenerParametro(o.url,'layers');
                 var format = new OpenLayers.Format.SLD.v1_0_0_GeoServer();
-                argenmap.loadXML(OpenLayers.ProxyHost + encodeURIComponent(o.sld))
-                .then(function(data){
-                    var sld = format.read(data);
-                    if( sld.namedLayers[capas] !== undefined ) {
-                        o.styleMap = new OpenLayers.StyleMap({default:sld.namedLayers[capas].userStyles[0]});
+                var url = argenmap.esUrl(o.sld) ? OpenLayers.ProxyHost + encodeURIComponent(o.sld) : o.sld;
+                argenmap.loadXML(url)
+                    .then(function processSLD(sld){
+                        var sld = format.read(sld);
+                        if( sld.namedLayers[capas] !== undefined ) {
+                            o.styleMap = new OpenLayers.StyleMap({default:sld.namedLayers[capas].userStyles[0]});
+                        }
+                        o.sld = null;//null para que la proxima vuelta no pase por aca
+                        o.extractStyles = false;
+                        _this.agregarCapaKML(o);
                     }
-                    o.sld = null;//null para que la proxima vuelta no pase por aca
-                    _this.agregarCapaKML(o);
-                });
+                );
                 return;
             }
-            this.quitarCapa(o.nombre);
 
-            var l = new OpenLayers.Layer.Vector(o.nombre,o);
-
-            //al crearse el layer no tiene aun los features, delay al event loadend
-            l.events.register('loadend',l,function(){
-                //por defecto kml usa geograficas, asumiendo eso, transformo epsg
-                $.each(l.features,function(index,item){
-                    if(item.cluster !== undefined) {
-                        $.each(item.cluster, function(index2,item2){
-                            item2.geometry.transform("EPSG:4326",l.projection);
-                        });
-                    }else{
-                        item.geometry.transform("EPSG:4326",l.projection);
-                    }
-                });
-                l.redraw();
-                //little kludge?
-                l.map.zoomIn();
-                l.map.zoomOut();
-            });
-            
-            //BUG: si se cambia el zoom con un cuadro abierto despues no se puede cerrar
-            
-            //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
-            //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
-            //TODO: revisar el framedCloud, agregar a la capa el control
-            //y hookear con onRemove para sacarlo, revisar NOMBRE del popup
-            var selector = new OpenLayers.Control.SelectFeature(l);
-            this.mapa.addControl(selector);
-            selector.activate();
-            var alCerrarCuadro = function() {
-                selector.unselectAll();
-            };
-            var alSeleccionar = function(e) {
-                var f = e.feature;
-
-                var datos = "";
-                if(f.cluster !== undefined) {
-                    datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
-                    $.each(f.cluster, function(i,e) {
-                        datos += "<h2>"+e.attributes.name +
-                                "</h2>" + e.attributes.description +
-                                "<hr />"
-                    });
-                }else{
-                    datos = "<h2>"+f.attributes.name + "</h2>" + f.attributes.description;
-                }
-                var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
-                    f.geometry.getBounds().getCenterLonLat(),
-                    new OpenLayers.Size(100,100),
-                    datos,
-                    null, true, alCerrarCuadro
-                );
-                cuadro.autoSize=true;
-                f.cuadro = cuadro;
-                this.map.addPopup(cuadro);
-            };
-            var alDeSeleccionar = function(e) {
-                var f2 = e.feature;
-                if(f2.cuadro) {
-                    this.map.removePopup(f2.cuadro);
-                    f2.cuadro.destroy();
-                    try{
-                        delete f2.cuadro;
-                    }catch(err) {
-                        f2.cuadro = undefined;
-                    }
-                }
-            };
-            //esta funcion es porque los features se
-            //destruyen y vuelven a crear al zoom por el strategy.Cluster
-            //si algun popup existe, pierde la referencia y el popup no se
-            //puede sacar. each y remove
-            var antesDeRemoverFeatures = function(e) {
-                var map = this.map;
-                $.each(e.features, function(i,f3){
-                    if(f3.cuadro !== undefined) {
-                        map.removePopup(f3.cuadro);
-                        f3.cuadro.destroy();
-                        try{
-                            delete f3.cuadro;
-                        }catch(err) {
-                            f3.cuadro = undefined;
-                        }
-                    }
-                });
-            };
-            l.events.on({
-                featureselected: alSeleccionar,
-                featureunselected: alDeSeleccionar,
-                beforefeaturesremoved: antesDeRemoverFeatures
-            });
-            if(this.mapa) {
-            	this.mapa.addLayer(l);
+            if(o.agruparItems) {
+                o.strategies = [];
+                o.strategies.push(new OpenLayers.Strategy.Cluster({threshold:2,distance:20}));
             }
+
+            //deferrear al load de kml, procesar kml para remover multigeometry
+            //toda la funcion va adentro de este then
+            var kurl = argenmap.esUrl(o.url) ? OpenLayers.ProxyHost + encodeURIComponent(o.url) : o.url;
+            argenmap.loadXML(kurl).then(
+                function processKML(kml) {
+                    if(o.filtro !== '') {
+                        $(kml).find('Placemark').each(function filterPlacemarks(i,e){
+                            var geom = $(e).find('MultiGeometry').remove();
+                            var rightGeom = geom.find(o.filtro);
+                            $(e).append(rightGeom);
+                        });
+                    }
+                    var kmlFormat = new OpenLayers.Format.KML({
+                        extractStyles: o.extractStyles,
+                        extractAttributes: true,
+                        internalProjection: _this.opciones.proyeccion,
+                        externalProjection: new OpenLayers.Projection("EPSG:4326")
+                    });
+                    var kmlFeatures = kmlFormat.read(kml);
+                    _this.quitarCapa(o.nombre);
+
+                    var l = new OpenLayers.Layer.Vector(o.nombre,o);
+                    if(_this.mapa) {
+                        _this.mapa.addLayer(l);
+                        l.addFeatures(kmlFeatures);
+
+                        var selector = new OpenLayers.Control.SelectFeature(l);
+                        _this.mapa.addControl(selector);
+                        selector.activate();
+                    }
+
+                    /* HANDLERS PARA KML LAYER */
+                    
+                    //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
+                    //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
+                    var alCerrarCuadro = function() {
+                        selector.unselectAll();
+                    };
+                    var alSeleccionar = function(e) {
+                        var f = e.feature;
+
+                        var datos = "";
+                        if(f.cluster !== undefined) {
+                            datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
+                            $.each(f.cluster, function(i,e) {
+                                datos += "<h2>"+e.attributes.name +
+                                        "</h2>" + e.attributes.description +
+                                        "<hr />"
+                            });
+                        }else{
+                            datos = "<h2>"+f.attributes.name + "</h2>" + f.attributes.description;
+                        }
+                        var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
+                            f.geometry.getBounds().getCenterLonLat(),
+                            new OpenLayers.Size(100,100),
+                            datos,
+                            null, true, alCerrarCuadro
+                        );
+                        cuadro.autoSize=true;
+                        f.cuadro = cuadro;
+                        this.map.addPopup(cuadro);
+                    };
+                    var alDeSeleccionar = function(e) {
+                        var f2 = e.feature;
+                        if(f2.cuadro) {
+                            this.map.removePopup(f2.cuadro);
+                            f2.cuadro.destroy();
+                            try{
+                                delete f2.cuadro;
+                            }catch(err) {
+                                f2.cuadro = undefined;
+                            }
+                        }
+                    };
+                    //esta funcion es porque los features se
+                    //destruyen y vuelven a crear al zoom por el strategy.Cluster
+                    //si algun popup existe, pierde la referencia y el popup no se
+                    //puede sacar. each y remove
+                    var antesDeRemoverFeatures = function(e) {
+                        var map = this.map;
+                        $.each(e.features, function(i,f3){
+                            if(f3.cuadro !== undefined) {
+                                map.removePopup(f3.cuadro);
+                                f3.cuadro.destroy();
+                                try{
+                                    delete f3.cuadro;
+                                }catch(err) {
+                                    f3.cuadro = undefined;
+                                }
+                            }
+                        });
+                    };
+                    l.events.on({
+                        featureselected: alSeleccionar,
+                        featureunselected: alDeSeleccionar,
+                        beforefeaturesremoved: antesDeRemoverFeatures
+                    });
+                }
+            );
         },
         agregarCapaBaseWMS: function(opciones) {
             var predeterminadasWms = {
@@ -819,7 +868,7 @@ var IGN_CACHES, argenmap;
                 nombre: "Marcador",
                 contenido: "",
                 mostrarConClick: true,
-                desplegarContenido: false,
+                mostrarContenido: false,
                 icono: ''
             };
             var coordenadas = argenmap.leerCoordenadas(opciones,this.opciones.proyeccion);
@@ -881,6 +930,7 @@ var IGN_CACHES, argenmap;
             var f = new OpenLayers.Feature(capa,coordenadas,opcionesFeature);
             var m = f.createMarker();
             f.nombre = m.nombre = o.nombre;
+            f.mostrarContenido = o.mostrarContenido;
             f.closeBox = true;
             f.popupClass = OpenLayers.Popup.FramedCloud;
             if(o.eventos) {
@@ -889,6 +939,9 @@ var IGN_CACHES, argenmap;
             }
             this.marcadores.push(f);
             capa.addMarker(m);
+            if(o.mostrarContenido) {
+                this._marcadorClickHandler.apply(f,[null])
+            }
         },
         agregarMarcadores: function(arrayMarcadores) {
             if(!$.isArray(arrayMarcadores)) {
@@ -901,7 +954,9 @@ var IGN_CACHES, argenmap;
         },
         modificarMarcador: function(nombre,opciones) {
             var f = this._traerMarcadorPorNombre(nombre);
-            if(!f) {return;}
+            if(!f) {
+                return;
+            }
             var coordenadas = argenmap.leerCoordenadas(opciones,this.opciones.proyeccion) || f.lonlat;
             if(typeof(opciones) == "object") {
                 try{
@@ -930,7 +985,8 @@ var IGN_CACHES, argenmap;
                 listarCapa: f.layer.displayInLayerSwitcher,
                 nombre: f.nombre,
                 contenido: f.data.popupContentHTML,
-                mostrarConClick: f.marker.events.listeners.click !== undefined || f.data.popupContentHTML !== ""
+                mostrarConClick: f.marker.events.listeners.click !== undefined || f.data.popupContentHTML !== "",
+                mostrarContenido: f.mostrarContenido
             };
             var opcionesNuevas = $.extend({},opcionesPrevias,opciones);
             this.quitarMarcador(nombre);
@@ -1168,13 +1224,15 @@ var IGN_CACHES, argenmap;
             if (this.popup == null) {
                 this.popupClass.prototype.autoSize = true;
                 this.popup = this.createPopup(this.closeBox);
-                e.object.map.addPopup(this.popup);
+                this.layer.map.addPopup(this.popup);
                 this.popup.show();
             } else {
                 this.popup.toggle();
             }
             // currentPopup = this.popup;
-            OpenLayers.Event.stop(e);
+            if(e) {
+                OpenLayers.Event.stop(e);
+            }
         },
         /**
          * Agrega una capa OpenLayers.Layer.Markers
@@ -1278,16 +1336,16 @@ var IGN_CACHES, argenmap;
                         transparente: true,
                         type:'png',
                         serviceVersion: "",
-                        esCapaBase: false,                      
+                        esCapaBase: false,
                         nombre: "IGN",
                         noMagic: true,
                         singleTile: false,
                         transitionEffect: 'map-resize',
-                        proyeccion: this.opciones.proyeccion                        
+                        proyeccion: this.opciones.proyeccion
                     });
                     $.extend(p,o);
                     //c = new OpenLayers.Layer.WMS("IGN",["http://www.ign.gob.ar/wms", "http://190.220.8.198/wms"],p,o);
-                    c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);                  
+                    c = new OpenLayers.Layer.ArgenmapTMS(p.nombre, IGN_CACHES ,p);
                     /*
                      * El constructor OpenLayers.Layer.TMS no acepta displayInLayerSwitcher como opción
                      * así que la agrego a manopla.
@@ -1601,6 +1659,15 @@ var IGN_CACHES, argenmap;
             var a = $this.data('argenmap');
             if(!a) {return;}
             a.agregarCapaKML(opciones);
+        });
+    };
+    $.fn.agregarImagen = function(opciones) {
+        //chainability
+        return this.each(function(){
+            var $this = $(this);
+            var a = $this.data('argenmap');
+            if(!a) {return;}
+            a.agregarImagen(opciones);
         });
     };
     $.fn.quitarArgenmap = function() {
