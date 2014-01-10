@@ -82,7 +82,8 @@ var IGN_CACHES, argenmap;
         icono: 'icon',
         escucharEventos: 'eventListeners',
         listarCapa: 'displayInLayerSwitcher',
-        visible: 'visibility'
+        visible: 'visibility',
+        limites: 'extent'
     };
     //hard coded, modificar para la version final
     // var argenmap.rutaRelativa = "http://vm/argenmap2/";
@@ -649,6 +650,43 @@ var IGN_CACHES, argenmap;
             if(l.options.isBaseLayer && o.mostrarAlCargar) {
                 this.mapa.setBaseLayer(l);
             }
+        },
+        agregarImagen: function(opciones) {
+            var predeterminadasImagen = {
+                url:null,
+                limites: null,
+                nombre: 'Imagen',
+                encuadrarAlCargar: false,
+                transparencia: 1,
+                params: {
+                    isBaseLayer: false,
+                    maxResolution: 156543.03390625,
+                    opacity: 1
+                }
+            }
+            var o = $.extend({},predeterminadasImagen,opciones);
+            if(null === o.url || null === o.limites) {
+                return;
+            }
+            o.params.opacity = o.transparencia;
+            var bounds;
+            if($.isArray(o.limites)) {
+                bounds = OpenLayers.Bounds.fromArray(o.limites, true);
+            }else{
+                bounds = OpenLayers.Bounds.fromString(o.limites, true);
+            }
+            bounds.transform('EPSG:4326','EPSG:3857');
+            o.limites = bounds;
+            var img = $('<img src="'+o.url+'" />').load($.proxy(function(){
+                    var size = new OpenLayers.Size(img[0].naturalWidth,img[0].naturalHeight);
+                    var l = new OpenLayers.Layer.Image(o.nombre, o.url, o.limites, size, o.params);
+                    this.mapa.addLayer(l);
+                    if(o.encuadrarAlCargar) {
+                        this.mapa.zoomToExtent(o.limites, true);
+                    }
+                },
+                this)
+            );
         },
         agregarCapaKML: function(opciones) {
             if(typeof(opciones) !== "object" && typeof(opciones.url) !== "string") {
@@ -1621,6 +1659,15 @@ var IGN_CACHES, argenmap;
             var a = $this.data('argenmap');
             if(!a) {return;}
             a.agregarCapaKML(opciones);
+        });
+    };
+    $.fn.agregarImagen = function(opciones) {
+        //chainability
+        return this.each(function(){
+            var $this = $(this);
+            var a = $this.data('argenmap');
+            if(!a) {return;}
+            a.agregarImagen(opciones);
         });
     };
     $.fn.quitarArgenmap = function() {
