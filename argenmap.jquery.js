@@ -1040,6 +1040,9 @@ var IGN_CACHES, argenmap;
             if(arguments.length === 0) {
                 return this.mapa.baseLayer.nombre;
             }
+            if("Satélite" === capa && !argenmap.googleEstaCargado()) {
+                $(window).one('googleCargado',$.proxy(function(){this.capaBase("Satélite")},this));
+            }
             var c = this._traerCapaPorNombre(capa);
             if(c) {this.mapa.setBaseLayer(c);}
         },
