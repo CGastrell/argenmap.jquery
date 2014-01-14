@@ -32,13 +32,16 @@ var IGN_CACHES, argenmap;
                     $w = $this.width();
                     $h = $this.height();
                     $.event.dispatch.call(self, {type:'resized'});
-                    // $.event.handle.call(self, {type:'resized'});
+                    console.log($this);
                 }
             },20);
-            interval = interval;
+            $this.data('special-resized-interval',interval);
+            return false;
         },
         teardown: function (){
-                clearInterval(interval);
+            clearInterval($(this).data('special-resized-interval'));
+            $(this).data('special-resized-interval', null);
+            return false;
         }
     };
     /* COMPATIBILIDAD CON IE < 9; implementacion de indexOf para arrays */
@@ -1036,6 +1039,9 @@ var IGN_CACHES, argenmap;
         capaBase: function(capa) {
             if(arguments.length === 0) {
                 return this.mapa.baseLayer.nombre;
+            }
+            if("Satélite" === capa && !argenmap.googleEstaCargado()) {
+                $(window).one('googleCargado',$.proxy(function(){this.capaBase("Satélite")},this));
             }
             var c = this._traerCapaPorNombre(capa);
             if(c) {this.mapa.setBaseLayer(c);}
