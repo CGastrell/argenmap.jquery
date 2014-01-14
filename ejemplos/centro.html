@@ -1,31 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="utf-8" />
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
-<script type="text/javascript" src="http://www.ign.gob.ar/argenmap/argenmap.jquery.min.js"></script>
-<script>
-$(function() {
-	//El div tiene id="mapa"
-	$('#mapa').argenmap();
-	$('#mapa').centro(-40, -62);
-});
-</script>
-</head>
-<body>
-<h3>Modificando el centro inicial de un mapa</h3>
+	<head>
+		<meta charset="utf-8" />
+		<!-- jQuery, vinculado directo a cdn de google -->
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<!-- ArgenMap v2, vinculado directo desde el Instituto Geográfico Nacional -->
+		<script type="text/javascript" src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
+	</head>
+	<body>
+		<h3>Modificando el centro inicial de un mapa</h3>
 
-<div id="mapa" style="height:400px"></div>
+		<div id="mapa" style="height:400px"></div>
 
-<p>
-  En este ejemplo se crea un mapa básico sobre el div con <code>id=mapa</code> utilizando la configuración predeterminada de argenmap y se lo centra en ubicación con coordenadas
-  latitud: -40 y longitud -62.
-</p>
+		<p>
+		  En este ejemplo se crea un mapa básico sobre el div con <code>id=mapa</code> utilizando la configuración predeterminada de argenmap y se lo centra en ubicación con coordenadas
+		  latitud: -32.65 y longitud -70.01
+		</p>
 
-<p>
-<a href="javascript:(function(){window.location='view-source:'+window.location})()">Ver el código fuente!</a>
-</p>
+		<p>
+			<a href="javascript:(function(){window.location='view-source:'+window.location})()">Ver el código fuente!</a>
+		</p>
+		<script>
+			$(document).ready(function(){
+				//un mapa en una sola línea de código :)
+				$('#mapa').argenmap();
+				//cambiamos el centro a las coordenadas del Aconcagua
+				$('#mapa').centro(-32.6533333,-70.0108333);
 
-</body>
+				/**
+				 el mismo resultado puede obtenerse configurando la instancia
+				 */
+				// var opciones = {centro: [-32.6533333,-70.0108333]};
+				// $('#mapa').argenmap(opciones);
+
+				/**
+				 y lo mismo sucede encadenando las llamadas a los metodos
+				 */
+				// $('#mapa').argenmap().centro(-32.6533333,-70.0108333);
+			});
+		</script>
+	</body>
 </html>

@@ -8,12 +8,12 @@
 		<script type="text/javascript" src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
 	</head>
 	<body>
-		<h3>Un marcador con contenido</h3>
+		<h3>Un mapa con un marcador en el centro</h3>
 
 		<div id="mapa" style="height:400px"></div>
 
 		<p>
-		  En este ejemplo se crea un mapa y se agrega un marcador con un popup con contenido HTML.
+		  En este ejemplo se crea un mapa y se lo centra en la  ubicación con coordenadas latitud: -32.5642 y longitud -68.6540. Luego se llama a agregarMarcador() sin par&aacute;metros que crea un marcador en el centro del mapa.
 		</p>
 
 		<p>
@@ -22,20 +22,16 @@
 		<script>
 			$(document).ready(function(){
 				//un mapa en una sola línea de código :)
-				$('#mapa').argenmap()
-					.centro(-32.91110160485335,-68.83364868164072)
-					.zoom(10);
+				$('#mapa').argenmap({centro: [-32.5642, -68.6540]});
+				//cambiamos el zoom
+				$('#mapa').zoom(8);
+				//agregamos un marcador (por defecto se ubica en el centro del mapa)
+				$('#mapa').agregarMarcador();
 
 				/**
-				 agregamos el marcador con su configuracion
+				 mismo resultado encadenando las llamadas a los metodos
 				 */
-				$('#mapa').agregarMarcador({
-					lat: -32.91110160485335,
-					lon: -68.83364868164072,
-					contenido: '<h3>Hola mundo!</h3>Soy un marcador con contenido!',
-					nombre: 'marcador1',
-					mostrarContenido: true
-				});
+				// $('#mapa').argenmap().centro(-32.5642, -68.6540).zoom(8).agregarMarcador();
 			});
 		</script>
 	</body>

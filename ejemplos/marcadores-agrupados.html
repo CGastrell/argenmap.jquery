@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <!-- jQuery, vinculado directo a cdn de google -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <!-- ArgenMap v2, vinculado directo desde el Instituto Geográfico Nacional -->
+    <script type="text/javascript" src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
+  </head>
+  <body>
+    <h3>Marcadores agrupados</h3>
+
+    <div id="mapa" style="height:400px"></div>
+
+    <p>
+      En este ejemplo muestra como agrupar marcadores definiendo la propiedad <code>capa</code> del marcador. Cuando se define <code>capa</code> argenmap busca una capa con ese nombre y, de no existir, la crea. Luego indicamos si la capa debe listarse en el administrador de capas con <code>listarCapa</code> en <code>true</code>.
+      <br />
+      Hac&eacute; click en el administrador de capas para ver las capas listadas.
+    </p>
+
+    <p>
+      <a href="javascript:(function(){window.location='view-source:'+window.location})()">Ver el código fuente!</a>
+    </p>
+    <script>
+      $(document).ready(function(){
+        //un mapa en una sola línea de código :)
+        $('#mapa').argenmap().centro(-30, -59);
+
+        //creamos un array con objetos para crear los marcadores
+        //cada objeto lleva la configuracion especificada para el metodo agregarMarcador()
+        var marcadores = [
+          {
+            nombre: 'cataratas',
+            lat: -25.695278,
+            lon: -54.436667,
+            contenido:'Cataratas del Iguazú!',
+            icono:'cascada',
+            capa: 'Maravillas',
+            listarCapa:true
+          },
+          {
+            nombre: 'atucha',
+            lat: -34.05,
+            lon: -59.2,
+            contenido:'Atucha: central eléctrica',
+            capa: 'Recursos',
+            listarCapa: true
+          },
+          {
+            nombre: 'minera',
+            lat: -27.31,
+            lon: -66.608617,
+            contenido:'Minera Lumbrera: buena mina',
+            capa: 'Recursos',
+            listarCapa: true
+          },
+          {
+            nombre: 'vacio',
+            lat: -32.911,
+            lon: -68.833,
+            contenido:'No soy solo un marcador vacío, tengo sentimientos :(',
+            icono:'hueco',
+            capa: 'Maravillas',
+            listarCapa: true
+          }
+        ];
+        /**
+         agregamos todos los marcadores con agregarMarcadores()
+         */
+        $('#mapa').agregarMarcadores(marcadores);
+      });
+    </script>
+  </body>
+</html>

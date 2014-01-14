@@ -1,39 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="utf-8" />
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
-<script type="text/javascript" src="http://www.ign.gob.ar/argenmap/argenmap.jquery.min.js"></script>
-<script>
-$(function() {
-	//El div tiene id="mapa"
-	$('#mapa').argenmap();
-  $('#mapa').centro(-30, -59)
+  <head>
+    <meta charset="utf-8" />
+    <!-- jQuery, vinculado directo a cdn de google -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <!-- ArgenMap v2, vinculado directo desde el Instituto Geográfico Nacional -->
+    <script type="text/javascript" src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
+  </head>
+  <body>
+    <h3>Un mapa con varios marcadores</h3>
 
-  var marcadores = [
-    {lat: -25.695278, lng: -54.436667, contenido:'Cataratas del Iguazú!'},
-    {lat: -34.05, lng: -59.2, contenido:'Atucha: central eléctrica'},
-    {lat: -27.31,  lng: -66.608617, contenido:'Minera Lumbrera: buena mina'}
-  ];
+    <div id="mapa" style="height:400px"></div>
 
-  $('#mapa').agregarMarcadores( marcadores );
-});
-</script>
-</head>
-<body>
-<h3>Un mapa con varios marcadores</h3>
+    <p>
+      En este ejemplo se crea un mapa y luego se llama a <code>agregarMarcadores()</code> pasándole un array de objetos iguales a los que recibir&iacute;a el m&eacute;todo <code>.agregarMarcador()</code>.
+    </p>
 
-<div id="mapa" style="height:400px"></div>
+    <p>
+      <a href="javascript:(function(){window.location='view-source:'+window.location})()">Ver el código fuente!</a>
+    </p>
+    <script>
+      $(document).ready(function(){
+        //un mapa en una sola línea de código :)
+        $('#mapa').argenmap().centro(-30, -59);
 
-<p>
-  En este ejemplo se crea un mapa y luego se llama a <code>agregarMarcadores()</code> pasándole una array de objetos
-  similares a los que recibe <code>.agregarMarcador()</code>.
-</p>
-
-<p>
-<a href="javascript:(function(){window.location='view-source:'+window.location})()">Ver el código fuente!</a>
-</p>
-
-</body>
+        //creamos un array con objetos para crear los marcadores
+        //cada objeto lleva la configuracion especificada para el metodo agregarMarcador()
+        var marcadores = [
+          {nombre: 'cataratas', lat: -25.695278, lon: -54.436667, contenido:'Cataratas del Iguazú!', icono:'cascada'},
+          {nombre: 'atucha', lat: -34.05, lon: -59.2, contenido:'Atucha: central eléctrica'},
+          {nombre: 'minera', lat: -27.31,  lon: -66.608617, contenido:'Minera Lumbrera: buena mina'},
+          {nombre: 'vacio', lat: -32.911,lon: -68.833, contenido:'No soy solo un marcador vacío, tengo sentimientos :(',icono:'hueco'}
+        ];
+        /**
+         agregamos todos los marcadores con agregarMarcadores()
+         */
+        $('#mapa').agregarMarcadores(marcadores);
+      });
+    </script>
+  </body>
 </html>

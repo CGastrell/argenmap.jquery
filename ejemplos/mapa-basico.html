@@ -8,12 +8,11 @@
 		<script type="text/javascript" src="http://www.ign.gob.ar/argenmap2/argenmap.jquery/argenmap.jquery.min.js"></script>
 	</head>
 	<body>
-		<h3>Un marcador con contenido</h3>
-
-		<div id="mapa" style="height:400px"></div>
+		<h3>Mapa simple</h3>
+		<div id="mapa" style="height:450px;"></div>
 
 		<p>
-		  En este ejemplo se crea un mapa y se agrega un marcador con un popup con contenido HTML.
+			En este ejemplo se crea un mapa básico sobre el div con ID <code>mapa</code> utilizando la configuración predeterminada de argenmap.
 		</p>
 
 		<p>
@@ -22,20 +21,7 @@
 		<script>
 			$(document).ready(function(){
 				//un mapa en una sola línea de código :)
-				$('#mapa').argenmap()
-					.centro(-32.91110160485335,-68.83364868164072)
-					.zoom(10);
-
-				/**
-				 agregamos el marcador con su configuracion
-				 */
-				$('#mapa').agregarMarcador({
-					lat: -32.91110160485335,
-					lon: -68.83364868164072,
-					contenido: '<h3>Hola mundo!</h3>Soy un marcador con contenido!',
-					nombre: 'marcador1',
-					mostrarContenido: true
-				});
+				$('#mapa').argenmap();
 			});
 		</script>
 	</body>
