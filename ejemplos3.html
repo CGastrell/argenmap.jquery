@@ -619,24 +619,34 @@ $('#mapa').agregarCapaKML( inundacion )
 
 			$('.viewCode').click(function(e){
 				e.preventDefault();
-				$(this).parent().find('.collapse').first().collapse('toggle');
-				//cambiar clase aca!!! para la flechita!
+				var $this = $(this);
+				var icon = $this.children().first();
+
+				icon.toggleClass('icon-circle-arrow-down');
+				icon.toggleClass('icon-circle-arrow-up');
+				$this.html(function(){
+					if( $this.text().indexOf('Ver') !== -1 ) {
+						return $this.html().replace('Ver','Ocultar');
+					}else{
+						return $this.html().replace('Ocultar','Ver');
+					}
+				});
+				$this.parent().find('.collapse').first().collapse('toggle');
 				return false;
 			});
 
 			(function masonrear() {
 				var columnas = $('div.columna');
-				console.log(columnas);
 				var col = 0;
 				$('.card').each(function(i,e){
 					// var card = $(this);
 					// var tags = section.data('tags').split(',');
 					var tags = $(this).data('tags');
 					var footWell = $(this).find('.well').first();
-					$.each(tags,function(i,e){
-						tags[i] = e.trim();
-						if(allTags.indexOf(tags[i]) < 0) allTags.push(tags[i]);
-						$('<span class="label" />').text(tags[i]).appendTo(footWell);
+					$.each(tags,function(ii,ee){
+						tags[i] = ee.trim();
+						if(allTags.indexOf(tags[ii]) < 0) allTags.push(tags[ii]);
+						$('<span class="label" />').text(tags[ii]).appendTo(footWell);
 						footWell.append(' ');
 					});
 					$(this).appendTo(columnas[col++ %2]);
