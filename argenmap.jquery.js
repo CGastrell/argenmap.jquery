@@ -32,7 +32,6 @@ var IGN_CACHES, argenmap;
                     $w = $this.width();
                     $h = $this.height();
                     $.event.dispatch.call(self, {type:'resized'});
-                    console.log($this);
                 }
             },20);
             $this.data('special-resized-interval',interval);
@@ -391,6 +390,16 @@ var IGN_CACHES, argenmap;
     
     OpenLayers.Layer.ArgenmapTMS = OpenLayers.Class(OpenLayers.Layer.TMS, {
         'cache': new argenmap.CacheDeCliente()
+    });
+    OpenLayers.Layer.ArgenmapOSM = OpenLayers.Class(OpenLayers.Layer.OSM, {
+        'cache': new argenmap.CacheDeCliente(),
+        'url': [
+            'http://vm/cg/tms/osm/${z}/${x}/${y}.png',
+            'http://172.20.202.117/cg/tms/osm/${z}/${x}/${y}.png'
+        ],
+        isBaseLayer: true,
+        name: "OpenStreetMap IGN",
+        nombre: "OpenStreetMap IGN"
     });
 
     
@@ -1399,35 +1408,18 @@ var IGN_CACHES, argenmap;
                         scope:this
                     });
                 break;
-                case "mapnik-osm-ar":
+                case "mapnik-osm-ign":
                     //corte temprano para evitar instancia de capa si el mapa
                     //no esta en spherical mercator
                     if(this.opciones.proyeccion != "EPSG:3857" && this.opciones.proyeccion != "EPSG:900913") {return c;}
                     
-                    //var ign = this._crearCapaPredefinida("ign",{displayInLayerSwitcher:false});
                     o = {
                         isBaseLayer:true,
-                        name: "OpenStreetMap Argentina",
-                        nombre: "OpenStreetMap Argentina",
-                        type: "Mapnik"
+                        name: "OpenStreetMap IGN",
+                        nombre: "OpenStreetMap IGN"
                     };
-                    c = new OpenLayers.Layer.OSM("OpenStreetMap Argentina",'http://tile.openstreetmap.org.ar/nolabels/${z}/${x}/${y}.png',o);
+                    c = new OpenLayers.Layer.ArgenmapOSM("OpenStreetMap");
                     
-                    /*c.companionLayer = ign;
-                    c.events.on({
-                        visibilitychanged:function(e){
-                            e.object.companionLayer.setVisibility(e.object.getVisibility());
-                        },
-                        added: function(e)
-                        {
-                            e.map.addLayer(e.layer.companionLayer);
-                        },
-                        removed: function(e){
-                            var l = this._traerCapaPorReferencia(e.layer.companionLayer);
-                            if(l) e.map.removeLayer(l);
-                        },
-                        scope:this
-                    });*/
                 break;
                 case "satelital_base":
                     //atencion con esta capa, es la satelital pero para instancia inicial
