@@ -15,7 +15,7 @@ var IGN_CACHES, argenmap;
             'http://cg.aws.af.cm/tms',
             'http://190.220.8.216/tms',
             'http://mapaabierto.aws.af.cm/tms',
-            'http://igntiles1.ap01.aws.af.cm/tms'
+            'http://igntiles2.eu01.aws.af.cm/tms'
     ];  
     //-----------------------------------------------------------------------//
     // jQuery event
@@ -44,25 +44,6 @@ var IGN_CACHES, argenmap;
             return false;
         }
     };
-    /* COMPATIBILIDAD CON IE < 9; implementacion de indexOf para arrays */
-    if (!Array.prototype.indexOf) {
-      	Array.prototype.indexOf = function(elt /*, from*/) {
-        var len = this.length >>> 0;
-
-        var from = Number(arguments[1]) || 0;
-        from = (from < 0) ? Math.ceil(from) : parseInt(from, 10);
-        if (from < 0) {
-            from += len;
-        }
-
-        for (; from < len; from++) {
-          if (from in this && this[from] === elt) {
-            return from;
-          }
-        }
-        return -1;
-      };
-    }
 
     /**
      * Espacio de nombres para funciones/propiedades/clases de ayuda
@@ -109,7 +90,7 @@ var IGN_CACHES, argenmap;
         recuperar: function(paramString) {
             var tilecode = paramString;
 
-            if(this.cache.indexOf(tilecode) != -1) {
+            if($.inArray(tilecode, this.cache) != -1) {
                 return this.cacheRef[tilecode];
             }
             return false;
@@ -1005,7 +986,7 @@ var IGN_CACHES, argenmap;
             this._quitarMarcadorPorReferencia(f);
         },
         quitarCapa: function(nombre) {
-            if(this.privados.indexOf(nombre) > -1) {
+            if($.inArray(nombre,this.privados) > -1) {
                 return;
             }
             var c = this._traerCapaPorNombre(nombre);
@@ -1055,7 +1036,7 @@ var IGN_CACHES, argenmap;
             return r;
         },
         _esCapaPrivada: function(nombre) {
-            return this.privados.indexOf(nombre) > -1;
+            return $.inArray(nombre, this.privados) > -1;
         },
         _crearIconoPredeterminado: function(icono) {
             var a = null;
@@ -1220,8 +1201,8 @@ var IGN_CACHES, argenmap;
             //esta funcion solo termina removiendo el marcador
             //del array interno de ArgenMap, solo debe ejecutarse
             //cuando todos los procesos previos estan listos
-            this.marcadores[this.marcadores.indexOf(marcador)].destroy();
-            this.marcadores.splice(this.marcadores.indexOf(marcador),1);
+            this.marcadores[$.inArray(marcador, this.marcadores)].destroy();
+            this.marcadores.splice($.inArray(marcador, this.marcadores),1);
         },
         /**
          * Handler para el click de los marcadores
@@ -1261,7 +1242,7 @@ var IGN_CACHES, argenmap;
             return null;
         },
         _traerMarcadorPorReferencia: function(marcador) {
-            return this.marcadores[this.marcadores.indexOf(marcador)];
+            return this.marcadores[$.inArray(marcador, this.marcadores)];
         },
         _traerCapaPorNombre: function(nombre) {
             for(var i = 0; i < this.capas.length; i++) {
@@ -1270,7 +1251,7 @@ var IGN_CACHES, argenmap;
             return null;
         },
         _traerCapaPorReferencia: function(capa) {
-            return this.capas[this.capas.indexOf(capa)];
+            return this.capas[$.inArray(capa, this.capas)];
         },
         /**
          * Busca en el array de capas proporcionado y devuelve si alguna capa.isBaseLayer == true
