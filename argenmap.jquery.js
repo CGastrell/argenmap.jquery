@@ -13,9 +13,9 @@ var IGN_CACHES, argenmap;
 (function ( $, window, document, undefined ) {
     IGN_CACHES = [
             'http://cg.aws.af.cm/tms',
-            'http://190.220.8.216/tms',
-            'http://mapaabierto.aws.af.cm/tms',
-            'http://igntiles2.eu01.aws.af.cm/tms'
+            'http://190.220.8.216/tms'
+            'http://igntiles2.eu01.aws.af.cm/tms',
+            'http://mapaabierto.aws.af.cm/tms'
     ];  
     //-----------------------------------------------------------------------//
     // jQuery event
@@ -32,7 +32,6 @@ var IGN_CACHES, argenmap;
                     $w = $this.width();
                     $h = $this.height();
                     $.event.dispatch.call(self, {type:'resized'});
-                    console.log($this);
                 }
             },20);
             $this.data('special-resized-interval',interval);
@@ -67,7 +66,8 @@ var IGN_CACHES, argenmap;
         escucharEventos: 'eventListeners',
         listarCapa: 'displayInLayerSwitcher',
         visible: 'visibility',
-        limites: 'extent'
+        limites: 'extent',
+        importarEstilos: 'extractStyles'
     };
     //hard coded, modificar para la version final
     // var argenmap.rutaRelativa = "http://vm/argenmap2/";
@@ -152,7 +152,8 @@ var IGN_CACHES, argenmap;
         return resultado;
     };
     /**
-     * Devuelve un objeto OpenLayers.LonLat a partir de un par de coordenadas. Devuelve las coordenadas como planas o geográficas según el parámetro proyeccion.
+     * Devuelve un objeto OpenLayers.LonLat a partir de un par de coordenadas.
+     * Devuelve las coordenadas como planas o geográficas según el parámetro proyeccion.
      * @param {mixed} coords Acepta [lat,lon], {lonlat:{lon,lat}}, {latLng:{lon,lat}}, {lon,lat}.  (Llama a argenmap.leerLonLat() con @mezcla como argumento).
      * @param {string} proyeccion Código EPSG que defina el sistema de coordenadas en el que se quiere el resultado. 'epsg:4326' o 'epsg:3857' solamente.
      * @see argenmap.leerPlanas
@@ -211,7 +212,7 @@ var IGN_CACHES, argenmap;
         }
 
         // {lat:X, lon:Y} object, el argument es un OL.LonLat o similar!!! 
-        else if ( $.isNumeric(mezcla.lat) && $.isNumeric(mezcla.lon) ) {
+        if ( $.isNumeric(mezcla.lat) && $.isNumeric(mezcla.lon) ) {
             r = new OpenLayers.LonLat(mezcla.lon,mezcla.lat);
         }
         // [n, n] array: este caso es cuando es un array, de ser asi asumo que es [lat,lon] (lat PRIMERO!)
@@ -222,7 +223,9 @@ var IGN_CACHES, argenmap;
                 r = new OpenLayers.LonLat(mezcla[1], mezcla[0]);
             }
         }
-        if(r == null) {return r;} //si hasta aca no esta resuelto, ya fue
+        if(r == null) {
+            return r;
+        } //si hasta aca no esta resuelto, ya fue
         //adivinacion de epsg, fallaria solo si es una plana a menos de 180m del 0,0
         // MAGIC
         if( r.lat !== undefined && r.lon !== undefined  && (r.lat > 180 || r.lat < -180) || (r.lon > 180 || r.lon < -180) ) {
@@ -504,7 +507,7 @@ var IGN_CACHES, argenmap;
             if(!this.opciones.mapaFijo) {
                 this.mapa.addControls([
                     new OpenLayers.Control.PanZoomBarIGN({zoomBar:this.opciones.mostrarBarraDeZoom}),
-                    new OpenLayers.Control.LayerSwitcherIGN({roundedCornerColor:'rgba(28, 116, 165, 0.75)'}),
+                    new OpenLayers.Control.LayerSwitcherIGN({roundedCornerColor:"rgba(28, 116, 165, 0.75)"}),
                     new OpenLayers.Control.Navigation({
                         //Esto no causa efecto
                         //creo que porque el Map
@@ -687,9 +690,21 @@ var IGN_CACHES, argenmap;
                 // protocol: new OpenLayers.Protocol.HTTP(),
                 sld: null,
                 filtro: '',
-                extractStyles: true
+                importarEstilos: true,
+                opacidad: 1,
+                mostrarConClick: true,
+                listarCapa: true
             };
+
             var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones));
+            //opacity hack, no funciona setearlo desde la instancia, ver setOpacity mas abajo
+            var opacity = o.opacity;
+            try {
+                delete o.opacity;
+            }catch(err) {
+                o.opacity = undefined;
+            }
+
             //intenta cargar sld si existe, de ser asi, corta el proceso y llama
             //agregarCapaKML con nuevos valores
             if(o.sld !== null) {
@@ -700,7 +715,7 @@ var IGN_CACHES, argenmap;
                     .then(function processSLD(sld){
                         var sld = format.read(sld);
                         if( sld.namedLayers[capas] !== undefined ) {
-                            o.styleMap = new OpenLayers.StyleMap({default:sld.namedLayers[capas].userStyles[0]});
+                            o.styleMap = new OpenLayers.StyleMap({"default":sld.namedLayers[capas].userStyles[0]});
                         }
                         o.sld = null;//null para que la proxima vuelta no pase por aca
                         o.extractStyles = false;
@@ -737,13 +752,18 @@ var IGN_CACHES, argenmap;
                     _this.quitarCapa(o.nombre);
 
                     var l = new OpenLayers.Layer.Vector(o.nombre,o);
+                    
                     if(_this.mapa) {
                         _this.mapa.addLayer(l);
                         l.addFeatures(kmlFeatures);
+                        l.setOpacity(opacity);
 
-                        var selector = new OpenLayers.Control.SelectFeature(l);
-                        _this.mapa.addControl(selector);
-                        selector.activate();
+                        if(o.mostrarConClick) {
+                            var selector = new OpenLayers.Control.SelectFeature(l);
+                            _this.mapa.addControl(selector);
+                            selector.activate();
+                        }
+                        _this.$el.trigger('loaded.kml.layer.argenmap', l);
                     }
 
                     /* HANDLERS PARA KML LAYER */
@@ -755,7 +775,7 @@ var IGN_CACHES, argenmap;
                     };
                     var alSeleccionar = function(e) {
                         var f = e.feature;
-
+                        
                         var datos = "";
                         if(f.cluster !== undefined) {
                             datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
@@ -779,6 +799,7 @@ var IGN_CACHES, argenmap;
                     };
                     var alDeSeleccionar = function(e) {
                         var f2 = e.feature;
+                        
                         if(f2.cuadro) {
                             this.map.removePopup(f2.cuadro);
                             f2.cuadro.destroy();
@@ -807,11 +828,15 @@ var IGN_CACHES, argenmap;
                             }
                         });
                     };
-                    l.events.on({
-                        featureselected: alSeleccionar,
-                        featureunselected: alDeSeleccionar,
-                        beforefeaturesremoved: antesDeRemoverFeatures
-                    });
+                    if(o.mostrarConClick) {
+                        l.events.on({
+                            featureselected: alSeleccionar,
+                            featureunselected: alDeSeleccionar,
+                            beforefeaturesremoved: antesDeRemoverFeatures
+                        });
+                    }else{
+                        $(l.div).css('pointer-events','none');
+                    }
                 }
             );
         },
@@ -843,6 +868,7 @@ var IGN_CACHES, argenmap;
             }
         },
         agregarMarcador: function(opciones) {
+            var _this = this;
             //aca tiene que llegar un objeto SI o SI, aunque sea vacio {}
             var predeterminadasMarcador = {
                 lon: this.mapa.getCenter().lon,
@@ -853,7 +879,8 @@ var IGN_CACHES, argenmap;
                 contenido: "",
                 mostrarConClick: true,
                 mostrarContenido: false,
-                icono: ''
+                icono: '',
+                closeBox: true
             };
             var coordenadas = argenmap.leerCoordenadas(opciones,this.opciones.proyeccion);
             var o = $.extend({}, predeterminadasMarcador, opciones, coordenadas);
@@ -896,7 +923,27 @@ var IGN_CACHES, argenmap;
             }
             if(o.mostrarConClick) {
                 o.eventos = {
-                    click: this._marcadorClickHandler
+                    click: function _marcadorClickHandler (e) {
+                        if (this.popup == null) {
+                            this.popupClass.prototype.autoSize = true;
+                            this.popup = this.createPopup(this.closeBox);
+                            this.layer.map.addPopup(this.popup, !this.closeBox);
+                            this.popup.show();
+                            _this.$el.trigger('opened.popup.marker.argenmap',this);
+                        } else {
+                            this.popup.toggle();
+                            if(this.popup.visible()) {
+                                _this.$el.trigger('opened.popup.marker.argenmap',this);
+                            }else{
+                                _this.$el.trigger('closed.popup.marker.argenmap',this);
+                            }
+                        }
+                        // currentPopup = this.popup;
+                        _this.$el.trigger('clicked.marker.argenmap',this);
+                        if(e) {
+                            OpenLayers.Event.stop(e);
+                        }
+                    }
                 }
             }
             var capa = this._traerCapaPorNombre(o.capa);
@@ -915,7 +962,7 @@ var IGN_CACHES, argenmap;
             var m = f.createMarker();
             f.nombre = m.nombre = o.nombre;
             f.mostrarContenido = o.mostrarContenido;
-            f.closeBox = true;
+            f.closeBox = o.closeBox;
             f.popupClass = OpenLayers.Popup.FramedCloud;
             if(o.eventos) {
                 o.eventos.scope = f;
@@ -924,7 +971,7 @@ var IGN_CACHES, argenmap;
             this.marcadores.push(f);
             capa.addMarker(m);
             if(o.mostrarContenido) {
-                this._marcadorClickHandler.apply(f,[null])
+                o.eventos.click.apply(f,[null])
             }
         },
         agregarMarcadores: function(arrayMarcadores) {
@@ -982,7 +1029,7 @@ var IGN_CACHES, argenmap;
             	return;
             }
             //estoy removiendo el evento a mano, por las dudas, no se si esta bien
-            f.marker.events.un({"click": this._marcadorClickHandler,scope:f});
+            // f.marker.events.un({"click": this._marcadorClickHandler,scope:f});
             this._quitarMarcadorPorReferencia(f);
         },
         quitarCapa: function(nombre) {
