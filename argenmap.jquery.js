@@ -924,25 +924,39 @@ var IGN_CACHES, argenmap;
             }
             if(o.mostrarConClick) {
                 o.eventos = {
-                    click: function _marcadorClickHandler (e) {
-                        if (this.popup == null) {
-                            this.popupClass.prototype.autoSize = true;
-                            this.popup = this.createPopup(this.closeBox);
-                            this.layer.map.addPopup(this.popup, !this.closeBox);
-                            this.popup.show();
-                            _this.$el.trigger('opened.popup.marker.argenmap',this);
+                    click: function _marcadorClickHandler (evt) {
+                        var featurete = this;
+                        if(!featurete.closeBox){//si no tienen closebox destruyo todos los pops
+                            $.each(featurete.layer.map.popups,function(i,e){
+                                if(e == featurete.popup) {
+                                    return true;
+                                }
+                                _this.mapa.removePopup(e);
+                                if(e.parentFeature){
+                                    var f = e.parentFeature;
+                                    f.popup.destroy();
+                                    f.popup = null;
+                                    _this.$el.trigger('closed.popup.marker.argenmap',f);
+                                }
+                            });
+                        }
+                        if (featurete.popup == null) {
+                            featurete.popupClass.prototype.autoSize = true;
+                            featurete.popup = featurete.createPopup(featurete.closeBox);
+                            featurete.popup.parentFeature = featurete;
+                            featurete.layer.map.addPopup(featurete.popup, false);
+                            featurete.popup.show();
+                            _this.$el.trigger('opened.popup.marker.argenmap',featurete);
                         } else {
-                            this.popup.toggle();
-                            if(this.popup.visible()) {
-                                _this.$el.trigger('opened.popup.marker.argenmap',this);
+                            featurete.popup.toggle();
+                            if(featurete.popup.visible()) {
+                                _this.$el.trigger('opened.popup.marker.argenmap',featurete);
                             }else{
-                                _this.$el.trigger('closed.popup.marker.argenmap',this);
+                                _this.$el.trigger('closed.popup.marker.argenmap',featurete);
                             }
                         }
-                        // currentPopup = this.popup;
-                        _this.$el.trigger('clicked.marker.argenmap',this);
-                        if(e) {
-                            OpenLayers.Event.stop(e);
+                        if(evt) {
+                            OpenLayers.Event.stop(evt);
                         }
                     }
                 }
