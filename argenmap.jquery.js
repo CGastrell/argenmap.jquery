@@ -345,7 +345,8 @@ var IGN_CACHES, argenmap;
     argenmap.esUrl = function(urlString) {
         // revisar esto!!!
         // var urlPattern = /^((ftp|http)s?:\/\/){1}([\da-z\.-]+)(\.[\d-a-z\.])*(\.[a-z\.]{2,6})?([\/\w \.-]*)*\/?$/;
-        var urlPattern = /^((http|ftp|https):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/i;
+        // var urlPattern = /^((http|ftp|https):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/i;
+        var urlPattern = /^((http|ftp|https):\/\/)/i;
         var ipPattern = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
         return urlPattern.test(urlString) || ipPattern.test(urlString);
         // return true;
