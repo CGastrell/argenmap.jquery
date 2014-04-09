@@ -338,114 +338,6 @@ var IGN_CACHES, argenmap;
         error: defer.reject
       });
     });
-  //toma un kml (xml) y devuelve un layer.vector
-  //options nunca deberia llegar vacio, tal vez haya que doble checkear
-  argenmap.capaDesdeKML = function(xml, options) {
-    if(options.filtro !== '') {
-      $(kml).find('Placemark').each(function filterPlacemarks(i,e){
-        var geom = $(e).find('MultiGeometry').remove();
-        var rightGeom = geom.find(options.filtro);
-        $(e).append(rightGeom);
-      });
-    }
-    
-    var kmlFormat = new OpenLayers.Format.KML({
-      extractStyles: options.extractStyles,
-      extractAttributes: true,
-      internalProjection: this.opciones.proyeccion,
-      externalProjection: new OpenLayers.Projection("EPSG:4326")
-    });
-    var kmlFeatures = kmlFormat.read(kml);
-    
-    this.quitarCapa(options.nombre);
-
-    var l = new OpenLayers.Layer.Vector(options.nombre,options);
-    
-    if(this.mapa) {
-      this.mapa.addLayer(l);
-      l.addFeatures(kmlFeatures);
-      l.setOpacity(opacity);
-
-      if(o.mostrarConClick) {
-        var selector = new OpenLayers.Control.SelectFeature(l);
-        this.mapa.addControl(selector);
-        selector.activate();
-      }
-      this.$el.trigger('loaded.kml.layer.argenmap', l);
-    }
-
-    /* HANDLERS PARA KML LAYER */
-    
-    //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
-    //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
-    var alCerrarCuadro = function() {
-      selector.unselectAll();
-    };
-    var alSeleccionar = function(e) {
-      var f = e.feature;
-      
-      var datos = "";
-      if(f.cluster !== undefined) {
-        datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
-        $.each(f.cluster, function(i,e) {
-          datos += "<h2>"+e.attributes.name +
-              "</h2>" + e.attributes.description +
-              "<hr />"
-        });
-      }else{
-        datos = "<h2>"+f.attributes.name + "</h2>" + f.attributes.description;
-      }
-      var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
-        f.geometry.getBounds().getCenterLonLat(),
-        new OpenLayers.Size(100,100),
-        datos,
-        null, true, alCerrarCuadro
-      );
-      cuadro.autoSize=true;
-      f.cuadro = cuadro;
-      this.map.addPopup(cuadro);
-    };
-    var alDeSeleccionar = function(e) {
-      var f2 = e.feature;
-      
-      if(f2.cuadro) {
-        this.map.removePopup(f2.cuadro);
-        f2.cuadro.destroy();
-        try{
-          delete f2.cuadro;
-        }catch(err) {
-          f2.cuadro = undefined;
-        }
-      }
-    };
-    //esta funcion es porque los features se
-    //destruyen y vuelven a crear al zoom por el strategy.Cluster
-    //si algun popup existe, pierde la referencia y el popup no se
-    //puede sacar. each y remove
-    var antesDeRemoverFeatures = function(e) {
-      var map = this.map;
-      $.each(e.features, function(i,f3){
-        if(f3.cuadro !== undefined) {
-          map.removePopup(f3.cuadro);
-          f3.cuadro.destroy();
-          try{
-            delete f3.cuadro;
-          }catch(err) {
-            f3.cuadro = undefined;
-          }
-        }
-      });
-    };
-    if(options.mostrarConClick) {
-      l.events.on({
-        featureselected: alSeleccionar,
-        featureunselected: alDeSeleccionar,
-        beforefeaturesremoved: antesDeRemoverFeatures
-      });
-    }else{
-      $(l.div).css('pointer-events','none');
-    };
-  }
 
     argenmap.esPathRelativo = function (urlString) {
         var pattern = /^(http|https|ftp):\/\//i;
@@ -803,7 +695,11 @@ var IGN_CACHES, argenmap;
                 importarEstilos: true,
                 opacidad: 1,
                 mostrarConClick: true,
-                listarCapa: true
+                listarCapa: true,
+                propiedadesDeContenido: {
+                    titulo: 'name',
+                    descripcion: 'description'
+                }
             };
 
             var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones));
@@ -843,113 +739,128 @@ var IGN_CACHES, argenmap;
             //deferrear al load de kml, procesar kml para remover multigeometry
             //toda la funcion va adentro de este then
             var kurl = argenmap.esUrl(o.url) ? OpenLayers.ProxyHost + encodeURIComponent(o.url) : o.url;
-            argenmap.loadXML(kurl).then(
-                function processKML(kml) {
-                    if(o.filtro !== '') {
-                        $(kml).find('Placemark').each(function filterPlacemarks(i,e){
-                            var geom = $(e).find('MultiGeometry').remove();
-                            var rightGeom = geom.find(o.filtro);
-                            $(e).append(rightGeom);
-                        });
-                    }
-                    var kmlFormat = new OpenLayers.Format.KML({
-                        extractStyles: o.extractStyles,
-                        extractAttributes: true,
-                        internalProjection: _this.opciones.proyeccion,
-                        externalProjection: new OpenLayers.Projection("EPSG:4326")
-                    });
-                    var kmlFeatures = kmlFormat.read(kml);
-                    _this.quitarCapa(o.nombre);
+            argenmap.loadXML(kurl)
+            .then(function(kml) {
+                var l = _this._generarCapaDesdeKML(kml, o);
 
-                    var l = new OpenLayers.Layer.Vector(o.nombre,o);
+                _this.quitarCapa(o.nombre);
+
+                if(o.mostrarConClick) {
+                    var selector = new OpenLayers.Control.SelectFeature(l);
+                    _this.mapa.addControl(selector);
+                    selector.activate();
+                }
+
+                /* HANDLERS PARA KML LAYER */
+                
+                //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
+                //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
+                var alCerrarCuadro = function() {
+                    selector.unselectAll();
+                };
+                var alSeleccionar = function(e) {
+                    var f = e.feature;
                     
-                    if(_this.mapa) {
-                        _this.mapa.addLayer(l);
-                        l.addFeatures(kmlFeatures);
-                        l.setOpacity(opacity);
-
-                        if(o.mostrarConClick) {
-                            var selector = new OpenLayers.Control.SelectFeature(l);
-                            _this.mapa.addControl(selector);
-                            selector.activate();
-                        }
-                        _this.$el.trigger('loaded.kml.layer.argenmap', l);
-                    }
-
-                    /* HANDLERS PARA KML LAYER */
-                    
-                    //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
-                    //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
-                    var alCerrarCuadro = function() {
-                        selector.unselectAll();
-                    };
-                    var alSeleccionar = function(e) {
-                        var f = e.feature;
-                        
-                        var datos = "";
-                        if(f.cluster !== undefined) {
-                            datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
-                            $.each(f.cluster, function(i,e) {
-                                datos += "<h2>"+e.attributes.name +
-                                        "</h2>" + e.attributes.description +
-                                        "<hr />"
-                            });
-                        }else{
-                            datos = "<h2>"+f.attributes.name + "</h2>" + f.attributes.description;
-                        }
-                        var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
-                            f.geometry.getBounds().getCenterLonLat(),
-                            new OpenLayers.Size(100,100),
-                            datos,
-                            null, true, alCerrarCuadro
-                        );
-                        cuadro.autoSize=true;
-                        f.cuadro = cuadro;
-                        this.map.addPopup(cuadro);
-                    };
-                    var alDeSeleccionar = function(e) {
-                        var f2 = e.feature;
-                        
-                        if(f2.cuadro) {
-                            this.map.removePopup(f2.cuadro);
-                            f2.cuadro.destroy();
-                            try{
-                                delete f2.cuadro;
-                            }catch(err) {
-                                f2.cuadro = undefined;
-                            }
-                        }
-                    };
-                    //esta funcion es porque los features se
-                    //destruyen y vuelven a crear al zoom por el strategy.Cluster
-                    //si algun popup existe, pierde la referencia y el popup no se
-                    //puede sacar. each y remove
-                    var antesDeRemoverFeatures = function(e) {
-                        var map = this.map;
-                        $.each(e.features, function(i,f3){
-                            if(f3.cuadro !== undefined) {
-                                map.removePopup(f3.cuadro);
-                                f3.cuadro.destroy();
-                                try{
-                                    delete f3.cuadro;
-                                }catch(err) {
-                                    f3.cuadro = undefined;
-                                }
-                            }
-                        });
-                    };
-                    if(o.mostrarConClick) {
-                        l.events.on({
-                            featureselected: alSeleccionar,
-                            featureunselected: alDeSeleccionar,
-                            beforefeaturesremoved: antesDeRemoverFeatures
+                    var datos = "";
+                    if(f.cluster !== undefined) {
+                        datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
+                        $.each(f.cluster, function(i,e) {
+                            datos += "<h2>"+e.attributes.name +
+                                    "</h2>" + e.attributes.description +
+                                    "<hr />"
                         });
                     }else{
-                        $(l.div).css('pointer-events','none');
+                        datos = "<h2>"+f.attributes.name + "</h2>" + f.attributes.description;
                     }
+                    var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
+                        f.geometry.getBounds().getCenterLonLat(),
+                        new OpenLayers.Size(100,100),
+                        datos,
+                        null, true, alCerrarCuadro
+                    );
+                    cuadro.autoSize=true;
+                    f.cuadro = cuadro;
+                    this.map.addPopup(cuadro);
+                };
+                var alDeSeleccionar = function(e) {
+                    var f2 = e.feature;
+                    
+                    if(f2.cuadro) {
+                        this.map.removePopup(f2.cuadro);
+                        f2.cuadro.destroy();
+                        try{
+                            delete f2.cuadro;
+                        }catch(err) {
+                            f2.cuadro = undefined;
+                        }
+                    }
+                };
+                //esta funcion es porque los features se
+                //destruyen y vuelven a crear al zoom por el strategy.Cluster
+                //si algun popup existe, pierde la referencia y el popup no se
+                //puede sacar. each y remove
+                var antesDeRemoverFeatures = function(e) {
+                    var map = this.map;
+                    $.each(e.features, function(i,f3){
+                        if(f3.cuadro !== undefined) {
+                            map.removePopup(f3.cuadro);
+                            f3.cuadro.destroy();
+                            try{
+                                delete f3.cuadro;
+                            }catch(err) {
+                                f3.cuadro = undefined;
+                            }
+                        }
+                    });
+                };
+                if(o.mostrarConClick) {
+                    l.events.on({
+                        featureselected: alSeleccionar,
+                        featureunselected: alDeSeleccionar,
+                        beforefeaturesremoved: antesDeRemoverFeatures
+                    },l);
+                }else{
+                    $(l.div).css('pointer-events','none');
                 }
-            );
+ 
+                if(_this.mapa) {
+                    _this.mapa.addLayer(l);
+                    l.setOpacity(opacity);
+                }
+            },
+            //error en el loadXML
+            function() {
+                console.log(arguments);
+            });
         },
+        //toma un kml (xml) y devuelve un layer.vector
+        //options nunca deberia llegar vacio, tal vez haya que doble checkear
+        _generarCapaDesdeKML: function(kml, options) {
+            if(options.filtro !== '') {
+                $(kml).find('Placemark').each(function filterPlacemarks(i,e){
+                    var geom = $(e).find('MultiGeometry').remove();
+                    var rightGeom = geom.find(options.filtro);
+                    $(e).append(rightGeom);
+                });
+            }
+
+            var kmlFormat = new OpenLayers.Format.KML({
+                extractStyles: options.extractStyles,
+                extractAttributes: true,
+                internalProjection: this.opciones.proyeccion,
+                externalProjection: new OpenLayers.Projection("EPSG:4326")
+            });
+            var kmlFeatures = kmlFormat.read(kml);
+
+
+            var l = new OpenLayers.Layer.Vector(options.nombre,options);
+
+            l.addFeatures(kmlFeatures);
+
+            this.$el.trigger('loaded.kml.layer.argenmap', l);
+            return l;
+        },
+
         agregarCapaBaseWMS: function(opciones) {
             var predeterminadasWms = {
                 nombre: 'Capa Base WMS',
