@@ -338,6 +338,7 @@ var IGN_CACHES, argenmap;
         error: defer.reject
       });
     });
+
     argenmap.esPathRelativo = function (urlString) {
         var pattern = /^(http|https|ftp):\/\//i;
         return !pattern.test(urlString);
@@ -449,7 +450,8 @@ var IGN_CACHES, argenmap;
             rutaAlScript: argenmap.rutaRelativa,
             mapaFijo: false,
             mostrarBarraDeZoom: false,
-            proxy: "http://crossproxy.aws.af.cm/?u="
+            proxy: "http://crossproxy.aws.af.cm/?u=",
+            mostrarCoordenadasDelMouse: true
         };
         
         this.depuracion = opciones.depuracion || false;
@@ -493,6 +495,40 @@ var IGN_CACHES, argenmap;
                 theme: argenmap.rutaRelativa + "theme/default/style.css"
             };
             
+            //kml dragAndDrop
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+                var _this = this;
+                var onFileDrop = function(e) {
+                    e.originalEvent.stopPropagation();
+                    e.originalEvent.preventDefault();
+
+                    var dt = e.originalEvent.dataTransfer;
+                    var files = dt.files;
+
+                    if(dt.files.length === 1) {
+                        var file = dt.files[0];
+                        var reader = new FileReader();
+
+                        reader.onload = function(progressEvent) {
+                            var kmlString = progressEvent.target.result;
+
+                            if(kmlString.indexOf('<?xml') > -1) {
+                                var layer = _this._generarCapaDesdeKML(kmlString);
+                                _this._bindearEventosParaKML(layer);
+                                _this.mapa.addLayer(layer);
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+
+                }
+                var onFileDrag = function(e) {
+                    e.originalEvent.stopPropagation();
+                    e.originalEvent.preventDefault();
+                    e.originalEvent.dataTransfer.dropEffect = 'copy';
+                }
+                this.$el.bind('dragover', onFileDrag).bind('drop', onFileDrop);
+            }
             //tuve que hacer esto porque OL no arranca sin capa base, y tampoco puedo
             //forzar a tener una capa base. Que diria Lugosi si no se puede tener un mapa sin base?
             if(!this._corroborarCapaBase(o.capas)) {
@@ -538,6 +574,58 @@ var IGN_CACHES, argenmap;
                         }
                     })
                 ]);
+                if(this.opciones.mostrarCoordenadasDelMouse) {
+                    this.mapa.addControl(new OpenLayers.Control.MousePosition({
+                        displayProjection: 'EPSG:4326',
+                        separator: ' ',
+                        formatOutput: function(lonlat) {
+                            var digits = parseInt(this.numDigits, 10);
+                            var newHtml = 
+                                this.prefix +
+                                lonlat.lat.toFixed(digits) +
+                                this.separator +
+                                lonlat.lon.toFixed(digits) +
+                                this.suffix;
+                            return newHtml;
+                        },
+                        redraw: function(evt) {
+                            if(evt !== undefined && evt.altKey === true) return;
+
+                            var lonLat;
+
+                            if (evt == null) {
+                                this.reset();
+                                return;
+                            } else {
+                                if (this.lastXy == null ||
+                                    Math.abs(evt.xy.x - this.lastXy.x) > this.granularity ||
+                                    Math.abs(evt.xy.y - this.lastXy.y) > this.granularity)
+                                {
+                                    this.lastXy = evt.xy;
+                                    return;
+                                }
+
+                                lonLat = this.map.getLonLatFromPixel(evt.xy);
+                                if (!lonLat) {
+                                    // map has not yet been properly initialized
+                                    return;
+                                }
+                                if (this.displayProjection) {
+                                    lonLat.transform(this.map.getProjectionObject(),
+                                                     this.displayProjection );
+                                }
+                                this.lastXy = evt.xy;
+
+                            }
+
+                            var newHtml = this.formatOutput(lonLat);
+
+                            if (newHtml != this.element.innerHTML) {
+                                this.element.innerHTML = newHtml;
+                            }
+                        }
+                    }));
+                }
                 /*
                  * Aumento la desaceleración del kinetic.
                  * El valor predeterminado es muy bajo
@@ -694,7 +782,11 @@ var IGN_CACHES, argenmap;
                 importarEstilos: true,
                 opacidad: 1,
                 mostrarConClick: true,
-                listarCapa: true
+                listarCapa: true,
+                mapaDeAtributos: {
+                    titulo: 'name',
+                    descripcion: 'description'
+                }
             };
 
             var o = argenmap.traducirObjeto($.extend({},predeterminadasKml,opciones));
@@ -734,113 +826,224 @@ var IGN_CACHES, argenmap;
             //deferrear al load de kml, procesar kml para remover multigeometry
             //toda la funcion va adentro de este then
             var kurl = argenmap.esUrl(o.url) ? OpenLayers.ProxyHost + encodeURIComponent(o.url) : o.url;
-            argenmap.loadXML(kurl).then(
-                function processKML(kml) {
-                    if(o.filtro !== '') {
-                        $(kml).find('Placemark').each(function filterPlacemarks(i,e){
-                            var geom = $(e).find('MultiGeometry').remove();
-                            var rightGeom = geom.find(o.filtro);
-                            $(e).append(rightGeom);
-                        });
-                    }
-                    var kmlFormat = new OpenLayers.Format.KML({
-                        extractStyles: o.extractStyles,
-                        extractAttributes: true,
-                        internalProjection: _this.opciones.proyeccion,
-                        externalProjection: new OpenLayers.Projection("EPSG:4326")
+            argenmap.loadXML(kurl)
+            .then(function(kml) {
+                var l = _this._generarCapaDesdeKML(kml, o);
+
+                _this.quitarCapa(o.nombre);
+
+                if(o.mostrarConClick) {
+                    _this._bindearEventosParaKML(l,o.mapaDeAtributos);
+                }else{
+                    $(l.div).css('pointer-events','none');
+                }
+
+                // if(o.mostrarConClick) {
+                //     var selector = new OpenLayers.Control.SelectFeature(l);
+                //     _this.mapa.addControl(selector);
+                //     selector.activate();
+                // }
+
+                // /* HANDLERS PARA KML LAYER */
+                
+                // //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
+                // //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
+                // var alCerrarCuadro = function() {
+                //     selector.unselectAll();
+                // };
+                // var alSeleccionar = function(e) {
+                //     var f = e.feature;
+                    
+                //     var datos = "";
+                //     if(f.cluster !== undefined) {
+                //         datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
+                //         $.each(f.cluster, function(i,e) {
+                //             datos += "<h2>"+e.attributes.name +
+                //                     "</h2>" + e.attributes.description +
+                //                     "<hr />"
+                //         });
+                //     }else{
+                //         datos = "<h2>"+f.attributes.name + "</h2>" + f.attributes.description;
+                //     }
+                //     var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
+                //         f.geometry.getBounds().getCenterLonLat(),
+                //         new OpenLayers.Size(100,100),
+                //         datos,
+                //         null, true, alCerrarCuadro
+                //     );
+                //     cuadro.autoSize=true;
+                //     f.cuadro = cuadro;
+                //     this.map.addPopup(cuadro);
+                // };
+                // var alDeSeleccionar = function(e) {
+                //     var f2 = e.feature;
+                    
+                //     if(f2.cuadro) {
+                //         this.map.removePopup(f2.cuadro);
+                //         f2.cuadro.destroy();
+                //         try{
+                //             delete f2.cuadro;
+                //         }catch(err) {
+                //             f2.cuadro = undefined;
+                //         }
+                //     }
+                // };
+                // //esta funcion es porque los features se
+                // //destruyen y vuelven a crear al zoom por el strategy.Cluster
+                // //si algun popup existe, pierde la referencia y el popup no se
+                // //puede sacar. each y remove
+                // var antesDeRemoverFeatures = function(e) {
+                //     var map = this.map;
+                //     $.each(e.features, function(i,f3){
+                //         if(f3.cuadro !== undefined) {
+                //             map.removePopup(f3.cuadro);
+                //             f3.cuadro.destroy();
+                //             try{
+                //                 delete f3.cuadro;
+                //             }catch(err) {
+                //                 f3.cuadro = undefined;
+                //             }
+                //         }
+                //     });
+                // };
+                // var alRemoverCapa = function(e) {
+                //     selector.deactivate();
+                //     _this.mapa.removeControl(selector);
+                // };
+                // if(o.mostrarConClick) {
+                //     l.events.on({
+                //         featureselected: alSeleccionar,
+                //         featureunselected: alDeSeleccionar,
+                //         beforefeaturesremoved: antesDeRemoverFeatures
+                //     },l);
+                // }else{
+                //     $(l.div).css('pointer-events','none');
+                // }
+ 
+                if(_this.mapa) {
+                    _this.mapa.addLayer(l);
+                    l.setOpacity(opacity);
+                }
+            },
+            //error en el loadXML
+            function() {
+                // console.log(arguments);
+            });
+        },
+        _bindearEventosParaKML: function(layer, propsMap) {
+            var _this = this;
+            var dataMap = $.extend({},{titulo:'name',descripcion:'description'},propsMap);
+            var selector = new OpenLayers.Control.SelectFeature(layer);
+            this.mapa.addControl(selector);
+            selector.activate();
+
+            /* HANDLERS PARA KML LAYER */
+            
+            //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
+            //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
+            var alCerrarCuadro = function() {
+                selector.unselectAll();
+            };
+            var alSeleccionar = function(e) {
+                var f = e.feature;
+                
+                var datos = "";
+                if(f.cluster !== undefined) {
+                    datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
+                    $.each(f.cluster, function(i,e) {
+                        datos += "<h2>"+e.attributes[dataMap.titulo] +
+                                "</h2>" + e.attributes[dataMap.descripcion] +
+                                "<hr />"
                     });
-                    var kmlFeatures = kmlFormat.read(kml);
-                    _this.quitarCapa(o.nombre);
-
-                    var l = new OpenLayers.Layer.Vector(o.nombre,o);
-                    
-                    if(_this.mapa) {
-                        _this.mapa.addLayer(l);
-                        l.addFeatures(kmlFeatures);
-                        l.setOpacity(opacity);
-
-                        if(o.mostrarConClick) {
-                            var selector = new OpenLayers.Control.SelectFeature(l);
-                            _this.mapa.addControl(selector);
-                            selector.activate();
-                        }
-                        _this.$el.trigger('loaded.kml.layer.argenmap', l);
-                    }
-
-                    /* HANDLERS PARA KML LAYER */
-                    
-                    //http://openlayers.org/dev/examples/sundials-spherical-mercator.html
-                    //TODO: tambien habria que ver la opcion de encuadrar a la capa cuando se cargue, como opcion
-                    var alCerrarCuadro = function() {
-                        selector.unselectAll();
-                    };
-                    var alSeleccionar = function(e) {
-                        var f = e.feature;
-                        
-                        var datos = "";
-                        if(f.cluster !== undefined) {
-                            datos += "<strong>" + f.cluster.length + " items en este punto:</strong>";
-                            $.each(f.cluster, function(i,e) {
-                                datos += "<h2>"+e.attributes.name +
-                                        "</h2>" + e.attributes.description +
-                                        "<hr />"
-                            });
-                        }else{
-                            datos = "<h2>"+f.attributes.name + "</h2>" + f.attributes.description;
-                        }
-                        var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
-                            f.geometry.getBounds().getCenterLonLat(),
-                            new OpenLayers.Size(100,100),
-                            datos,
-                            null, true, alCerrarCuadro
-                        );
-                        cuadro.autoSize=true;
-                        f.cuadro = cuadro;
-                        this.map.addPopup(cuadro);
-                    };
-                    var alDeSeleccionar = function(e) {
-                        var f2 = e.feature;
-                        
-                        if(f2.cuadro) {
-                            this.map.removePopup(f2.cuadro);
-                            f2.cuadro.destroy();
-                            try{
-                                delete f2.cuadro;
-                            }catch(err) {
-                                f2.cuadro = undefined;
-                            }
-                        }
-                    };
-                    //esta funcion es porque los features se
-                    //destruyen y vuelven a crear al zoom por el strategy.Cluster
-                    //si algun popup existe, pierde la referencia y el popup no se
-                    //puede sacar. each y remove
-                    var antesDeRemoverFeatures = function(e) {
-                        var map = this.map;
-                        $.each(e.features, function(i,f3){
-                            if(f3.cuadro !== undefined) {
-                                map.removePopup(f3.cuadro);
-                                f3.cuadro.destroy();
-                                try{
-                                    delete f3.cuadro;
-                                }catch(err) {
-                                    f3.cuadro = undefined;
-                                }
-                            }
-                        });
-                    };
-                    if(o.mostrarConClick) {
-                        l.events.on({
-                            featureselected: alSeleccionar,
-                            featureunselected: alDeSeleccionar,
-                            beforefeaturesremoved: antesDeRemoverFeatures
-                        });
-                    }else{
-                        $(l.div).css('pointer-events','none');
+                }else{
+                    datos = "<h2>"+f.attributes[dataMap.titulo] + "</h2>" + f.attributes[dataMap.descripcion];
+                }
+                var cuadro = new OpenLayers.Popup.FramedCloud("cuadro",
+                    f.geometry.getBounds().getCenterLonLat(),
+                    new OpenLayers.Size(100,100),
+                    datos,
+                    null, true, alCerrarCuadro
+                );
+                cuadro.autoSize=true;
+                f.cuadro = cuadro;
+                this.map.addPopup(cuadro);
+            };
+            var alDeSeleccionar = function(e) {
+                var f2 = e.feature;
+                
+                if(f2.cuadro) {
+                    this.map.removePopup(f2.cuadro);
+                    f2.cuadro.destroy();
+                    try{
+                        delete f2.cuadro;
+                    }catch(err) {
+                        f2.cuadro = undefined;
                     }
                 }
-            );
+            };
+            //esta funcion es porque los features se
+            //destruyen y vuelven a crear al zoom por el strategy.Cluster
+            //si algun popup existe, pierde la referencia y el popup no se
+            //puede sacar. each y remove
+            var antesDeRemoverFeatures = function(e) {
+                var map = this.map;
+                $.each(e.features, function(i,f3){
+                    if(f3.cuadro !== undefined) {
+                        map.removePopup(f3.cuadro);
+                        f3.cuadro.destroy();
+                        try{
+                            delete f3.cuadro;
+                        }catch(err) {
+                            f3.cuadro = undefined;
+                        }
+                    }
+                });
+            };
+            var alRemoverCapa = function(e) {
+                selector.deactivate();
+                _this.mapa.removeControl(selector);
+            };
+            layer.events.on({
+                featureselected: alSeleccionar,
+                featureunselected: alDeSeleccionar,
+                beforefeaturesremoved: antesDeRemoverFeatures,
+                removed: alRemoverCapa
+            },layer);
         },
+        //toma un kml (xml) y devuelve un layer.vector
+        //options nunca deberia llegar vacio, tal vez haya que doble checkear
+        _generarCapaDesdeKML: function(kml, options) {
+            var defaults = {
+                filtro: '',
+                nombre: 'Capa KML',
+                extractStyles: true
+            }
+            var o = $.extend({},defaults,options);
+            if(o.filtro !== '') {
+                $(kml).find('Placemark').each(function filterPlacemarks(i,e){
+                    var geom = $(e).find('MultiGeometry').remove();
+                    var rightGeom = geom.find(o.filtro);
+                    $(e).append(rightGeom);
+                });
+            }
+
+            var kmlFormat = new OpenLayers.Format.KML({
+                extractStyles: o.extractStyles,
+                extractAttributes: true,
+                internalProjection: this.opciones.proyeccion,
+                externalProjection: new OpenLayers.Projection("EPSG:4326")
+            });
+            var kmlFeatures = kmlFormat.read(kml);
+
+
+            var l = new OpenLayers.Layer.Vector(o.nombre,o);
+
+            l.addFeatures(kmlFeatures);
+
+            this.$el.trigger('loaded.kml.layer.argenmap', l);
+            return l;
+        },
+
         agregarCapaBaseWMS: function(opciones) {
             var predeterminadasWms = {
                 nombre: 'Capa Base WMS',
