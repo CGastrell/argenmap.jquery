@@ -450,7 +450,8 @@ var IGN_CACHES, argenmap;
             rutaAlScript: argenmap.rutaRelativa,
             mapaFijo: false,
             mostrarBarraDeZoom: false,
-            proxy: "http://crossproxy.aws.af.cm/?u="
+            proxy: "http://crossproxy.aws.af.cm/?u=",
+            mostrarCoordenadasDelMouse: true
         };
         
         this.depuracion = opciones.depuracion || false;
@@ -539,6 +540,58 @@ var IGN_CACHES, argenmap;
                         }
                     })
                 ]);
+                if(this.opciones.mostrarCoordenadasDelMouse) {
+                    this.mapa.addControl(new OpenLayers.Control.MousePosition({
+                        displayProjection: 'EPSG:4326',
+                        separator: ' ',
+                        formatOutput: function(lonlat) {
+                            var digits = parseInt(this.numDigits, 10);
+                            var newHtml = 
+                                this.prefix +
+                                lonlat.lat.toFixed(digits) +
+                                this.separator +
+                                lonlat.lon.toFixed(digits) +
+                                this.suffix;
+                            return newHtml;
+                        },
+                        redraw: function(evt) {
+                            if(evt !== undefined && evt.altKey === true) return;
+
+                            var lonLat;
+
+                            if (evt == null) {
+                                this.reset();
+                                return;
+                            } else {
+                                if (this.lastXy == null ||
+                                    Math.abs(evt.xy.x - this.lastXy.x) > this.granularity ||
+                                    Math.abs(evt.xy.y - this.lastXy.y) > this.granularity)
+                                {
+                                    this.lastXy = evt.xy;
+                                    return;
+                                }
+
+                                lonLat = this.map.getLonLatFromPixel(evt.xy);
+                                if (!lonLat) {
+                                    // map has not yet been properly initialized
+                                    return;
+                                }
+                                if (this.displayProjection) {
+                                    lonLat.transform(this.map.getProjectionObject(),
+                                                     this.displayProjection );
+                                }
+                                this.lastXy = evt.xy;
+
+                            }
+
+                            var newHtml = this.formatOutput(lonLat);
+
+                            if (newHtml != this.element.innerHTML) {
+                                this.element.innerHTML = newHtml;
+                            }
+                        }
+                    }));
+                }
                 /*
                  * Aumento la desaceleración del kinetic.
                  * El valor predeterminado es muy bajo
