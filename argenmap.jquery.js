@@ -13,7 +13,6 @@ var IGN_CACHES, argenmap;
 (function ( $, window, document, undefined ) {
     IGN_CACHES = [
             'http://cg.aws.af.cm/tms',
-            'http://190.220.8.216/tms',
             'http://igntiles2.eu01.aws.af.cm/tms',
             'http://mapaabierto.aws.af.cm/tms'
     ];  
