@@ -508,7 +508,7 @@ OpenLayers.Control.LayerSwitcherIGN =
         this.maximizeDiv = document.createElement("div");
         this.maximizeDiv.innerHTML = "&laquo;";
         this.maximizeDiv.style.position = "absolute";
-        this.maximizeDiv.style.backgroundColor = this.roundedCornerColor;
+        // this.maximizeDiv.style.backgroundColor = this.roundedCornerColor;
         OpenLayers.Element.addClass(this.maximizeDiv, "maximizeDiv olButton");
         this.maximizeDiv.style.display = "none";
         

@@ -420,8 +420,9 @@ div.olControlLayerSwitcher .layersDiv {
     padding-bottom: 5px;
     padding-right: 10px;
     /*background-color: darkblue;
-        for the facha, senior*/
         background:rgba(28, 116, 165, 0.75);
+        for the facha, senior*/
+        background-image: url(img/argenmap-bg-color.png);
 }
 
 div.olControlLayerSwitcher .layersDiv .baseLbl,
@@ -458,6 +459,7 @@ font-weight: normal;
     text-indent: 6px;
 line-height: 22px;
 box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2);
+background-image:url(img/argenmap-bg-color.png);
 }
 
 div.olControlLayerSwitcher .minimizeDiv {
@@ -676,14 +678,12 @@ top: 6px;
 */
 .olIgnIconos.handler {
     background:url(img/knob.png) no-repeat;
-    width: 29px!important;              
-    height: 29px!important;
-    background-size: 75%;
+    width: 23px!important;              
+    height: 23px!important;
 }
 div.olControlPanZoomBarIGN {
     position: absolute;
     z-index: 1000;
-    background-color: rgba(28, 116, 165, 0.75);/*white;*/
     border: 1px solid #bbb;
     -webkit-border-radius: 4px;
        -moz-border-radius: 4px;
@@ -694,7 +694,9 @@ div.olControlPanZoomBarIGN {
     -webkit-background-clip: padding-box;
     -moz-background-clip: padding;
     background-clip: padding-box;
+    background-image: url(img/argenmap-bg-color.png);
     /*opacity: 0.85;
+    background-color: rgba(28, 116, 165, 0.75);
     filter: alpha(opacity=85);*/
 }
 div.olControlPanZoomBarIGN:hover {

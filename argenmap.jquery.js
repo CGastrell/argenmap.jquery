@@ -13,7 +13,6 @@ var IGN_CACHES, argenmap;
 (function ( $, window, document, undefined ) {
     IGN_CACHES = [
             'http://cg.aws.af.cm/tms',
-            'http://190.220.8.216/tms',
             'http://igntiles2.eu01.aws.af.cm/tms',
             'http://mapaabierto.aws.af.cm/tms'
     ];  
@@ -461,7 +460,7 @@ var IGN_CACHES, argenmap;
         //si se setea un nuevo path, hay que re-setear img path
         OpenLayers.ProxyHost = this.opciones.proxy;
         OpenLayers.ImgPath = argenmap.rutaRelativa + "img/";
-        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
+        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
         
         //esto es para que en la version 1.0 de argenmap.jquery
         //sea menos flexible el mapa predeterminado
@@ -712,7 +711,8 @@ var IGN_CACHES, argenmap;
                 esCapaBase: false,
                 mostrarAlCargar: true,
                 proyeccion: this.opciones.proyeccion,
-                visible: true
+                visible: true,
+                consultable: false
             };
             var o = argenmap.traducirObjeto($.extend({},predeterminadasWms,opciones));
             if(this._esCapaPrivada(o.nombre)) {
@@ -1286,8 +1286,10 @@ var IGN_CACHES, argenmap;
             if(arguments.length === 0) {
                 return this.mapa.baseLayer.nombre;
             }
+            capa = capa == 'Satelite' ? 'Satélite' : capa;
             if("Satélite" === capa && !argenmap.googleEstaCargado()) {
                 $(window).one('googleCargado',$.proxy(function(){this.capaBase("Satélite")},this));
+                return;
             }
             var c = this._traerCapaPorNombre(capa);
             if(c) {this.mapa.setBaseLayer(c);}
@@ -1779,7 +1781,8 @@ var IGN_CACHES, argenmap;
                     'vertical-align':'middle',
                     'padding': '2px',
                     'margin':0,
-                    'border':0
+                    'border':0,
+                    overflow: 'hidden'
                 }).append(logoLink);
             $('<a target="_blank" href="http://www.ign.gob.ar/argenmap/argenmap.jquery/docs/#datosvectoriales"></a>')
                 .css({
@@ -2011,4 +2014,4 @@ var IGN_CACHES, argenmap;
             a.agregarMarcadores(arrayMarcadores);
         });
     };
-})(jQuery, window, document, undefined);
+})(jQuery, window, document);
